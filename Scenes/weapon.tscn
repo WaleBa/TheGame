@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://behid7dcyb707"]
+
+[ext_resource type="Script" path="res://Scripts/weapon.cs" id="1_x7gwa"]
+[ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_e4pf8"]
+
+[node name="weapon" type="Node2D"]
+script = ExtResource("1_x7gwa")
+
+[node name="weaponPlace" type="Marker2D" parent="."]
+position = Vector2(70, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="weaponPlace"]
+scale = Vector2(1, 0.3)
+texture = ExtResource("2_e4pf8")
+
+[node name="bulletPlace" type="Marker2D" parent="."]
+position = Vector2(140, 0)
+
+[node name="cooldown" type="Timer" parent="."]
+process_callback = 0
+one_shot = true
+autostart = true

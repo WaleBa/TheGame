@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://d4mbdecvc8325"]
+
+[ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="1_gqc0k"]
+[ext_resource type="Script" path="res://Scripts/player.cs" id="1_wxrc2"]
+[ext_resource type="PackedScene" uid="uid://behid7dcyb707" path="res://Scenes/weapon.tscn" id="3_r5jvt"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fsqpp"]
+radius = 66.3702
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_wxrc2")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_gqc0k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_fsqpp")
+
+[node name="weapon" parent="." instance=ExtResource("3_r5jvt")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
