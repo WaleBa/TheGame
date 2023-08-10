@@ -1,6 +1,4 @@
-using Godot;
-using System;
-
+namespace GameE;
 public partial class player : CharacterBody2D
 {
 	public const float Speed = 50.0f;

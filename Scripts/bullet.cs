@@ -1,17 +1,26 @@
-using Godot;
-using System;
-
+namespace GameE;
 public partial class bullet : Area2D
 {
-	int Speed = 500;//const
-	int Power = 10;
+	int Speed = 500;
+	Vector2 StartingPos;
+	public int Range = 700;
 	public override void _Ready()
 	{
+		StartingPos = Position;
+		AreaEntered += (Area2D body) => 
+		{
+			if(body.IsInGroup("Mobs"))
+			{
+				body.Call("Hit", 10);
+				if(IsInstanceValid(this) == true)
+				QueueFree();
+			}
+		};
 	}
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _PhysicsProcess(double delta)
-	{
+	{ 
 		GlobalPosition += Transform.X * Speed * (float)delta;
+		if(Position.DistanceTo(StartingPos) > Range)
+			QueueFree();
 	}
 }

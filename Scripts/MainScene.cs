@@ -1,6 +1,4 @@
-using Godot;
-using System;
-
+namespace GameE;
 public partial class MainScene : Node2D
 {
 	// Called when the node enters the scene tree for the first time.

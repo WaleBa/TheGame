@@ -7,14 +7,14 @@
 script = ExtResource("1_x7gwa")
 
 [node name="weaponPlace" type="Marker2D" parent="."]
-position = Vector2(70, 0)
+position = Vector2(35, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="weaponPlace"]
-scale = Vector2(1, 0.3)
+scale = Vector2(0.5, 0.15)
 texture = ExtResource("2_e4pf8")
 
 [node name="bulletPlace" type="Marker2D" parent="."]
-position = Vector2(140, 0)
+position = Vector2(70, 0)
 
 [node name="cooldown" type="Timer" parent="."]
 process_callback = 0

@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bvarykskkkffb"]
+[gd_scene load_steps=5 format=3 uid="uid://bvarykskkkffb"]
 
 [ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_kstqi"]
 [ext_resource type="PackedScene" uid="uid://d4mbdecvc8325" path="res://Scenes/player.tscn" id="2_74eph"]
+[ext_resource type="PackedScene" uid="uid://7xqgy10h3iwh" path="res://Scenes/SnakeCell.tscn" id="3_in3ic"]
+[ext_resource type="Script" path="res://Scripts/SnakeHead.cs" id="4_34lom"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_kstqi")
@@ -9,3 +11,7 @@ script = ExtResource("1_kstqi")
 [node name="Player" parent="." instance=ExtResource("2_74eph")]
 position = Vector2(500, 500)
 motion_mode = 1
+
+[node name="SnakeCell" parent="." instance=ExtResource("3_in3ic")]
+position = Vector2(232, 183)
+script = ExtResource("4_34lom")

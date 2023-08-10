@@ -1,21 +1,20 @@
-using Godot;
-using System;
+namespace GameE;
 
 public partial class weapon : Node2D
 {
-	readonly PackedScene bullet = ResourceLoader.Load<PackedScene>("res://Scenes/bullet.tscn");
+	PackedScene bullet = ResourceLoader.Load<PackedScene>("res://Scenes/Bullet.tscn");
 
 	Marker2D bulletPlace;
 	Timer cooldown;
-	Node rootNode;
+	Node rootNode;//COOLDOWN FOR ONLY SHOTGUN
 
-	int TimeTicks = 0;
-	int ShootgunBulletCount = 10;
+	byte TimeTicks = 0;
+	byte ShootgunBulletCount = 10;
 	public override void _Ready()
 	{
 		bulletPlace = GetNode<Marker2D>("bulletPlace");
 		cooldown = GetNode<Timer>("cooldown");
-		rootNode = GetTree().Root.GetChild(0);
+		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -65,18 +64,17 @@ public partial class weapon : Node2D
 
 				cooldown.WaitTime = 0.1f;
 				cooldown.Start();
-				
+
 				break;
 			}
 		}
 	}
 	void Shoot(float rotation, int power = 10)
 	{
-		var bulle = bullet.Instantiate<Node2D>();
+		bullet bulle = bullet.Instantiate<bullet>();
 
 		bulle.Set("position", bulletPlace.GlobalPosition);
         bulle.Set("rotation", rotation);
-        bulle.Set("Power", power);
 
 		rootNode.AddChild(bulle);
 
