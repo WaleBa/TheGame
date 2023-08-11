@@ -4,7 +4,7 @@ public partial class SnakeHead : SnakeBody
 {
 	PackedScene snakecell = ResourceLoader.Load<PackedScene>("res://Scenes/SnakeCell.tscn");
 
-	List<ulong> body = new();
+	List<SnakeBody> body = new();
 	Node rootNode;
 
 	Vector2? hidingSpot = null;
@@ -14,6 +14,16 @@ public partial class SnakeHead : SnakeBody
 	
 	public override void _Ready()
 	{
+        Timer timer = new();
+        timer.Autostart = true;
+        timer.WaitTime = 5.0;
+        timer.Timeout += () => 
+        {
+            SnakeBody target = body.Last() as SnakeBody;
+            AddCell(target);
+        };
+        AddChild(timer);
+        
         hp = 100;
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		Target = rootNode.GetNode<CharacterBody2D>("Player");
@@ -56,20 +66,25 @@ public partial class SnakeHead : SnakeBody
 		SnakeBody target = this;
         for (int i = 1; i < size; i++)
         {
-            SnakeBody sc = snakecell.Instantiate<SnakeBody>();
-            sc.Target = target;
-            sc.Position = Position;
-           // body.Add(sc.GetInstanceId());
-            //sc.Death += ManageCut;
-            rootNode.AddChild(sc);
-			rootNode.MoveChild(sc, 0);
-            target = sc;
+            AddCell(target);
+            target = body.Last() as SnakeBody;
         }
     }
-    void ManageCut(ulong cell)
+    void AddCell(SnakeBody target)
     {
-        var index = body.IndexOf(cell);
-        body.RemoveRange(index, body.Count - index);
+        SnakeBody sc = snakecell.Instantiate<SnakeBody>();
+        sc.Target = target;
+        sc.Position = target.Position;
+        body.Add(sc);
+        sc.Death += ManageCut;
+        rootNode.AddChild(sc);
+		rootNode.MoveChild(sc, 0);
+    }
+    void ManageCut(SnakeBody cell)
+    {
+        int index = body.IndexOf(cell);
+        if(index != -1)
+            body.RemoveRange(index, body.Count - index);
     }
 }
 
