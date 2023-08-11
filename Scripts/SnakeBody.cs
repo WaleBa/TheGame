@@ -30,7 +30,6 @@ public partial class SnakeBody : Area2D
         if(hp <= 0)
             Die();
     }
-
     protected virtual void Die()
     {
         if(IsInstanceValid(this) == true)

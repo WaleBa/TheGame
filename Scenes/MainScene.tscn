@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bvarykskkkffb"]
+[gd_scene load_steps=6 format=3 uid="uid://bvarykskkkffb"]
 
 [ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_kstqi"]
 [ext_resource type="PackedScene" uid="uid://d4mbdecvc8325" path="res://Scenes/player.tscn" id="2_74eph"]
 [ext_resource type="PackedScene" uid="uid://7xqgy10h3iwh" path="res://Scenes/SnakeCell.tscn" id="3_in3ic"]
 [ext_resource type="Script" path="res://Scripts/SnakeHead.cs" id="4_34lom"]
+[ext_resource type="PackedScene" uid="uid://4w5l3xcmwq6j" path="res://Scenes/Zombie.tscn" id="5_xxqwm"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_kstqi")
@@ -15,3 +16,6 @@ motion_mode = 1
 [node name="SnakeCell" parent="." instance=ExtResource("3_in3ic")]
 position = Vector2(232, 183)
 script = ExtResource("4_34lom")
+
+[node name="Zombie" parent="." instance=ExtResource("5_xxqwm")]
+position = Vector2(87, 303)
