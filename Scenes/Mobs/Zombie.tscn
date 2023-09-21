@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://4w5l3xcmwq6j"]
+
+[ext_resource type="Script" path="res://Scripts/Mobs/Zombie.cs" id="1_8ay1i"]
+[ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="1_uk33j"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dbo6w"]
+radius = 39.0512
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lwx0v"]
+radius = 55.3494
+
+[node name="Zombie" type="CharacterBody2D" groups=["Mobs"]]
+script = ExtResource("1_8ay1i")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(0.407843, 0.741176, 0, 1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_uk33j")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_dbo6w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.5, 0.5)
+shape = SubResource("CircleShape2D_lwx0v")

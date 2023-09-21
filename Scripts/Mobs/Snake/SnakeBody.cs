@@ -2,7 +2,7 @@ namespace GameE;
 
 public partial class SnakeBody : Area2D
 {
-    public delegate void DeathEventHandler(SnakeBody myCell);
+    public delegate void DeathEventHandler(SnakeBody cell);
     public event DeathEventHandler Death;
 
     protected int hp = 50;
@@ -17,25 +17,22 @@ public partial class SnakeBody : Area2D
     }
     public override void _PhysicsProcess(double delta)
     {
-        if(IsInstanceValid(Target))
-        {
-            LookAt(Target.Position);
-            if(Position.DistanceTo(Target.Position) > DistanceBetweenCells) 
-                Position += Transform.X * (float)delta * Speed;
-        }
+        LookAt(Target.Position);
+        if(Position.DistanceTo(Target.Position) > DistanceBetweenCells) 
+            Position += Transform.X * (float)delta * Speed;
     }
-    protected virtual void  Hit(int damage)
+
+    protected virtual void  Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
         hp -= damage;
         if(hp <= 0)
             Die();
     }
+
     protected virtual void Die()
     {
-        if(IsInstanceValid(this) == true)
-        {
-            Death?.Invoke(this);//die after a while => await nie timer
+        Death?.Invoke(this);
+        if(IsInstanceValid(this) == true)//die after a while => await nie timer
             QueueFree();
-        }
     }
 }

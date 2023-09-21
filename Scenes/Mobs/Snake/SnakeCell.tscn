@@ -1,17 +1,18 @@
 [gd_scene load_steps=4 format=3 uid="uid://7xqgy10h3iwh"]
 
-[ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="1_aumih"]
-[ext_resource type="Script" path="res://Scripts/SnakeBody.cs" id="1_d5kxo"]
+[ext_resource type="Script" path="res://Scripts/Mobs/Snake/SnakeBody.cs" id="1_ihq8q"]
+[ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_4750b"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_twb3t"]
 radius = 64.4981
 
 [node name="SnakeCell" type="Area2D" groups=["Mobs"]]
 scale = Vector2(0.5, 0.5)
-script = ExtResource("1_d5kxo")
+script = ExtResource("1_ihq8q")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_aumih")
+self_modulate = Color(0.403922, 0.00392157, 0.803922, 1)
+texture = ExtResource("2_4750b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_twb3t")

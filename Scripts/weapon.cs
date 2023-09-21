@@ -2,11 +2,12 @@ namespace GameE;
 
 public partial class weapon : Node2D
 {
-	PackedScene bullet = ResourceLoader.Load<PackedScene>("res://Scenes/Bullet.tscn");
+	PackedScene bullet = ResourceLoader.Load<PackedScene>("res://Scenes/Projectiles/GoodBullet.tscn");
 
 	Marker2D bulletPlace;
 	Timer cooldown;
 	Node rootNode;//COOLDOWN FOR ONLY SHOTGUN
+	Player parent;
 
 	byte TimeTicks = 0;
 	byte ShootgunBulletCount = 10;
@@ -15,11 +16,16 @@ public partial class weapon : Node2D
 		bulletPlace = GetNode<Marker2D>("bulletPlace");
 		cooldown = GetNode<Timer>("cooldown");
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
+		parent = rootNode.GetNode<Player>("Player");
 	}
 
 	public override void _PhysicsProcess(double delta)
-	{	
-		LookAt(GetGlobalMousePosition());
+	{
+		Rotation = (GetGlobalMousePosition() - GlobalPosition).Angle();
+		if(Rotation < new Vector2(1,0).Angle())
+				ZIndex = -1;
+			else	
+				ZIndex = 0;
 		PreparingForShoot();
 	}
 	void PreparingForShoot()
@@ -71,12 +77,11 @@ public partial class weapon : Node2D
 	}
 	void Shoot(float rotation, int power = 10)
 	{
-		bullet bulle = bullet.Instantiate<bullet>();
+		GoodBullet bulle = bullet.Instantiate<GoodBullet>();
 
-		bulle.Set("position", bulletPlace.GlobalPosition);
-        bulle.Set("rotation", rotation);
-
+		bulle.Position = bulletPlace.GlobalPosition;
+        bulle.Rotation = rotation;
+		
 		rootNode.AddChild(bulle);
-
 	}
 }

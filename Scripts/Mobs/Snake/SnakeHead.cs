@@ -2,7 +2,7 @@ namespace GameE;
 
 public partial class SnakeHead : SnakeBody
 {
-	PackedScene snakecell = ResourceLoader.Load<PackedScene>("res://Scenes/SnakeCell.tscn");
+	PackedScene snakecell = ResourceLoader.Load<PackedScene>("res://Scenes/Mobs/Snake/SnakeCell.tscn");
 
 	List<SnakeBody> body = new();
 	Node rootNode;
@@ -14,6 +14,7 @@ public partial class SnakeHead : SnakeBody
 	
 	public override void _Ready()
 	{
+        body.Add(this);
         Timer timer = new();
         timer.Autostart = true;
         timer.WaitTime = 5.0;
@@ -54,7 +55,7 @@ public partial class SnakeHead : SnakeBody
         }
 	}
 
-    protected override void Hit(int damage)
+    protected override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
         hidingSpot = Position + (Position - Target.Position).Normalized() * 200;
         hp -= damage;
