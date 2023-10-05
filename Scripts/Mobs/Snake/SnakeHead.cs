@@ -1,3 +1,6 @@
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
+
 namespace GameE;
 
 public partial class SnakeHead : SnakeBody
@@ -6,29 +9,33 @@ public partial class SnakeHead : SnakeBody
 
 	List<SnakeBody> body = new();
 	Node rootNode;
-
 	Vector2? hidingSpot = null;
-	int length, size = 200;
+	int length, bodySize = 100;
 	float radius;
+
 
 	
 	public override void _Ready()
 	{
+        DistanceBetweenCells = 30;
         body.Add(this);
-        Timer timer = new();
-        timer.Autostart = true;
-        timer.WaitTime = 5.0;
+        Timer timer = new()
+        {
+            Autostart = true,
+            WaitTime = 1.0
+        };
         timer.Timeout += () => 
         {
             SnakeBody target = body.Last() as SnakeBody;
             AddCell(target);
+            Sizing();
         };
         AddChild(timer);
         
         hp = 100;
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		Target = rootNode.GetNode<CharacterBody2D>("Player");
-		length = size * DistanceBetweenCells;
+		length = bodySize * (int)DistanceBetweenCells;
         radius = length /2 / 3.14f;
         CallDeferred("CreateBody");
 	}
@@ -57,7 +64,8 @@ public partial class SnakeHead : SnakeBody
 
     protected override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
-        hidingSpot = Position + (Position - Target.Position).Normalized() * 200;
+        var count = body.Count;
+        hidingSpot = Position + (Position - Target.Position).Normalized() * (200 + count/2);
         hp -= damage;
         if(hp <= 0)
             Die();
@@ -65,11 +73,12 @@ public partial class SnakeHead : SnakeBody
 	void CreateBody()
     {
 		SnakeBody target = this;
-        for (int i = 1; i < size; i++)
+        for (int i = 1; i < bodySize; i++)
         {
             AddCell(target);
             target = body.Last() as SnakeBody;
         }
+        Sizing();
     }
     void AddCell(SnakeBody target)
     {
@@ -81,11 +90,25 @@ public partial class SnakeHead : SnakeBody
         rootNode.AddChild(sc);
 		rootNode.MoveChild(sc, 0);
     }
+    
+    void Sizing()
+    {
+        var count = body.Count;
+        float offset = 0.001f * count;
+        for(int i = 0; i < count; i++)//calls from head to last
+        {
+            body[i].Scale = new Vector2(0.5f + offset,0.5f + offset);
+            body[i].DistanceBetweenCells = 30 + offset;
+        }
+    }
     void ManageCut(SnakeBody cell)
     {
         int index = body.IndexOf(cell);
         if(index != -1)
             body.RemoveRange(index, body.Count - index);
+        Sizing();
+        length = body.Count * (int)DistanceBetweenCells;
+        radius = length /2 / 3.14f;
     }
 }
 

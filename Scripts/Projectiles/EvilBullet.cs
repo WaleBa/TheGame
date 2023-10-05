@@ -3,7 +3,6 @@ using System.Runtime;
 namespace GameE;
 public partial class EvilBullet : Projectile
 {
-    public bool Alive = true;
     public override void _Ready()
     {
         base._Ready();

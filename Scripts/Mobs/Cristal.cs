@@ -19,12 +19,11 @@ public partial class Cristal : Area2D
 	Vector2? recoilVector = null;
 	int? recoil = null;
 
-	int HP = 150;
-	int radius = 500;
+	int HP;
+	int radius;
 	int Speed = 30;
 	int Tier = 3;
 	bool HasParent = false;
-	int odleglosc = 250;//jf
 
 	public override void _Ready()
 	{
@@ -37,6 +36,11 @@ public partial class Cristal : Area2D
 		rotationPoint = GetNode<Node2D>("rotationPoint");
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		Target = rootNode.GetNode<CharacterBody2D>("Player");
+
+		HP = 100 * Tier;
+		radius = 200 * Tier;
+		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier /2;
+		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1,1) * (float)Tier/2;
 
 		if(HasParent == true)
 		{
@@ -154,7 +158,7 @@ public partial class Cristal : Area2D
 		if(IsInstanceValid(this) == false)
 			return;
 		int ArmCount = 2 + Tier;
-		int BulletArmCount = 1 + Tier * 4;
+		int BulletArmCount = 1 + Tier * 8;
 
 		float bulletRotation = 0;
 		float angle = 2 * Mathf.Pi / ArmCount;
@@ -162,23 +166,25 @@ public partial class Cristal : Area2D
 		for(int i = 0; i < BulletArmCount; i++)
 		{
 			for(int z = 0; z < ArmCount; z++)
-			{
+			{//is instance valid here
 				EvilBullet bull = bullet.Instantiate<EvilBullet>();
 				bull.Position = Position;
+				bull.Range += 200 * Tier;
 				bull.Rotate(angle * z + bulletRotation);
 				rootNode.AddChild(bull);
 			}
 			bulletRotation += 0.1f;
-			await Task.Delay(50);
+			await Task.Delay(80);
 		}
 	}
 	void PlaceCristals()
 	{
 		float angle = 2 * Mathf.Pi / cristals.Count;
+		float offset = 50 * Tier;
 		float vec = rand.Next(0, 5);
 		for(int i = 0; i < cristals.Count;i++)
 		{
-			cristals[i].Position = new Vector2(50,0).Rotated(vec + angle * i);
+			cristals[i].Position = new Vector2(offset,0).Rotated(vec + angle * i);
 		}
 	}
 	void AddFloatingBullets()
@@ -187,14 +193,16 @@ public partial class Cristal : Area2D
 			return;
 		int ArmCount = 2 + Tier;
 		int BulletArmCount = 1 + Tier * 2;
+		float offsetFromCenter = 75 * Tier;
 		float angle = 2 * Mathf.Pi / ArmCount;
 		for(int i = 1; i <= BulletArmCount;i++)
 		{
 			for(int k = 0; k < ArmCount; k++)
 			{
 				FloatingEvilBullet bull = floatingBullet.Instantiate<FloatingEvilBullet>();
+				bull.timerOffset = i;
 				var offset = angle/6 * i;
-				bull.Position = new Vector2(odleglosc + 50 * i, 0).Rotated(-(angle * k + offset));
+				bull.Position = new Vector2(offsetFromCenter + 50 * i, 0).Rotated(-(angle * k + offset));
 				rotationPoint.AddChild(bull);
 			}
 		}

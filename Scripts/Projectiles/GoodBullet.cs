@@ -22,8 +22,6 @@ public partial class GoodBullet : Projectile
         }
         if(body is EvilBullet bullett)
         {      
-            if(bullett.Alive == false)
-                return;
             if(IsInstanceValid(this) == true)
                 QueueFree();
         }

@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_etgr5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v3bmr"]
-radius = 65.9242
+radius = 80.3057
 
 [node name="Cristal" type="Area2D"]
 script = ExtResource("1_x84wg")
@@ -21,7 +21,7 @@ shape = SubResource("CircleShape2D_v3bmr")
 [node name="rotationPointCristal" type="Node2D" parent="."]
 
 [node name="UbgradeTimer" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 15.0
 
 [node name="Cooldown" type="Timer" parent="."]
 wait_time = 5.0

@@ -7,12 +7,10 @@
 radius = 64.4981
 
 [node name="SnakeHead" type="Area2D" groups=["Mobs"]]
-scale = Vector2(0.5, 0.5)
 script = ExtResource("1_uwfgi")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 self_modulate = Color(0.403922, 0.00392157, 0.803922, 1)
-scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_bu3h1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -11,9 +11,9 @@ public partial class Zombie : CharacterBody2D
 	Vector2? recoilVector = null;
 	int? recoil = null;
 
-	int Speed = 150;
+	int Speed;
 	int hp = 50;
-	int Tier = 3;
+	int Tier = 4;
 	Vector2[] Dir = {new Vector2(0,1), new Vector2(1,1), new Vector2(-1,-1)}; 
 
 	public override void _Ready()
@@ -21,25 +21,26 @@ public partial class Zombie : CharacterBody2D
 		area = GetNode<Area2D>("Area2D");
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		Target = GetTree().Root.GetNode<Node2D>("MainScene").GetNode<CharacterBody2D>("Player");
-
-		Scale = new Vector2(1,1) * (float)Tier;
+		
+		float offset = 0.5f * (Tier - 1); 
+		Scale = new Vector2(1 + offset,1 + offset);
 		hp = 50 * Tier;
-		Speed = Speed / Tier;
+		Speed = 150 / Tier;
 
-		Timer timer = new();//NEED change
-        timer.Autostart = true;
-        timer.OneShot = true;
-		timer.WaitTime = 0.3;
-		AddChild(timer);
-        timer.Timeout += () => Visible = true;
+        Timer timer = new()
+        {
+            Autostart = true,
+            OneShot = true,
+            WaitTime = 0.3
+        };
+		timer.Timeout += () => Visible = true;
+        AddChild(timer);
 	}
 	public override void _PhysicsProcess(double delta)
 	{
 		Vector2 vel = new Vector2(0,0);
-		if(Position.DistanceTo(Target.Position) > 50)//change for tiers
-		{
-			vel += newDir()  * Speed * (float)delta;
-		}
+		
+		vel += newDir()  * Speed * (float)delta;
 		if(recoil != null && recoilVector != null)
 		{
 			vel += (Vector2)recoilVector *(int)recoil * (float)delta;

@@ -1,22 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://bvarykskkkffb"]
+[gd_scene load_steps=4 format=3 uid="uid://bvarykskkkffb"]
 
 [ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_kstqi"]
 [ext_resource type="PackedScene" uid="uid://d4mbdecvc8325" path="res://Scenes/Player.tscn" id="2_74eph"]
 [ext_resource type="PackedScene" uid="uid://vpf46q8q87jm" path="res://Scenes/Mobs/Cristal.tscn" id="4_kq66s"]
-[ext_resource type="PackedScene" uid="uid://4w5l3xcmwq6j" path="res://Scenes/Mobs/Zombie.tscn" id="4_mponf"]
-[ext_resource type="PackedScene" uid="uid://cp0p70jultqv3" path="res://Scenes/Mobs/Snake/SnakeHead.tscn" id="5_o5gge"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_kstqi")
 
 [node name="Player" parent="." instance=ExtResource("2_74eph")]
-position = Vector2(500, 500)
-motion_mode = 1
+position = Vector2(1532.88, 1161.36)
 
-[node name="Cristal" parent="." groups=["Mobs"] instance=ExtResource("4_kq66s")]
-position = Vector2(-1, 0)
-
-[node name="Zombie" parent="." instance=ExtResource("4_mponf")]
-position = Vector2(137, 888)
-
-[node name="SnakeHead" parent="." instance=ExtResource("5_o5gge")]
+[node name="Cristal" parent="." instance=ExtResource("4_kq66s")]
