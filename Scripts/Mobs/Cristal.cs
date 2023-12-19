@@ -166,7 +166,7 @@ public partial class Cristal : Area2D
 		for(int i = 0; i < BulletArmCount; i++)
 		{
 			for(int z = 0; z < ArmCount; z++)
-			{//is instance valid here
+			{//is instance valid hereF
 				EvilBullet bull = bullet.Instantiate<EvilBullet>();
 				bull.Position = Position;
 				bull.Range += 200 * Tier;

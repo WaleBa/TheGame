@@ -1,6 +1,6 @@
 namespace GameE;
 
-public partial class Zombie : CharacterBody2D
+public partial class Zombie : RigidBody2D
 {
 	PackedScene zombie = ResourceLoader.Load<PackedScene>("res://Scenes/Mobs/Zombie.tscn");
 	
@@ -13,19 +13,23 @@ public partial class Zombie : CharacterBody2D
 
 	int Speed;
 	int hp = 50;
-	int Tier = 4;
-	Vector2[] Dir = {new Vector2(0,1), new Vector2(1,1), new Vector2(-1,-1)}; 
+	int Tier = 3;
+	Vector2[] Dir = {new Vector2(0,1), new Vector2(1,1), new Vector2(-1,-1)};
 
-	public override void _Ready()
+    public override void _Ready()
 	{
 		area = GetNode<Area2D>("Area2D");
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		Target = GetTree().Root.GetNode<Node2D>("MainScene").GetNode<CharacterBody2D>("Player");
 		
 		float offset = 0.5f * (Tier - 1); 
-		Scale = new Vector2(1 + offset,1 + offset);
+		area.Scale = new Vector2(1 + offset,1 + offset);
+		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(0.5f + offset,0.5f + offset);
+		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(0.5f + offset,0.5f + offset);
+		Mass = Tier;
+
 		hp = 50 * Tier;
-		Speed = 150 / Tier;
+		Speed = 150;
 
         Timer timer = new()
         {
@@ -36,23 +40,20 @@ public partial class Zombie : CharacterBody2D
 		timer.Timeout += () => Visible = true;
         AddChild(timer);
 	}
-	public override void _PhysicsProcess(double delta)
+
+    public override void _IntegrateForces(PhysicsDirectBodyState2D state)
+    {
+		Vector2 vel = newDir() * Speed * 10;
+		ApplyCentralForce(vel);
+    }
+/*
+    public override void _PhysicsProcess(double delta)
 	{
-		Vector2 vel = new Vector2(0,0);
-		
-		vel += newDir()  * Speed * (float)delta;
-		if(recoil != null && recoilVector != null)
-		{
-			vel += (Vector2)recoilVector *(int)recoil * (float)delta;
-			recoil = recoil /2;
-			if(recoil <= 0)
-			{
-				recoil = null;
-				recoilVector = null;
-			}
-		}
-		MoveAndCollide(vel);
+		Vector2 vel = newDir() * Speed *100 * (float)delta;
+		ApplyCentralForce(vel);
 	}
+
+*/
 	Vector2 newDir()
 	{
 		if(area.HasOverlappingAreas() == false)
@@ -76,8 +77,7 @@ public partial class Zombie : CharacterBody2D
 			return;
         hp -= damage;
 		
-		recoilVector = recoilVectorGiven;
-		recoil = recoilPower * 300;
+		ApplyCentralImpulse(recoilVectorGiven * recoilPower * 500);
         if(hp <= 0)
             CallDeferred("Die");
     }
@@ -92,7 +92,6 @@ public partial class Zombie : CharacterBody2D
 				{
 					Zombie z = zombie.Instantiate<Zombie>();
 					z.Position = Position + Dir[i];
-					z.Speed = Speed * 2;
 					z.Visible= false;
 					z.Tier = Tier - 1;
 					rootNode.AddChild(z);

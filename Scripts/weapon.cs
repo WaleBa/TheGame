@@ -21,7 +21,7 @@ public partial class weapon : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		Rotation = (GetGlobalMousePosition() - GlobalPosition).Angle();
+		LookAt(GetGlobalMousePosition());
 		if(Rotation < new Vector2(1,0).Angle())
 				ZIndex = -1;
 			else	
@@ -30,18 +30,28 @@ public partial class weapon : Node2D
 	}
 	void PreparingForShoot()
 	{
+		if(Input.IsActionJustPressed("Shoot"))
+		{
+			TimeTicks++;
+			return;
+		}
 		if(Input.IsActionJustReleased("Shoot"))
 		{
-			if(TimeTicks <= 90) ShootRequest(0);
+			if(TimeTicks < 10)
+			{
+				ShootRequest(0);
+			}
 			TimeTicks = 0;
 			return;
 		}
-		if(Input.IsActionPressed("Shoot") && TimeTicks > 90)
+		if(Input.IsActionPressed("Shoot"))
 		{
-			ShootRequest(1);
-			return;
+			TimeTicks++;
+			if(TimeTicks > 10)
+			{
+				ShootRequest(1);
+			}
 		}
-		TimeTicks++;
 	}
 	void ShootRequest(int type)
 	{
@@ -75,7 +85,7 @@ public partial class weapon : Node2D
 			}
 		}
 	}
-	void Shoot(float rotation, int power = 10)
+	void Shoot(float rotation, int power = 10)//naming convention
 	{
 		GoodBullet bulle = bullet.Instantiate<GoodBullet>();
 

@@ -7,6 +7,7 @@
 radius = 15.1327
 
 [node name="GoodBullet" type="Area2D"]
+collision_mask = 7
 script = ExtResource("1_voltb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

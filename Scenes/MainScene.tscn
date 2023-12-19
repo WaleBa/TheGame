@@ -1,13 +1,37 @@
-[gd_scene load_steps=4 format=3 uid="uid://bvarykskkkffb"]
+[gd_scene load_steps=6 format=3 uid="uid://bvarykskkkffb"]
 
 [ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_kstqi"]
 [ext_resource type="PackedScene" uid="uid://d4mbdecvc8325" path="res://Scenes/Player.tscn" id="2_74eph"]
-[ext_resource type="PackedScene" uid="uid://vpf46q8q87jm" path="res://Scenes/Mobs/Cristal.tscn" id="4_kq66s"]
+[ext_resource type="PackedScene" uid="uid://4w5l3xcmwq6j" path="res://Scenes/Mobs/Zombie.tscn" id="3_bul0l"]
+[ext_resource type="PackedScene" uid="uid://cp0p70jultqv3" path="res://Scenes/Mobs/Snake/SnakeHead.tscn" id="4_6q0dl"]
+[ext_resource type="PackedScene" uid="uid://vpf46q8q87jm" path="res://Scenes/Mobs/Cristal.tscn" id="5_3nkvk"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_kstqi")
 
 [node name="Player" parent="." instance=ExtResource("2_74eph")]
-position = Vector2(1532.88, 1161.36)
+position = Vector2(576, 322)
 
-[node name="Cristal" parent="." instance=ExtResource("4_kq66s")]
+[node name="Zombie" parent="." instance=ExtResource("3_bul0l")]
+position = Vector2(18, -3)
+
+[node name="Zombie2" parent="." instance=ExtResource("3_bul0l")]
+position = Vector2(101, 0)
+
+[node name="Zombie3" parent="." instance=ExtResource("3_bul0l")]
+position = Vector2(10, 83)
+
+[node name="Zombie4" parent="." instance=ExtResource("3_bul0l")]
+position = Vector2(1855, 38)
+
+[node name="Zombie5" parent="." instance=ExtResource("3_bul0l")]
+position = Vector2(1847, 149)
+
+[node name="SnakeHead" parent="." instance=ExtResource("4_6q0dl")]
+position = Vector2(1683, 1083)
+
+[node name="SnakeHead2" parent="." instance=ExtResource("4_6q0dl")]
+position = Vector2(1472, -411)
+
+[node name="Cristal" parent="." instance=ExtResource("5_3nkvk")]
+position = Vector2(-388, 1078)

@@ -10,7 +10,7 @@ public partial class SnakeHead : SnakeBody
 	List<SnakeBody> body = new();
 	Node rootNode;
 	Vector2? hidingSpot = null;
-	int length, bodySize = 100;
+	int length, bodySize = 80;
 	float radius;
 
 
@@ -58,6 +58,7 @@ public partial class SnakeHead : SnakeBody
         Position += Transform.X * (float)delta * Speed;	
         if (hidingSpot != null && Position.DistanceTo((Vector2)hidingSpot) <= 80) 
         {
+            foreach(SnakeBody b in body) Speed = 300;
             hidingSpot = null;
         }
 	}
@@ -65,8 +66,9 @@ public partial class SnakeHead : SnakeBody
     protected override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
         var count = body.Count;
-        hidingSpot = Position + (Position - Target.Position).Normalized() * (200 + count/2);
+        hidingSpot = Position + (Position - Target.Position).Normalized() * (500 + count/2);
         hp -= damage;
+        foreach(SnakeBody b in body) Speed = 450;
         if(hp <= 0)
             Die();
     }
