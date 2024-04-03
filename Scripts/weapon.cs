@@ -8,6 +8,7 @@ public partial class weapon : Node2D
 	Timer cooldown;
 	Node rootNode;//COOLDOWN FOR ONLY SHOTGUN
 	Player parent;
+	int TimesShoot = 0;
 
 	byte TimeTicks = 0;
 	byte ShootgunBulletCount = 10;
@@ -17,6 +18,7 @@ public partial class weapon : Node2D
 		cooldown = GetNode<Timer>("cooldown");
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		parent = rootNode.GetNode<Player>("Player");
+		LoadSave();	
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -77,6 +79,7 @@ public partial class weapon : Node2D
 	}
 	void Shoot(float rotation, int power = 10)
 	{
+		TimesShoot++;
 		GoodBullet bulle = bullet.Instantiate<GoodBullet>();
 
 		bulle.Position = bulletPlace.GlobalPosition;
@@ -84,4 +87,42 @@ public partial class weapon : Node2D
 		
 		rootNode.AddChild(bulle);
 	}
+
+	public Godot.Collections.Dictionary<string, Variant> Save()
+	{
+		return new Godot.Collections.Dictionary<string, Variant>()
+		{
+			{"TimesShoot", TimesShoot}	
+		};
+	} 
+
+	public override void _ExitTree()
+	{
+		using var SaveGame = FileAccess.Open("user://savegame.save", FileAccess.ModeFlags.Write);
+		Godot.Collections.Dictionary<string, Variant> weaponData = Save();
+		string jsonString = Json.Stringify(weaponData);
+		SaveGame.StoreLine(jsonString);
+		GD.Print("saved");
+	}
+	public void LoadSave()
+	{
+		if(!FileAccess.FileExists("user://savegame.save"))
+			return;
+		using var saveGame = FileAccess.Open("user://savegame.save", FileAccess.ModeFlags.Read);
+
+		while(saveGame.GetPosition() < saveGame.GetLength())
+		{
+			string jsonString = saveGame.GetLine();
+			Json json = new Json();
+			var ParseResult = json.Parse(jsonString);
+			if(ParseResult != Error.Ok)
+				continue;
+			Godot.Collections.Dictionary<string, Variant> nodeData = new Godot.Collections.Dictionary<string, Variant>((Godot.Collections.Dictionary)json.Data);
+			foreach(var (key, value) in nodeData)
+			{
+				if(key == "TimesShoot")	
+					GD.Print($"LOAD times shoot: {value}");
+			}
+		}
+	} 
 }

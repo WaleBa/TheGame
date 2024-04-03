@@ -1,6 +1,3 @@
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
-
 namespace GameE;
 
 public partial class SnakeHead : SnakeBody

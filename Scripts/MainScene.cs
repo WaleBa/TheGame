@@ -1,3 +1,5 @@
+using Godot.NativeInterop;
+
 namespace GameE;
 public partial class MainScene : Node2D
 {

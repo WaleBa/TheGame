@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://bcjlwuhon762x"]
+
+[ext_resource type="Script" path="res://Scripts/Mobs/Cristal/MainCristal.cs" id="1_ryao4"]
+[ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_7fald"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v3bmr"]
+radius = 80.3057
+
+[node name="MainCristal" type="Area2D"]
+script = ExtResource("1_ryao4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(1, 0, 1, 1)
+texture = ExtResource("2_7fald")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_v3bmr")
+
+[node name="rotationPointCristal" type="Node2D" parent="."]
+
+[node name="UbgradeTimer" type="Timer" parent="."]
+wait_time = 5.0

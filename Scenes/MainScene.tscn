@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_kstqi"]
 [ext_resource type="PackedScene" uid="uid://d4mbdecvc8325" path="res://Scenes/Player.tscn" id="2_74eph"]
-[ext_resource type="PackedScene" uid="uid://vpf46q8q87jm" path="res://Scenes/Mobs/Cristal.tscn" id="4_kq66s"]
+[ext_resource type="PackedScene" uid="uid://bcjlwuhon762x" path="res://Scenes/Mobs/Cristal/MainCristal.tscn" id="3_d68fy"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_kstqi")
@@ -10,4 +10,4 @@ script = ExtResource("1_kstqi")
 [node name="Player" parent="." instance=ExtResource("2_74eph")]
 position = Vector2(1532.88, 1161.36)
 
-[node name="Cristal" parent="." instance=ExtResource("4_kq66s")]
+[node name="Cristal" parent="." instance=ExtResource("3_d68fy")]
