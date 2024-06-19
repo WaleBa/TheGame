@@ -1,7 +1,7 @@
 namespace GameE;
 public partial class Player : CharacterBody2D
 {
-	public const float Speed = 50.0f;
+	const float Speed = 50.0f;
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -14,7 +14,7 @@ public partial class Player : CharacterBody2D
 	{
 		return Input.GetVector("move_left", "move_right", "move_up", "move_down");
 	}
-
+	
 	public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
 	{
 		GD.Print("got damage");
