@@ -4,12 +4,20 @@
 [ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="1_uk33j"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_dbo6w"]
-radius = 39.0512
+radius = 74.2428
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lwx0v"]
 radius = 55.3494
 
-[node name="Zombie" type="CharacterBody2D" groups=["Mobs"]]
+[node name="Zombie" type="RigidBody2D" groups=["Mobs"]]
+light_mask = 4
+visibility_layer = 4
+collision_layer = 4
+collision_mask = 4
+gravity_scale = 0.0
+continuous_cd = 1
+lock_rotation = true
+linear_damp = 5.0
 script = ExtResource("1_8ay1i")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -25,3 +33,4 @@ shape = SubResource("CircleShape2D_dbo6w")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(0.5, 0.5)
 shape = SubResource("CircleShape2D_lwx0v")
+one_way_collision_margin = 5.0
