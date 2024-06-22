@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://Scripts/Mobs/Zombie.cs" id="1_8ay1i"]
 [ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="1_uk33j"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_dbo6w"]
-radius = 74.2428
+[sub_resource type="CircleShape2D" id="CircleShape2D_4wqeh"]
+radius = 72.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lwx0v"]
 radius = 55.3494
@@ -28,7 +28,7 @@ texture = ExtResource("1_uk33j")
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-shape = SubResource("CircleShape2D_dbo6w")
+shape = SubResource("CircleShape2D_4wqeh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(0.5, 0.5)

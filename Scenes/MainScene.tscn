@@ -2,12 +2,21 @@
 
 [ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_kstqi"]
 [ext_resource type="PackedScene" uid="uid://d4mbdecvc8325" path="res://Scenes/Player.tscn" id="2_74eph"]
-[ext_resource type="PackedScene" uid="uid://bcjlwuhon762x" path="res://Scenes/Mobs/Cristal/MainCristal.tscn" id="3_d68fy"]
+[ext_resource type="PackedScene" uid="uid://4w5l3xcmwq6j" path="res://Scenes/Mobs/Zombie.tscn" id="2_rkuu6"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_kstqi")
 
+[node name="Zombie" parent="." instance=ExtResource("2_rkuu6")]
+
+[node name="Zombie2" parent="." instance=ExtResource("2_rkuu6")]
+position = Vector2(-242, -184)
+
+[node name="Zombie3" parent="." instance=ExtResource("2_rkuu6")]
+position = Vector2(-178, -7)
+
+[node name="Zombie4" parent="." instance=ExtResource("2_rkuu6")]
+position = Vector2(-30, -160)
+
 [node name="Player" parent="." instance=ExtResource("2_74eph")]
 position = Vector2(1532.88, 1161.36)
-
-[node name="Cristal" parent="." instance=ExtResource("3_d68fy")]

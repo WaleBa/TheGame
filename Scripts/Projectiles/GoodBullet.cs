@@ -11,6 +11,12 @@ public partial class GoodBullet : Projectile
 
     public override void Contact(Node2D body)
     {
+        GD.Print($"body contact: {body}");
+        if(body is Zombie zombie)
+        {
+            GD.Print("contacted zombie");
+            zombie.Call("Hit",Damage, 3, (body.Position - Position).Normalized());
+        }
         if(body.IsInGroup("Mobs"))
         {
             if(IsInstanceValid(body))
@@ -20,7 +26,7 @@ public partial class GoodBullet : Projectile
                     QueueFree();
             }
         }
-        if(body is EvilBullet bullett)
+        else if(body is EvilBullet bullett)
         {      
             if(IsInstanceValid(this) == true)
                 QueueFree();
