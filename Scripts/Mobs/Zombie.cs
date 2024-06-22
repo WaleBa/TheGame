@@ -6,7 +6,6 @@ public partial class Zombie : RigidBody2D
 
     CharacterBody2D Target;
     Node2D rootNode;
-    Area2D area;
 
     Vector2? recoilVector = null;
     int? recoil = null;
@@ -18,12 +17,10 @@ public partial class Zombie : RigidBody2D
 
     public override void _Ready()
     {
-        area = GetNode<Area2D>("Area2D");
         rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = GetTree().Root.GetNode<Node2D>("MainScene").GetNode<CharacterBody2D>("Player");
 
         float offset = 0.5f * (Tier - 1);
-        area.Scale = new Vector2(1 + offset,1 + offset);
         GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(0.5f + offset,0.5f + offset);
         GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(0.5f + offset,0.5f + offset);
         Mass = Tier;
@@ -50,20 +47,7 @@ public partial class Zombie : RigidBody2D
 
     Vector2 newDir()
     {
-        if(area.HasOverlappingAreas() == false)
             return (Target.Position - Position).Normalized();
-
-        Vector2 ToPlayer = (Target.Position - Position).Normalized();
-        Vector2 Dir = ToPlayer;
-        Godot.Collections.Array<Area2D> bodies = area.GetOverlappingAreas();
-        for(int i = 0;i< bodies.Count; i++)
-        { 
-            if(bodies[i] is not SnakeBody)
-                continue;
-            Vector2 awayDir = (Position - bodies[i].Position).Normalized();
-            Dir = awayDir;
-        }
-        return Dir.Normalized();
     }
         
     public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)

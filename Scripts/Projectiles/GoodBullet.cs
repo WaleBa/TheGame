@@ -11,7 +11,7 @@ public partial class GoodBullet : Projectile
 
     public override void Contact(Node2D body)
     {
-        GD.Print($"body contact: {body}");
+        QueueFree();
         if(body is Zombie zombie)
         {
             GD.Print("contacted zombie");
