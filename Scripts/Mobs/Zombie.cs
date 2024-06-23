@@ -6,9 +6,7 @@ public partial class Zombie : RigidBody2D
 
     CharacterBody2D Target;
     Node2D rootNode;
-
-    Vector2? recoilVector = null;
-    int? recoil = null;
+    Area2D contactArea;
 
     int Speed;
     int hp = 50;
@@ -19,6 +17,7 @@ public partial class Zombie : RigidBody2D
     {
         rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = GetTree().Root.GetNode<Node2D>("MainScene").GetNode<CharacterBody2D>("Player");
+        contactArea = GetNode<Area2D>("Area2D");
 
         float offset = 0.5f * (Tier - 1);
         GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(0.5f + offset,0.5f + offset);
@@ -47,8 +46,19 @@ public partial class Zombie : RigidBody2D
 
     Vector2 newDir()
     {
-            return (Target.Position - Position).Normalized();
+        Vector2 ToPlayer = (Target.Position - Position).Normalized();
+        Vector2 Dir = ToPlayer;
+        Godot.Collections.Array<Area2D> bodies = contactArea.GetOverlappingAreas();
+        for(int i = 0;i< bodies.Count; i++)
+        {
+            if(bodies[i] is not SnakeBody)
+                continue;
+            Vector2 awayDir = (Position - bodies[i].GlobalPosition).Normalized();
+            Dir += awayDir;
+        }
+        return Dir.Normalized();
     }
+
         
     public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
