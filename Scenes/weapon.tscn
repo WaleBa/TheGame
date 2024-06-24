@@ -16,7 +16,12 @@ texture = ExtResource("2_e4pf8")
 [node name="bulletPlace" type="Marker2D" parent="."]
 position = Vector2(70, 0)
 
-[node name="cooldown" type="Timer" parent="."]
+[node name="ShootgunCooldown" type="Timer" parent="."]
+process_callback = 0
+one_shot = true
+autostart = true
+
+[node name="AutomaticCooldown" type="Timer" parent="."]
 process_callback = 0
 one_shot = true
 autostart = true

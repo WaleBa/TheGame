@@ -5,7 +5,7 @@ public partial class weapon : Node2D
 	PackedScene bullet = ResourceLoader.Load<PackedScene>("res://Scenes/Projectiles/GoodBullet.tscn");
 
 	Marker2D bulletPlace;
-	Timer cooldown;
+	Timer ShootgunCooldown, AutomaticCooldown;
 	Node rootNode;//COOLDOWN FOR ONLY SHOTGUN
 	Player parent;
 	int TimesShoot = 0;
@@ -15,7 +15,8 @@ public partial class weapon : Node2D
 	public override void _Ready()
 	{
 		bulletPlace = GetNode<Marker2D>("bulletPlace");
-		cooldown = GetNode<Timer>("cooldown");
+		ShootgunCooldown = GetNode<Timer>("ShootgunCooldown");
+		AutomaticCooldown = GetNode<Timer>("AutomaticCooldown");
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		parent = rootNode.GetNode<Player>("Player");
 		LoadSave();	
@@ -34,26 +35,26 @@ public partial class weapon : Node2D
 	{
 		if(Input.IsActionJustReleased("Shoot"))
 		{
-			if(TimeTicks <= 90) ShootRequest(0);
+			if(TimeTicks <= 45) ShootRequest(0);
 			TimeTicks = 0;
 			return;
 		}
-		if(Input.IsActionPressed("Shoot") && TimeTicks > 90)
+		if(Input.IsActionPressed("Shoot"))
 		{
-			ShootRequest(1);
+			if(TimeTicks > 45) ShootRequest(1);
+			TimeTicks++;
 			return;
 		}
-		TimeTicks++;
 	}
 	void ShootRequest(int type)
 	{
-		if(cooldown.IsStopped() == false)
-			return;
-
 		switch(type)
 		{
 			case 0: //shootgun power:20
 			{
+				if(ShootgunCooldown.IsStopped() == false)
+					return;
+
 				double angle = 0.4 / (ShootgunBulletCount + 1);
         		for (int i = 1; i <= ShootgunBulletCount; i++)
         		{
@@ -61,18 +62,23 @@ public partial class weapon : Node2D
 					Shoot((float)rotation, 20);
         		}
 
-				cooldown.WaitTime = 2f;
-				cooldown.Start();
-
+				AutomaticCooldown.WaitTime = 1f;
+				ShootgunCooldown.WaitTime = 3f;
+				AutomaticCooldown.Start();
+				ShootgunCooldown.Start();
 				break;
 			}
 			case 1: //automatic power:10
 			{
+				if(AutomaticCooldown.IsStopped() == false)
+					return;
+
 				Shoot(Rotation);
 
-				cooldown.WaitTime = 0.1f;
-				cooldown.Start();
-
+				AutomaticCooldown.WaitTime = 0.1f;
+				ShootgunCooldown.WaitTime = 0.5f;
+				AutomaticCooldown.Start();
+				ShootgunCooldown.Start();
 				break;
 			}
 		}
