@@ -107,38 +107,11 @@ public partial class MainCristal : Cristal
 			AddChild(newRotationPoint);
 		}
 	}
-	protected override async void Die()
+	protected override void Die()
     {
 		if(IsInstanceValid(this) == false)
-			return;
-		CristalsAfterDeathRotation();
-		for(int i = 0; i < rotationPoints.Length; i++)
-		{
-            AfterDeathRotation(i);
-            await Task.Delay(400);
-		}
-		await Task.Delay(1500);
+			return;              
 		QueueFree();
 	}
-
-	async Task AfterDeathRotation(int rotationPoint)
-	{
-		while(true)
-		{
-			rotationPoints[rotationPoint].Item1.Scale += new Vector2(0.01f, 0.01f);
-			rotationPoints[rotationPoint].Item2 += 0.001f;
-			await Task.Delay(25);
-		}
-	}
-	async Task CristalsAfterDeathRotation()
-	{
-		while(true)
-		{
-			rotationPointCristal.Scale -= new Vector2(0.01f, 0.01f);
-			rotationPointCritalEXTRA += 0.005f;
-			await Task.Delay(25);
-		}
-	}    
-
 }
 

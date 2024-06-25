@@ -35,13 +35,13 @@ public partial class weapon : Node2D
 	{
 		if(Input.IsActionJustReleased("Shoot"))
 		{
-			if(TimeTicks <= 45) ShootRequest(0);
+			if(TimeTicks <= 15) ShootRequest(0);
 			TimeTicks = 0;
 			return;
 		}
 		if(Input.IsActionPressed("Shoot"))
 		{
-			if(TimeTicks > 45) ShootRequest(1);
+			if(TimeTicks > 15) ShootRequest(1);
 			TimeTicks++;
 			return;
 		}
@@ -62,8 +62,8 @@ public partial class weapon : Node2D
 					Shoot((float)rotation, 20);
         		}
 
-				AutomaticCooldown.WaitTime = 1f;
-				ShootgunCooldown.WaitTime = 3f;
+				AutomaticCooldown.WaitTime = 0.3f;
+				ShootgunCooldown.WaitTime =1f;
 				AutomaticCooldown.Start();
 				ShootgunCooldown.Start();
 				break;
@@ -75,8 +75,8 @@ public partial class weapon : Node2D
 
 				Shoot(Rotation);
 
-				AutomaticCooldown.WaitTime = 0.1f;
-				ShootgunCooldown.WaitTime = 0.5f;
+				AutomaticCooldown.WaitTime = 0.04f;
+				ShootgunCooldown.WaitTime = 0.15f;
 				AutomaticCooldown.Start();
 				ShootgunCooldown.Start();
 				break;
