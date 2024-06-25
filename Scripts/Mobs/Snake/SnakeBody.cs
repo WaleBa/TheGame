@@ -9,7 +9,7 @@ public partial class SnakeBody : Area2D
 	public Node2D Target = null;
     public Sprite2D Sprite;
     public CollisionShape2D CollisionShape;
-    protected int Speed = 300;
+    public int Speed = 300;
     public float DistanceBetweenCells = 30;
     public override void _Ready()
     {

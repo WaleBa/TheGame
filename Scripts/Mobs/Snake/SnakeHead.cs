@@ -59,14 +59,26 @@ public partial class SnakeHead : SnakeBody
         }
 	}
 
-    protected override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
+    protected override async void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
         var count = body.Count;
-        hidingSpot = Position + (Position - Target.Position).Normalized() * (200 + count/2);
+        hidingSpot = Position + (Position - Target.Position).Normalized() * (600 + count/2);
+        foreach(SnakeBody cell in body)
+            cell.Speed = 700;
+        RemoveEscape();
         hp -= damage;
         if(hp <= 0)
             Die();
     }
+
+    async void RemoveEscape()
+    {
+        await Task.Delay(5000);
+        foreach(SnakeBody cell in body)
+            cell.Speed = 300;
+        hidingSpot = null;
+    }
+
 	void CreateBody()
     {
 		SnakeBody target = this;
@@ -82,6 +94,7 @@ public partial class SnakeHead : SnakeBody
         SnakeBody sc = snakecell.Instantiate<SnakeBody>();
         sc.Target = target;
         sc.Position = target.Position;
+        sc.Speed = Speed;
         body.Add(sc);
         sc.Death += ManageCut;
         rootNode.AddChild(sc);
