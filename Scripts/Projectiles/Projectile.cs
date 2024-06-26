@@ -8,6 +8,7 @@ public partial class Projectile : Area2D
     public Vector2 StartingPos;
     public override void _Ready()
     {
+        AddToGroup("Projectiles");
         StartingPos = Position;
 
         AreaEntered += Contact;
