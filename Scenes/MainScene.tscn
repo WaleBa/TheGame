@@ -1,22 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://bvarykskkkffb"]
+[gd_scene load_steps=3 format=3 uid="uid://bvarykskkkffb"]
 
 [ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_kstqi"]
 [ext_resource type="PackedScene" uid="uid://d4mbdecvc8325" path="res://Scenes/Player.tscn" id="2_74eph"]
-[ext_resource type="PackedScene" uid="uid://4w5l3xcmwq6j" path="res://Scenes/Mobs/Zombie.tscn" id="2_rkuu6"]
-[ext_resource type="PackedScene" uid="uid://bcjlwuhon762x" path="res://Scenes/Mobs/Cristal/MainCristal.tscn" id="3_p0ep0"]
-[ext_resource type="PackedScene" uid="uid://cp0p70jultqv3" path="res://Scenes/Mobs/Snake/SnakeHead.tscn" id="5_o5gge"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_kstqi")
 
 [node name="Player" parent="." instance=ExtResource("2_74eph")]
 position = Vector2(530, 345)
-
-[node name="MainCristal" parent="." instance=ExtResource("3_p0ep0")]
-position = Vector2(-158, 303)
-
-[node name="SnakeHead" parent="." instance=ExtResource("5_o5gge")]
-position = Vector2(382, 756)
-
-[node name="Zombie" parent="." instance=ExtResource("2_rkuu6")]
-position = Vector2(600, -66)

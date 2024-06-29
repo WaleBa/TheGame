@@ -8,7 +8,7 @@ public partial class Cristal : Area2D
 	public Cristal parentCristal;
 	
 	public int HP;
-	public int Tier = 3;
+	public int Tier;
 
 	public override void _Ready()
 	{
@@ -16,8 +16,6 @@ public partial class Cristal : Area2D
 
 		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier /2;
 		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1,1) * (float)Tier/2;
-
-		HP = 100 * Tier;
 	}
 	public override void _PhysicsProcess(double delta)
 	{

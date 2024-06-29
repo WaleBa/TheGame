@@ -5,12 +5,13 @@ public partial class SnakeBody : Area2D
     public delegate void DeathEventHandler(SnakeBody cell);
     public event DeathEventHandler Death;
 
-    protected int hp = 50;
+    protected int HP;
 	public Node2D Target = null;
     public Sprite2D Sprite;
     public CollisionShape2D CollisionShape;
     public int Speed = 300;
-    public float DistanceBetweenCells = 30;
+    public float DistanceBetweenCells = 125;
+    public int Tier;
     public override void _Ready()
     {
         Sprite = GetNode<Sprite2D>("Sprite2D");
@@ -20,6 +21,7 @@ public partial class SnakeBody : Area2D
     }
     public override void _PhysicsProcess(double delta)
     {
+
         LookAt(Target.Position);
         if(Position.DistanceTo(Target.Position) > DistanceBetweenCells) 
             Position += Transform.X * (float)delta * Speed;
@@ -27,8 +29,8 @@ public partial class SnakeBody : Area2D
 
     protected virtual void  Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
-        hp -= damage;
-        if(hp <= 0)
+        HP -= damage;
+        if(HP <= 0)
             Die();
     }
 

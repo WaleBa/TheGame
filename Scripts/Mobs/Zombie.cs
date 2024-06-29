@@ -9,9 +9,34 @@ public partial class Zombie : RigidBody2D
     Area2D contactArea;
 
     int Speed;
-    int hp = 50;
+    int HP;
     int Tier = 3;
     Vector2[] Dir = {new Vector2(0,1), new Vector2(1,1), new Vector2(-1,-1)};
+
+    public int[] HpPerTier = {
+        50,
+        100,
+        150,
+        200,
+        250,
+        300,
+        350,
+        400,
+        450,
+        500
+    };
+    /*
+            50,
+        250,
+        900,
+        2900,
+        8950,
+        27150,
+        81800,
+        245800,
+        737850,
+        2214050
+        */
 
     public override void _Ready()
     {
@@ -19,13 +44,13 @@ public partial class Zombie : RigidBody2D
         Target = GetTree().Root.GetNode<Node2D>("MainScene").GetNode<CharacterBody2D>("Player");
         contactArea = GetNode<Area2D>("Area2D");
 
-        float offset = 0.5f * (Tier - 1);
+        float offset = 0.5f * Tier - 1;
         GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(0.5f + offset,0.5f + offset);
         GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(0.5f + offset,0.5f + offset);
         Mass = Tier;
 
-        hp = 50 * Tier;
-        Speed = 200;
+        HP = HpPerTier[Tier - 1];
+        Speed = 150;
 
         Timer timer = new()
         {
@@ -62,13 +87,12 @@ public partial class Zombie : RigidBody2D
         
     public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
-        if(hp <= 0)
+        if(HP <= 0)
             return;
-        hp -= damage;
-
+        HP -= damage;
         ApplyCentralImpulse(recoilVectorGiven * recoilPower * 500);
 
-        if(hp <= 0)
+        if(HP <= 0)
             CallDeferred("Die");
     }
 

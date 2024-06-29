@@ -7,16 +7,41 @@ public partial class SnakeHead : SnakeBody
 	List<SnakeBody> body = new();
 	Node rootNode;
 	Vector2? hidingSpot = null;
-	int length, bodySize = 100;
+	int length, bodySize;//niker
 	float radius;
+    Timer timer;
 
+    public int[] HpPerTier = {
+        75,
+        375,
+        1350,
+        4350,
+        13425,
+        40725,
+        122700,
+        368700,
+        1106775,
+        3321075
+    };
 
+    public int[] BodySizePerTier = {
+        10,
+        30,
+        90,
+        270,
+        810,
+        2430,
+        7290,
+        21870,
+        65610,
+        196830
+    };
 	
 	public override void _Ready()
 	{
         DistanceBetweenCells = 30;
         body.Add(this);
-        Timer timer = new()
+        timer = new()
         {
             Autostart = true,
             WaitTime = 1.0
@@ -24,12 +49,15 @@ public partial class SnakeHead : SnakeBody
         timer.Timeout += () => 
         {
             SnakeBody target = body.Last() as SnakeBody;
-            AddCell(target);
+            if(body.Count < bodySize) //not growing over body limit
+                AddCell(target);
             Sizing();
+            timer.WaitTime = 1.0f;
         };
         AddChild(timer);
         
-        hp = 100;
+        HP = HpPerTier[Tier -1];
+        bodySize = BodySizePerTier[Tier -1] + 1;
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		Target = rootNode.GetNode<CharacterBody2D>("Player");
 		length = bodySize * (int)DistanceBetweenCells;
@@ -64,10 +92,10 @@ public partial class SnakeHead : SnakeBody
         var count = body.Count;
         hidingSpot = Position + (Position - Target.Position).Normalized() * (600 + count/2);
         foreach(SnakeBody cell in body)
-            cell.Speed = 700;
+            cell.Speed = 600;
         RemoveEscape();
-        hp -= damage;
-        if(hp <= 0)
+        HP -= damage;
+        if(HP <= 0)
             Die();
     }
 
@@ -104,7 +132,7 @@ public partial class SnakeHead : SnakeBody
     void Sizing()
     {
         var count = body.Count;
-        float offset = 0.001f * count;
+        float offset = 0.0025f * count;
         for(int i = 0; i < count; i++)//calls from head to last
         {
             body[i].Scale = new Vector2(0.5f + offset,0.5f + offset);
@@ -119,6 +147,8 @@ public partial class SnakeHead : SnakeBody
         Sizing();
         length = body.Count * (int)DistanceBetweenCells;
         radius = length /2 / 3.14f;
+        timer.WaitTime = 5.0f;
+        timer.Start();
     }
 }
 

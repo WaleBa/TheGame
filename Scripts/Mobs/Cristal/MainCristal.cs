@@ -14,8 +14,20 @@ public partial class MainCristal : Cristal
 	(Node2D rotationPoint, float extra)[] rotationPoints;	
 	Queue<Vector2> NextCristalPosition;
 	int radius;
-	int Speed = 30;
+	int Speed = 50;
 	float rotationPointCritalEXTRA = 0;
+	public int[] HpPerTier = {
+        150,
+		750,
+		2700,
+		8700,
+		26850,
+		81450,
+		245400,
+		737400,
+		2213550,
+		6642150
+    };
 
 
 	public override void _Ready()
@@ -34,16 +46,15 @@ public partial class MainCristal : Cristal
 		int arraySize = 1 + Tier * 2;
 		rotationPoints = new (Node2D, float)[arraySize];
 		radius = 200 * Tier;
-		HP = Tier * 100;
-		
+		HP = HpPerTier[Tier - 1];
 		ubgradeTimer.Start();
 		AddFloatingBullets();
 	}
 	public override void _PhysicsProcess(double delta)
 	{
 		for(int i = 0; i < rotationPoints.Length; i++)
-			rotationPoints[i].Item1.Rotate(-(float)delta/2 + rotationPoints[i].Item2);
-		rotationPointCristal.Rotate((float)delta/2 + rotationPointCritalEXTRA);
+			rotationPoints[i].Item1.Rotate(-(float)delta/3 + rotationPoints[i].Item2);
+		rotationPointCristal.Rotate((float)delta/3 + rotationPointCritalEXTRA);
 
 		if(Position.DistanceTo(Target.Position) > radius)
 			_velocity = (Target.Position - Position).Normalized() * Speed * (float)delta;

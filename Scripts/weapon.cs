@@ -11,7 +11,7 @@ public partial class weapon : Node2D
 	int TimesShoot = 0;
 
 	byte TimeTicks = 0;
-	byte ShootgunBulletCount = 10;
+	byte ShootgunBulletCount = 5;
 	public override void _Ready()
 	{
 		bulletPlace = GetNode<Marker2D>("bulletPlace");
@@ -62,7 +62,7 @@ public partial class weapon : Node2D
 					Shoot((float)rotation, 20);
         		}
 
-				AutomaticCooldown.WaitTime = 0.3f;
+				AutomaticCooldown.WaitTime = 0.1f;
 				ShootgunCooldown.WaitTime =1f;
 				AutomaticCooldown.Start();
 				ShootgunCooldown.Start();
@@ -75,8 +75,8 @@ public partial class weapon : Node2D
 
 				Shoot(Rotation);
 
-				AutomaticCooldown.WaitTime = 0.04f;
-				ShootgunCooldown.WaitTime = 0.15f;
+				AutomaticCooldown.WaitTime = 0.1f;
+				ShootgunCooldown.WaitTime = 0.5f;
 				AutomaticCooldown.Start();
 				ShootgunCooldown.Start();
 				break;
