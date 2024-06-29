@@ -7,6 +7,10 @@ public partial class Player : CharacterBody2D
 	{
 		Velocity += GetMovementInput() * Speed;
 		Velocity = Velocity.Lerp(Vector2.Zero, 0.1f);
+
+		if(Position.DistanceTo(new Vector2(0,0)) > 1250)
+			Position = (Position - new Vector2(0,0)).Normalized() * 1250;
+		
 		MoveAndSlide();
 	}
 
