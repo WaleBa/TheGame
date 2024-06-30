@@ -1,10 +1,6 @@
 namespace GameE;
 public partial class MainCristal : Cristal
 {
-
-	PackedScene cristal = ResourceLoader.Load<PackedScene>("res://Scenes/Mobs/Cristal/Cristal.tscn");
-	PackedScene floatingBullet = ResourceLoader.Load<PackedScene>("res://Scenes/Projectiles/FloatingEvilBullet.tscn");
-
 	Timer ubgradeTimer;
 	Node2D Target, rootNode, rotationPointCristal;
 
@@ -32,6 +28,7 @@ public partial class MainCristal : Cristal
 
 	public override void _Ready()
 	{
+		Tier = 1;//gjadghjasdghgjdk
 		AddToGroup("Mobs");
 
 		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier /2;
@@ -67,7 +64,7 @@ public partial class MainCristal : Cristal
 		if(IsInstanceValid(this) == false || cristals.Count >= Tier)
 			return;
 
-		Cristal cris = cristal.Instantiate<Cristal>();
+		Cristal cris = Prefabs.Cristal.Instantiate<Cristal>();
 		cris.Death += (Cristal cristal) => 
 		{
 			if(IsInstanceValid(this) == false)
@@ -108,7 +105,7 @@ public partial class MainCristal : Cristal
 			Node2D newRotationPoint = new Node2D();
 			for(int k = 0; k < ArmCount; k++)
 			{
-				FloatingEvilBullet bull = floatingBullet.Instantiate<FloatingEvilBullet>();
+				FloatingEvilBullet bull = Prefabs.FloatingEvilBullet.Instantiate<FloatingEvilBullet>();
 				bull.timerOffset = i + 1;
 				var offset = angle/6 * (i + 1);
 				bull.Position = new Vector2(offsetFromCenter + 50 * (i + 1), 0).Rotated(-(angle * k + offset));

@@ -2,8 +2,6 @@ namespace GameE;
 
 public partial class Zombie : RigidBody2D
 {
-    PackedScene zombie = ResourceLoader.Load<PackedScene>("res://Scenes/Mobs/Zombie.tscn");
-
     CharacterBody2D Target;
     Node2D rootNode;
     Area2D contactArea;
@@ -44,23 +42,12 @@ public partial class Zombie : RigidBody2D
         Target = GetTree().Root.GetNode<Node2D>("MainScene").GetNode<CharacterBody2D>("Player");
         contactArea = GetNode<Area2D>("Area2D");
 
-        float offset = 0.5f * Tier - 1;
-        GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(0.5f + offset,0.5f + offset);
-        GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(0.5f + offset,0.5f + offset);
+        GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
+        GetNode<Sprite2D>("Sprite2D").Scale *= Tier;
         Mass = Tier;
 
         HP = HpPerTier[Tier - 1];
         Speed = 150;
-
-        Timer timer = new()
-        {
-            Autostart = true,
-            OneShot = true,
-            WaitTime = 0.05
-        };
-
-        timer.Timeout += () => Visible = true;
-        AddChild(timer);
     }
 
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
@@ -104,9 +91,8 @@ public partial class Zombie : RigidBody2D
             {
                 for(int i = 0; i < 3;i++)
                 {
-                    Zombie z = zombie.Instantiate<Zombie>();
+                    Zombie z = Prefabs.Zombie.Instantiate<Zombie>();
                     z.Position = Position + Dir[i];
-                    z.Visible= false;
                     z.Tier = Tier - 1;
                     rootNode.AddChild(z);
                 }

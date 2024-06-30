@@ -2,8 +2,6 @@ namespace GameE;
 
 public partial class weapon : Node2D
 {
-	PackedScene bullet = ResourceLoader.Load<PackedScene>("res://Scenes/Projectiles/GoodBullet.tscn");
-
 	Marker2D bulletPlace;
 	Timer ShootgunCooldown, AutomaticCooldown;
 	Node rootNode;//COOLDOWN FOR ONLY SHOTGUN
@@ -86,7 +84,7 @@ public partial class weapon : Node2D
 	void Shoot(float rotation, int power = 10)
 	{
 		TimesShoot++;
-		GoodBullet bulle = bullet.Instantiate<GoodBullet>();
+		GoodBullet bulle = Prefabs.GoodBullet.Instantiate<GoodBullet>();
 
 		bulle.Position = bulletPlace.GlobalPosition;
         bulle.Rotation = rotation;

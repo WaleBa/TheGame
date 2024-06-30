@@ -2,8 +2,6 @@ namespace GameE;
 
 public partial class SnakeHead : SnakeBody
 {
-	PackedScene snakecell = ResourceLoader.Load<PackedScene>("res://Scenes/Mobs/Snake/SnakeCell.tscn");
-
 	List<SnakeBody> body = new();
 	Node rootNode;
 	Vector2? hidingSpot = null;
@@ -39,6 +37,7 @@ public partial class SnakeHead : SnakeBody
 	
 	public override void _Ready()
 	{
+        Tier = 1; ///tiernekre
         DistanceBetweenCells = 30;
         body.Add(this);
         timer = new()
@@ -59,7 +58,7 @@ public partial class SnakeHead : SnakeBody
         HP = HpPerTier[Tier -1];
         bodySize = BodySizePerTier[Tier -1] + 1;
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
-		Target = rootNode.GetNode<CharacterBody2D>("Player");
+		Target = rootNode.GetNode<Player>("Player");
 		length = bodySize * (int)DistanceBetweenCells;
         radius = length /2 / 3.14f;
         CallDeferred("CreateBody");
@@ -119,7 +118,7 @@ public partial class SnakeHead : SnakeBody
     }
     void AddCell(SnakeBody target)
     {
-        SnakeBody sc = snakecell.Instantiate<SnakeBody>();
+        SnakeBody sc = Prefabs.SnakeCell.Instantiate<SnakeBody>();
         sc.Target = target;
         sc.Position = target.Position;
         sc.Speed = Speed;
