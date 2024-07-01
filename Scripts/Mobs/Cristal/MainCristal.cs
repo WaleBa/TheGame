@@ -1,6 +1,8 @@
 namespace GameE;
 public partial class MainCristal : Cristal
 {
+	public new delegate void DeathEventHandler(int Tier);
+	public new event DeathEventHandler Death;
 	Timer ubgradeTimer;
 	Node2D Target, rootNode, rotationPointCristal;
 
@@ -28,7 +30,6 @@ public partial class MainCristal : Cristal
 
 	public override void _Ready()
 	{
-		Tier = 1;//gjadghjasdghgjdk
 		AddToGroup("Mobs");
 
 		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier /2;
@@ -115,11 +116,13 @@ public partial class MainCristal : Cristal
 			AddChild(newRotationPoint);
 		}
 	}
+
 	protected override void Die()
     {
 		if(IsInstanceValid(this) == false)
-			return;              
+			return;
+		Death?.Invoke(Tier);
 		QueueFree();
-	}
+    }
 }
 

@@ -2,13 +2,15 @@ namespace GameE;
 
 public partial class Zombie : RigidBody2D
 {
+    public delegate void DeathEventHandler(int Tier);
+    public event DeathEventHandler Death;
     CharacterBody2D Target;
     Node2D rootNode;
     Area2D contactArea;
 
     int Speed;
     int HP;
-    int Tier = 3;
+    public int Tier;
     Vector2[] Dir = {new Vector2(0,1), new Vector2(1,1), new Vector2(-1,-1)};
 
     public int[] HpPerTier = {
@@ -97,7 +99,11 @@ public partial class Zombie : RigidBody2D
                     rootNode.AddChild(z);
                 }
             }
-            QueueFree();
+        
+            Death?.Invoke(Tier);
+            ProcessMode = ProcessModeEnum.Disabled;
+            Visible = false;
+            //QueueFree();//important to be at the end
         }
     }
 }

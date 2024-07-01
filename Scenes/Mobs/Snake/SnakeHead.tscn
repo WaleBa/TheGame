@@ -15,3 +15,11 @@ texture = ExtResource("2_bu3h1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_twb3t")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -88.0
+offset_top = -132.0
+offset_right = 99.0
+offset_bottom = -89.0
+text = "SNAKEHEAD
+"

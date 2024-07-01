@@ -10,7 +10,6 @@ public partial class Prefabs
     public static PackedScene EvilBullet {get; } = Load("Projectiles/EvilBullet");
     public static PackedScene GoodBullet {get; } = Load("Projectiles/GoodBullet");
     public static PackedScene FloatingEvilBullet {get; } = Load("Projectiles/FloatingEvilBullet");
-
     private static PackedScene Load(string path) =>
         ResourceLoader.Load<PackedScene>($"res://Scenes/{path}.tscn");
 }

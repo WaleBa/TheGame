@@ -11,7 +11,6 @@ public partial class SnakeBody : Area2D
     public CollisionShape2D CollisionShape;
     public int Speed = 300;
     public float DistanceBetweenCells = 125;
-    public int Tier;
     public override void _Ready()
     {
         Sprite = GetNode<Sprite2D>("Sprite2D");

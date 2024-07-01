@@ -36,7 +36,6 @@ public partial class Cristal : Area2D
         if(HP <= 0)
             CallDeferred("Die");
     }
-
 	protected virtual void Die()
     {
 		if(IsInstanceValid(this) == false)

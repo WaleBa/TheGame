@@ -2,13 +2,15 @@ namespace GameE;
 
 public partial class SnakeHead : SnakeBody
 {
+    public new delegate void DeathEventHandler(int Tier);
+    public new event DeathEventHandler Death;
 	List<SnakeBody> body = new();
 	Node rootNode;
 	Vector2? hidingSpot = null;
 	int length, bodySize;//niker
 	float radius;
     Timer timer;
-
+    public int Tier;
     public int[] HpPerTier = {
         75,
         375,
@@ -37,7 +39,6 @@ public partial class SnakeHead : SnakeBody
 	
 	public override void _Ready()
 	{
-        Tier = 1; ///tiernekre
         DistanceBetweenCells = 30;
         body.Add(this);
         timer = new()
