@@ -5,7 +5,7 @@ public partial class SnakeBody : Area2D
     public delegate void DeathEventHandler(SnakeBody cell);
     public event DeathEventHandler Death;
 
-    protected int HP;
+    public  int HP;
 	public Node2D Target = null;
     public Sprite2D Sprite;
     public CollisionShape2D CollisionShape;

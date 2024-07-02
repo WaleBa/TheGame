@@ -24,39 +24,39 @@ public partial class MainScene : Node2D
     private void NewWave()
     {
         GD.Print(TieredMobsForNextWave.Count);
-        foreach(int tier in TieredMobsForNextWave)
+        while(TieredMobsForNextWave.Count > 0)
         {
-            Vector2 FromPlayerPosition = new Vector2(0,0) - GetNode<Player>("Player").Position).Normalized() * 1250;
+            Vector2 FromPlayerPosition = GetNode<Player>("Player").Position + new Vector2(1250, 0).Rotated(rand.Next(1, 5));//not perfect
 
-            int value = rand.Next(1, 6);
+            int value = rand.Next(1 ,6);
             switch(value)
             {
-                case 6:
+                case 1:
                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
                     cristal.Death += (int Tier) => TieredMobsForNextWave.Enqueue(Tier);
                     cristal.Position = FromPlayerPosition;
-                    cristal.Tier = tier;
+                    cristal.Tier = TieredMobsForNextWave.Dequeue();
                     AddChild(cristal);
                     break;
-                case 5:
+                case 2:
                     SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     snake.Death += (int Tier) => TieredMobsForNextWave.Enqueue(Tier);
                     snake.Position = FromPlayerPosition;
-                    snake.Tier = tier;
+                    snake.Tier = TieredMobsForNextWave.Dequeue();
                     AddChild(snake);
                     break;
-                case 4:
+                case 3:
                     SnakeHead snake2 = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     snake2.Death += (int Tier) => TieredMobsForNextWave.Enqueue(Tier);
                     snake2.Position = FromPlayerPosition;
-                    snake2.Tier = tier;
+                    snake2.Tier = TieredMobsForNextWave.Dequeue();
                     AddChild(snake2);
                     break;
                 default:
                     Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
                     zombie.Death += (int Tier) => TieredMobsForNextWave.Enqueue(Tier);;
                     zombie.Position = FromPlayerPosition;
-                    zombie.Tier = tier;
+                    zombie.Tier = TieredMobsForNextWave.Dequeue();
                     AddChild(zombie);
                     break;
             }

@@ -11,6 +11,8 @@ public partial class SnakeHead : SnakeBody
 	float radius;
     Timer timer;
     public int Tier;
+
+    int LastCellHP;
     public int[] HpPerTier = {
         75,
         375,
@@ -109,6 +111,7 @@ public partial class SnakeHead : SnakeBody
 
 	void CreateBody()
     {
+        LastCellHP = bodySize * 10;
 		SnakeBody target = this;
         for (int i = 1; i < bodySize; i++)
         {
@@ -125,6 +128,8 @@ public partial class SnakeHead : SnakeBody
         sc.Speed = Speed;
         body.Add(sc);
         sc.Death += ManageCut;
+        sc.HP = LastCellHP;
+        LastCellHP -= 10;
         rootNode.AddChild(sc);
 		rootNode.MoveChild(sc, 0);
     }
@@ -141,6 +146,7 @@ public partial class SnakeHead : SnakeBody
     }
     void ManageCut(SnakeBody cell)
     {
+        LastCellHP = cell.HP;
         int index = body.IndexOf(cell);
         if(index != -1)
             body.RemoveRange(index, body.Count - index);

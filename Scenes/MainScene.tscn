@@ -15,7 +15,7 @@ shape = SubResource("CircleShape2D_qn88v")
 [node name="Player" parent="." instance=ExtResource("2_74eph")]
 
 [node name="ExtraMobTimer" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 5.0
 
 [node name="NewWaveTimer" type="Timer" parent="."]
 wait_time = 5.0
