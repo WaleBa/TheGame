@@ -25,5 +25,11 @@ public partial class GoodBullet : Projectile
             if(IsInstanceValid(this) == true)
                 QueueFree();
         }
+        else if(body is HitBox hitBox)
+        {
+            hitBox.GetParent().Call("Hit", 3, (hitBox.GetParent<Area2D>().Position - Position).Normalized());
+            if(IsInstanceValid(this))
+                QueueFree();
+        }
     }
 }

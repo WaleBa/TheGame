@@ -10,6 +10,7 @@ public partial class MainCristal : Cristal
 	Vector2 _velocity = new Vector2();
 	List<Cristal> cristals = new List<Cristal>();
 	(Node2D rotationPoint, float extra)[] rotationPoints;	
+	Area2D HitBox;
 	Queue<Vector2> NextCristalPosition;
 	int radius;
 	int Speed = 50;
@@ -30,12 +31,15 @@ public partial class MainCristal : Cristal
 
 	public override void _Ready()
 	{
-		AddToGroup("Mobs");
-
+		//AddToGroup("Mobs");
+		radius = 200 * Tier;
 		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier /2;
-		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1,1) * (float)Tier/2;
-		
-		ubgradeTimer = GetNode<Timer>("UbgradeTimer");		ubgradeTimer.Timeout += () => CallDeferred("Ubgrade");
+		HitBox = GetNode<Area2D>("HitBox");
+		HitBox.GetNode<CollisionShape2D>("CollisionShape2D").Shape = new CircleShape2D();
+		HitBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1,1) * (float)Tier/2;
+		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1,1) * (float)radius / 60 ;
+		ubgradeTimer = GetNode<Timer>("UbgradeTimer");		
+		ubgradeTimer.Timeout += () => CallDeferred("Ubgrade");
 		rotationPointCristal = GetNode<Node2D>("rotationPointCristal");
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		Target = rootNode.GetNode<CharacterBody2D>("Player");
@@ -43,7 +47,6 @@ public partial class MainCristal : Cristal
 		NextCristalPosition = new Queue<Vector2>();
 		int arraySize = 1 + Tier * 2;
 		rotationPoints = new (Node2D, float)[arraySize];
-		radius = 200 * Tier;
 		HP = HpPerTier[Tier - 1];
 		ubgradeTimer.Start();
 		AddFloatingBullets();
@@ -54,11 +57,26 @@ public partial class MainCristal : Cristal
 			rotationPoints[i].Item1.Rotate(-(float)delta/3 + rotationPoints[i].Item2);
 		rotationPointCristal.Rotate((float)delta/3 + rotationPointCritalEXTRA);
 
-		if(Position.DistanceTo(Target.Position) > radius)
-			_velocity = (Target.Position - Position).Normalized() * Speed * (float)delta;
+		_velocity = newDir(delta);
 		_velocity = _velocity.Lerp(Vector2.Zero, 0.1f);
 		Position += _velocity;
 	}
+
+	Vector2 newDir(double delta)
+    {
+		Vector2 Dir = new Vector2(0,0);
+		if(Position.DistanceTo(Target.Position) > radius)
+        	Dir = (Target.Position - Position).Normalized();
+        Godot.Collections.Array<Area2D> bodies = GetOverlappingAreas();
+        for(int i = 0; i < bodies.Count; i++)
+        {
+            if(bodies[i] is not MainCristal)
+                continue;
+            Vector2 awayDir = (Position - bodies[i].GlobalPosition).Normalized();
+            Dir += awayDir;
+        }
+        return Dir.Normalized() * Speed * (float)delta;
+    }
 
 	void Ubgrade()
 	{
