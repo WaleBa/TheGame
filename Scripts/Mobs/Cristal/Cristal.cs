@@ -25,7 +25,7 @@ public partial class Cristal : Area2D
 			ZIndex = 0;
 	}
 	
-	public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
+	public virtual void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
 		if(IsInstanceValid(this) == false)
 			return;

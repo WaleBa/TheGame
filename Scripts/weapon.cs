@@ -3,13 +3,15 @@ namespace GameE;
 public partial class weapon : Node2D
 {
 	Marker2D bulletPlace;
-	Timer ShootgunCooldown, AutomaticCooldown;
+	public Timer ShootgunCooldown, AutomaticCooldown;
 	Node rootNode;//COOLDOWN FOR ONLY SHOTGUN
 	Player parent;
 	int TimesShoot = 0;
 
 	byte TimeTicks = 0;
-	byte ShootgunBulletCount = 5;
+	public byte ShootgunBulletCount = 5;
+	public byte ShootgunPower = 10;
+	public byte AutomaticPower = 10; 
 	public override void _Ready()
 	{
 		bulletPlace = GetNode<Marker2D>("bulletPlace");
@@ -57,7 +59,7 @@ public partial class weapon : Node2D
         		for (int i = 1; i <= ShootgunBulletCount; i++)
         		{
 					double rotation = GlobalRotation + (-0.2 + (i * angle));
-					Shoot((float)rotation, 20);
+					Shoot((float)rotation, ShootgunPower);
         		}
 
 				AutomaticCooldown.WaitTime = 0.1f;
@@ -71,7 +73,7 @@ public partial class weapon : Node2D
 				if(AutomaticCooldown.IsStopped() == false)
 					return;
 
-				Shoot(Rotation);
+				Shoot(Rotation, AutomaticPower);
 
 				AutomaticCooldown.WaitTime = 0.1f;
 				ShootgunCooldown.WaitTime = 0.5f;
@@ -81,14 +83,14 @@ public partial class weapon : Node2D
 			}
 		}
 	}
-	void Shoot(float rotation, int power = 10)
+	void Shoot(float rotation, int power)
 	{
 		TimesShoot++;
 		GoodBullet bulle = Prefabs.GoodBullet.Instantiate<GoodBullet>();
 
 		bulle.Position = bulletPlace.GlobalPosition;
         bulle.Rotation = rotation;
-		
+		bulle.Damage = power;
 		rootNode.AddChild(bulle);
 	}
 

@@ -36,7 +36,7 @@ public partial class MainCristal : Cristal
 		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier /2;
 		HitBox = GetNode<Area2D>("HitBox");
 		HitBox.GetNode<CollisionShape2D>("CollisionShape2D").Shape = new CircleShape2D();
-		HitBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1,1) * (float)Tier/2;
+		HitBox.Scale = new Vector2(1, 1) * (float)Tier;
 		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1,1) * (float)radius / 60 ;
 		ubgradeTimer = GetNode<Timer>("UbgradeTimer");		
 		ubgradeTimer.Timeout += () => CallDeferred("Ubgrade");
@@ -80,7 +80,7 @@ public partial class MainCristal : Cristal
 
 	void Ubgrade()
 	{
-		if(IsInstanceValid(this) == false || cristals.Count >= Tier)
+		if(IsInstanceValid(this) == false || cristals.Count >= Tier || Tier == 1)
 			return;
 
 		Cristal cris = Prefabs.Cristal.Instantiate<Cristal>();
@@ -134,7 +134,18 @@ public partial class MainCristal : Cristal
 			AddChild(newRotationPoint);
 		}
 	}
-
+	public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
+    {
+		GD.Print($"cristal hit {HP}");
+		if(IsInstanceValid(this) == false)
+			return;
+		if(HP <= 0)
+			return;
+        HP -= damage;
+		
+        if(HP <= 0)
+            CallDeferred("Die");
+    }
 	protected override void Die()
     {
 		if(IsInstanceValid(this) == false)

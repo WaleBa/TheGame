@@ -6,7 +6,6 @@ public partial class GoodBullet : Projectile
         base._Ready();
         Speed = 700;
         Range = 800;
-        Damage = 10;
     }
 
     public override void Contact(Node2D body)
@@ -27,7 +26,7 @@ public partial class GoodBullet : Projectile
         }
         else if(body is HitBox hitBox)
         {
-            hitBox.GetParent().Call("Hit", 3, (hitBox.GetParent<Area2D>().Position - Position).Normalized());
+            hitBox.Call("Hit", Damage, 3, Position);//pos is not vector of recoil
             if(IsInstanceValid(this))
                 QueueFree();
         }
