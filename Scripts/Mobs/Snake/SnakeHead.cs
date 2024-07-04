@@ -2,7 +2,7 @@ namespace GameE;
 
 public partial class SnakeHead : SnakeBody
 {
-    public new delegate void DeathEventHandler(int Tier);
+    public new delegate void DeathEventHandler(Node2D me);
     public new event DeathEventHandler Death;
 	List<SnakeBody> body = new();
 	Node rootNode;
@@ -63,7 +63,7 @@ public partial class SnakeHead : SnakeBody
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		Target = rootNode.GetNode<Player>("Player");
 		length = bodySize * (int)DistanceBetweenCells;
-        radius = length /2 / 3.14f;
+        radius = length / 3.14f;// /2
         CallDeferred("CreateBody");
 	}
 
@@ -144,10 +144,10 @@ public partial class SnakeHead : SnakeBody
             body[i].DistanceBetweenCells = 30 + offset;
         }
     }
-    void ManageCut(SnakeBody cell)
+    void ManageCut(Node2D cell)
     {
-        LastCellHP = cell.HP;
-        int index = body.IndexOf(cell);
+        LastCellHP = ((SnakeBody)cell).HP;
+        int index = body.IndexOf((SnakeBody)cell);
         if(index != -1)
             body.RemoveRange(index, body.Count - index);
         Sizing();

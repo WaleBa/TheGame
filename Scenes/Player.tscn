@@ -20,3 +20,21 @@ shape = SubResource("CircleShape2D_fsqpp")
 [node name="weapon" parent="." instance=ExtResource("3_r5jvt")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Score Streak" type="Label" parent="Camera2D"]
+offset_left = -107.0
+offset_top = -202.0
+offset_right = 125.0
+offset_bottom = -114.0
+
+[node name="Score Combo Multiplyer" type="Label" parent="Camera2D"]
+offset_left = 60.0
+offset_top = -168.0
+offset_right = 185.0
+offset_bottom = -130.0
+
+[node name="Score" type="Label" parent="Camera2D"]
+offset_left = 261.0
+offset_top = -315.0
+offset_right = 565.0
+offset_bottom = -288.0

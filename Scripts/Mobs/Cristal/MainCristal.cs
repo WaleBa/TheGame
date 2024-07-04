@@ -1,7 +1,7 @@
 namespace GameE;
 public partial class MainCristal : Cristal
 {
-	public new delegate void DeathEventHandler(int Tier);
+	public new delegate void DeathEventHandler(Node2D me);
 	public new event DeathEventHandler Death;
 	Timer ubgradeTimer;
 	Node2D Target, rootNode, rotationPointCristal;
@@ -45,7 +45,7 @@ public partial class MainCristal : Cristal
 		Target = rootNode.GetNode<CharacterBody2D>("Player");
 
 		NextCristalPosition = new Queue<Vector2>();
-		int arraySize = 1 + Tier * 2;
+		int arraySize = 1 + Tier * 2;//8+
 		rotationPoints = new (Node2D, float)[arraySize];
 		HP = HpPerTier[Tier - 1];
 		ubgradeTimer.Start();
@@ -116,7 +116,7 @@ public partial class MainCristal : Cristal
 			return;
 
 		int ArmCount = 2 + Tier;
-		int BulletArmCount = 1 + Tier * 2;
+		int BulletArmCount = 1 + Tier * 2;//8+
 		float offsetFromCenter = 75 * Tier;
 		float angle = 2 * Mathf.Pi / ArmCount;
 		for(int i = 0; i < BulletArmCount;i++)
@@ -126,8 +126,8 @@ public partial class MainCristal : Cristal
 			{
 				FloatingEvilBullet bull = Prefabs.FloatingEvilBullet.Instantiate<FloatingEvilBullet>();
 				bull.timerOffset = i + 1;
-				var offset = angle/6 * (i + 1);
-				bull.Position = new Vector2(offsetFromCenter + 50 * (i + 1), 0).Rotated(-(angle * k + offset));
+				var offset = angle/6 * (i + 1);//3 gives fun straight lines // 12 desired 
+				bull.Position = new Vector2(offsetFromCenter + 25 * (i + 1), 0).Rotated(-(angle * k + offset));//25->50
 				newRotationPoint.AddChild(bull);
 			}
 			rotationPoints[i] = (newRotationPoint, 0.0f);
@@ -150,7 +150,7 @@ public partial class MainCristal : Cristal
     {
 		if(IsInstanceValid(this) == false)
 			return;
-		Death?.Invoke(Tier);
+		Death?.Invoke(this);
 		QueueFree();
     }
 }

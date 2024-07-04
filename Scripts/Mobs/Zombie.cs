@@ -2,7 +2,7 @@ namespace GameE;
 
 public partial class Zombie : RigidBody2D
 {
-    public delegate void DeathEventHandler(int Tier);
+    public delegate void DeathEventHandler(Node2D me);
     public event DeathEventHandler Death;
     CharacterBody2D Target;
     Node2D rootNode;
@@ -100,7 +100,7 @@ public partial class Zombie : RigidBody2D
                 }
             }
         
-            Death?.Invoke(Tier);
+            Death?.Invoke(this);
             ProcessMode = ProcessModeEnum.Disabled;
             Visible = false;
             //QueueFree();//important to be at the end

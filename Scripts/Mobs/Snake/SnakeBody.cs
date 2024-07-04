@@ -2,7 +2,7 @@ namespace GameE;
 
 public partial class SnakeBody : Area2D
 {
-    public delegate void DeathEventHandler(SnakeBody cell);
+    public delegate void DeathEventHandler(Node2D me);
     public event DeathEventHandler Death;
 
     public  int HP;

@@ -22,3 +22,11 @@ wait_time = 5.0
 
 [node name="TierUpgradeTimer" type="Timer" parent="."]
 wait_time = 60.0
+
+[node name="ScoreStreakTimer" type="Timer" parent="."]
+wait_time = 7.0
+one_shot = true
+
+[node name="ScoreMultiplicationTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
