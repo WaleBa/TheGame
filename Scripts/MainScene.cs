@@ -110,6 +110,7 @@ public partial class MainScene : Node2D
                         TieredMobsForNextWave.Enqueue(((MainCristal)mob).Tier); 
                         kills++;
                         check();
+                        currMob = "MainCristal";
                         Scoring(mob);
                     };
                     cristal.Tier = TieredMobsForNextWave.Dequeue();
@@ -125,6 +126,7 @@ public partial class MainScene : Node2D
                         TieredMobsForNextWave.Enqueue(((SnakeHead)mob).Tier); 
                         kills++; 
                         check();
+                        currMob = "SnakeHead"; // zla kolejnosc
                         Scoring(mob);
                     };
                     snake.Position = FromPlayerPosition;
@@ -138,6 +140,7 @@ public partial class MainScene : Node2D
                         TieredMobsForNextWave.Enqueue(((SnakeHead)mob).Tier); 
                         kills++; 
                         check();
+                        currMob = "SnakeHead";
                         Scoring(mob);
                     };
                     snake2.Position = FromPlayerPosition;
@@ -151,6 +154,7 @@ public partial class MainScene : Node2D
                         TieredMobsForNextWave.Enqueue(((Zombie)mob).Tier); 
                         kills++; 
                         check();
+                        currMob = "zombie";
                         Scoring(mob);
                     };
                     zombie.Position = FromPlayerPosition;
@@ -163,7 +167,6 @@ public partial class MainScene : Node2D
 
     public void Scoring(Node2D mob)
     {
-        currMob = mob.GetType().ToString();
         if(mob is Zombie zombie)
         {
             if(currMob == "zombie")
@@ -218,6 +221,7 @@ public partial class MainScene : Node2D
         }
         else if(mob is SnakeHead snakeHead)
         {
+            GD.Print($"snake killed + {currMob}");
             if(currMob == "SnakeHead")
             {
                 mobsKilledStreak++;

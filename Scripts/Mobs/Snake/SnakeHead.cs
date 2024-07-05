@@ -2,8 +2,6 @@ namespace GameE;
 
 public partial class SnakeHead : SnakeBody
 {
-    public new delegate void DeathEventHandler(Node2D me);
-    public new event DeathEventHandler Death;
 	List<SnakeBody> body = new();
 	Node rootNode;
 	Vector2? hidingSpot = null;
