@@ -73,7 +73,7 @@ public partial class MainScene : Node2D
         NewWaveTimer.Timeout += NewWave;
         TierUpgradeTimer.Timeout += () => currentTier++;
         ExtraMobTimer.Timeout += () => TieredMobsForNextWave.Enqueue(currentTier);
-        NewWaveTimer.Start();
+        //NewWaveTimer.Start();
         TierUpgradeTimer.Start();
         ExtraMobTimer.Start();
         TieredMobsForNextWave.Enqueue(1);

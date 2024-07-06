@@ -8,5 +8,4 @@ global using System.Threading.Tasks;
 namespace GameE;
 public partial class Global : Node
 {
-
 }

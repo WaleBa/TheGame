@@ -2,7 +2,7 @@ namespace GameE;
 public partial class Player : CharacterBody2D
 {
 	const float Speed = 50.0f;
-
+    public bool Controller = true;
 	public override void _PhysicsProcess(double delta)
 	{
 		Velocity += GetMovementInput() * Speed;
@@ -16,6 +16,8 @@ public partial class Player : CharacterBody2D
 
 	Vector2 GetMovementInput()
 	{
+		if(Controller == true)
+			return Input.GetVector("move_left_joypad", "move_right_joypad", "move_up_joypad", "move_down_joypad");
 		return Input.GetVector("move_left", "move_right", "move_up", "move_down");
 	}
 	
