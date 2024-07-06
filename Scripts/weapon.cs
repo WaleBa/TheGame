@@ -12,6 +12,7 @@ public partial class weapon : Node2D
 	public byte ShootgunBulletCount = 5;
 	public byte ShootgunPower = 10;
 	public byte AutomaticPower = 10; 
+	float oldVec;
 	public override void _Ready()
 	{
 		bulletPlace = GetNode<Marker2D>("bulletPlace");
@@ -24,22 +25,49 @@ public partial class weapon : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		Rotation = (GetGlobalMousePosition() - GlobalPosition).Angle();
-		if(Rotation < new Vector2(1,0).Angle())
+		Rotation = GetAxis();//(GetGlobalMousePosition() - GlobalPosition).Angle();
+		if(Rotation < new Vector2(1,0).Angle()) 
 				ZIndex = -1;
 			else	
 				ZIndex = 0;
 		PreparingForShoot();
 	}
+	float GetAxis()
+	{
+		Vector2 zer = new Vector2(0,0);
+		Vector2 newVec = Input.GetVector("shoot_axis_left", "shoot_axis_right", "shoot_axis_up", "shoot_axis_down");
+		if(newVec == zer) 
+		{
+			ShootugnAction();
+			return oldVec;
+		}
+		else
+		{
+			oldVec = newVec.Angle();
+			return newVec.Angle();
+		}
+	}
+	void ShootugnAction()
+	{
+				if(
+			Input.IsActionJustReleased("shoot_axis_left") ||
+			Input.IsActionJustReleased("shoot_axis_right") || 
+		 	Input.IsActionJustReleased("shoot_axis_up") || 
+		 	Input.IsActionJustReleased("shoot_axis_down")
+		 )
+		{
+		if(TimeTicks <= 15) ShootRequest(0);
+		TimeTicks = 0;
+		}
+	}
 	void PreparingForShoot()
 	{
-		if(Input.IsActionJustReleased("Shoot"))
-		{
-			if(TimeTicks <= 15) ShootRequest(0);
-			TimeTicks = 0;
-			return;
-		}
-		if(Input.IsActionPressed("Shoot"))
+		if(
+			Input.IsActionPressed("shoot_axis_left") ||
+			Input.IsActionPressed("shoot_axis_right") || 
+		 	Input.IsActionPressed("shoot_axis_up") || 
+		 	Input.IsActionPressed("shoot_axis_down")
+		 )
 		{
 			if(TimeTicks > 15) ShootRequest(1);
 			TimeTicks++;
