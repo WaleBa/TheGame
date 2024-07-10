@@ -24,6 +24,12 @@ public partial class SnakeBody : Area2D
         LookAt(Target.Position);
         if(Position.DistanceTo(Target.Position) > DistanceBetweenCells) 
             Position += Transform.X * (float)delta * Speed;
+                Godot.Collections.Array<Node2D> bodiez = GetOverlappingBodies();
+        for(int i = 0; i< bodiez.Count; i++)
+        {
+            if(bodiez[i] is Player player)
+                player.Hit(1, 3, (player.Position - Position).Normalized());
+        }
     }
 
     protected virtual void  Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)

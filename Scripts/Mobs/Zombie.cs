@@ -43,7 +43,7 @@ public partial class Zombie : RigidBody2D
         rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = GetTree().Root.GetNode<Node2D>("MainScene").GetNode<CharacterBody2D>("Player");
         contactArea = GetNode<Area2D>("Area2D");
-
+        contactArea.GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
         GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
         GetNode<Sprite2D>("Sprite2D").Scale *= Tier;
         Mass = Tier;
@@ -70,6 +70,13 @@ public partial class Zombie : RigidBody2D
             Vector2 awayDir = (Position - bodies[i].GlobalPosition).Normalized();
             Dir += awayDir;
         }
+        Godot.Collections.Array<Node2D> bodiez = contactArea.GetOverlappingBodies();
+        for(int i = 0; i< bodiez.Count; i++)
+        {
+            if(bodiez[i] is Player player)
+                player.Hit(1, 3, (player.Position - Position).Normalized());
+        }
+
         return Dir.Normalized();
     }
 

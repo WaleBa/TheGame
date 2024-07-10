@@ -85,6 +85,12 @@ public partial class SnakeHead : SnakeBody
         {
             hidingSpot = null;
         }
+        Godot.Collections.Array<Node2D> bodiez = GetOverlappingBodies();
+        for(int i = 0; i< bodiez.Count; i++)
+        {
+            if(bodiez[i] is Player player)
+                player.Hit(1, 3, (player.Position - Position).Normalized());
+        }
 	}
 
     protected override async void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)

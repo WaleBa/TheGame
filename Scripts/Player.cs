@@ -2,7 +2,7 @@ namespace GameE;
 public partial class Player : CharacterBody2D
 {
 	const float Speed = 50.0f;
-    public bool Controller = true;
+    public bool Controller = false;
 	public override void _PhysicsProcess(double delta)
 	{
 		Velocity += GetMovementInput() * Speed;
@@ -23,7 +23,8 @@ public partial class Player : CharacterBody2D
 	
 	public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
 	{
-		GD.Print("got damage");
+		GD.Print("death!");
+		GetTree().ReloadCurrentScene();
 	}
 	public void lvl()
 	{

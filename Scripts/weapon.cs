@@ -13,7 +13,7 @@ public partial class weapon : Node2D
 	public byte ShootgunPower = 10;
 	public byte AutomaticPower = 10; 
 	float oldVec;
-	    public bool Controller = true;
+	    public bool Controller = false;
 	public override void _Ready()
 	{
 		bulletPlace = GetNode<Marker2D>("bulletPlace");

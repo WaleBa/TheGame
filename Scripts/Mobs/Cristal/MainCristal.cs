@@ -60,6 +60,12 @@ public partial class MainCristal : Cristal
 		_velocity = newDir(delta);
 		_velocity = _velocity.Lerp(Vector2.Zero, 0.1f);
 		Position += _velocity;
+		        Godot.Collections.Array<Node2D> bodiez = HitBox.GetOverlappingBodies();
+        for(int i = 0; i< bodiez.Count; i++)
+        {
+            if(bodiez[i] is Player player)
+                player.Hit(1, 3, (player.Position - Position).Normalized());
+        }
 	}
 
 	Vector2 newDir(double delta)

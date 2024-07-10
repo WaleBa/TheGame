@@ -23,6 +23,12 @@ public partial class Cristal : Area2D
 			ZIndex = -1;
 		else 
 			ZIndex = 0;
+		        Godot.Collections.Array<Node2D> bodiez = GetOverlappingBodies();
+        for(int i = 0; i< bodiez.Count; i++)
+        {
+            if(bodiez[i] is Player player)
+                player.Hit(1, 3, (player.Position - Position).Normalized());
+        }
 	}
 	
 	public virtual void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
