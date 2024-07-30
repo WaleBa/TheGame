@@ -56,20 +56,20 @@ public partial class MainScene : Node2D
     };
     public override void _Ready()
     {
-        ScoreStreakTimer = GetNode<Timer>("ScoreStreakTimer");
-        ScoreMultiplicationTimer = GetNode<Timer>("ScoreMultiplicationTimer");
+        ScoreStreakTimer = GetNode<Timer>("score_streak");
+        ScoreMultiplicationTimer = GetNode<Timer>("score_streak_multiplyer");
         ScoreStreakTimer.Timeout += StreakTimeout;
         ScoreMultiplicationTimer.Timeout += MultiTimeout;
 
-        ScoreLabel = GetNode<Player>("Player").GetNode<Camera2D>("Camera2D").GetNode<Label>("Score");
-        ScoreStreakLabel = GetNode<Player>("Player").GetNode<Camera2D>("Camera2D").GetNode<Label>("Score Streak");
-        ScoreMultiLabel = GetNode<Player>("Player").GetNode<Camera2D>("Camera2D").GetNode<Label>("Score Combo Multiplyer");
+        ScoreLabel = GetNode<Player>("Player").GetNode<Camera2D>("Camera2D").GetNode<Label>("score");
+        ScoreStreakLabel = GetNode<Player>("Player").GetNode<Camera2D>("Camera2D").GetNode<Label>("score_streak");
+        ScoreMultiLabel = GetNode<Player>("Player").GetNode<Camera2D>("Camera2D").GetNode<Label>("score_streak_multiplyer");
 
 
         StartTime = Time.GetTicksMsec();
-        NewWaveTimer = GetNode<Timer>("NewWaveTimer");
-        TierUpgradeTimer = GetNode<Timer>("TierUpgradeTimer");
-        ExtraMobTimer = GetNode<Timer>("ExtraMobTimer");
+        NewWaveTimer = GetNode<Timer>("new_wave");
+        TierUpgradeTimer = GetNode<Timer>("tier_upgrade");
+        ExtraMobTimer = GetNode<Timer>("extra_mob");
         NewWaveTimer.Timeout += NewWave;
         TierUpgradeTimer.Timeout += () => currentTier++;
         ExtraMobTimer.Timeout += () => TieredMobsForNextWave.Enqueue(currentTier);

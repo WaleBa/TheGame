@@ -1,6 +1,6 @@
 namespace GameE;
 
-public partial class weapon : Node2D
+public partial class Weapon : Node2D
 {
 	Marker2D bulletPlace;
 	public Timer ShootgunCooldown, AutomaticCooldown;
@@ -16,9 +16,9 @@ public partial class weapon : Node2D
 	    public bool Controller = false;
 	public override void _Ready()
 	{
-		bulletPlace = GetNode<Marker2D>("bulletPlace");
-		ShootgunCooldown = GetNode<Timer>("ShootgunCooldown");
-		AutomaticCooldown = GetNode<Timer>("AutomaticCooldown");
+		bulletPlace = GetNode<Marker2D>("bullet_marker");
+		ShootgunCooldown = GetNode<Timer>("shootgun_cooldown");
+		AutomaticCooldown = GetNode<Timer>("automatic_cooldown");
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		parent = rootNode.GetNode<Player>("Player");
 		LoadSave();	

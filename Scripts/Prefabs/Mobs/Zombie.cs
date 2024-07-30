@@ -42,7 +42,7 @@ public partial class Zombie : RigidBody2D
     {
         rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = GetTree().Root.GetNode<Node2D>("MainScene").GetNode<CharacterBody2D>("Player");
-        contactArea = GetNode<Area2D>("Area2D");
+        contactArea = GetNode<Area2D>("collision_box");
         contactArea.GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
         GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
         GetNode<Sprite2D>("Sprite2D").Scale *= Tier;

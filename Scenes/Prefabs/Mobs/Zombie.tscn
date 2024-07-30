@@ -28,14 +28,7 @@ scale = Vector2(0.5, 0.5)
 shape = SubResource("CircleShape2D_lwx0v")
 one_way_collision_margin = 5.0
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="collision_box" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="collision_box"]
 shape = SubResource("CircleShape2D_nanjp")
-
-[node name="Label" type="Label" parent="."]
-offset_left = -39.0
-offset_top = -65.0
-offset_right = 40.0
-offset_bottom = -42.0
-text = "ZOMBIE"

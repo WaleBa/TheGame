@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_4rotu"]
 [ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="1_gqc0k"]
-[ext_resource type="PackedScene" uid="uid://behid7dcyb707" path="res://Scenes/weapon.tscn" id="3_r5jvt"]
+[ext_resource type="PackedScene" uid="uid://behid7dcyb707" path="res://Scenes/Weapon.tscn" id="3_r5jvt"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fsqpp"]
 radius = 34.0588
@@ -17,24 +17,24 @@ texture = ExtResource("1_gqc0k")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_fsqpp")
 
-[node name="weapon" parent="." instance=ExtResource("3_r5jvt")]
+[node name="Weapon" parent="." instance=ExtResource("3_r5jvt")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="Score Streak" type="Label" parent="Camera2D"]
+[node name="score" type="Label" parent="Camera2D"]
+offset_left = 261.0
+offset_top = -315.0
+offset_right = 565.0
+offset_bottom = -288.0
+
+[node name="score_streak" type="Label" parent="Camera2D"]
 offset_left = -107.0
 offset_top = -202.0
 offset_right = 125.0
 offset_bottom = -114.0
 
-[node name="Score Combo Multiplyer" type="Label" parent="Camera2D"]
+[node name="score_streak_multiplyer" type="Label" parent="Camera2D"]
 offset_left = 60.0
 offset_top = -168.0
 offset_right = 185.0
 offset_bottom = -130.0
-
-[node name="Score" type="Label" parent="Camera2D"]
-offset_left = 261.0
-offset_top = -315.0
-offset_right = 565.0
-offset_bottom = -288.0

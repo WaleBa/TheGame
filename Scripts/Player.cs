@@ -29,9 +29,9 @@ public partial class Player : CharacterBody2D
 	public void lvl()
 	{
 		GD.Print("lvl up");
-		GetNode<weapon>("weapon").AutomaticCooldown.WaitTime =GetNode<weapon>("weapon").AutomaticCooldown.WaitTime /2;
-		GetNode<weapon>("weapon").ShootgunBulletCount = (byte)(GetNode<weapon>("weapon").ShootgunBulletCount + 2);
-		GetNode<weapon>("weapon").ShootgunPower = (byte)(GetNode<weapon>("weapon").ShootgunPower * 2);
-		GetNode<weapon>("weapon").AutomaticPower = (byte)(GetNode<weapon>("weapon").AutomaticPower * 2);
+		GetNode<Weapon>("Weapon").AutomaticCooldown.WaitTime =GetNode<Weapon>("Weapon").AutomaticCooldown.WaitTime /2;
+		GetNode<Weapon>("Weapon").ShootgunBulletCount = (byte)(GetNode<Weapon>("Weapon").ShootgunBulletCount + 2);
+		GetNode<Weapon>("Weapon").ShootgunPower = (byte)(GetNode<Weapon>("Weapon").ShootgunPower * 2);
+		GetNode<Weapon>("Weapon").AutomaticPower = (byte)(GetNode<Weapon>("Weapon").AutomaticPower * 2);
 	}	
 }

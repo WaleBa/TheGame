@@ -19,14 +19,7 @@ texture = ExtResource("2_7fald")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_v3bmr")
 
-[node name="rotationPointCristal" type="Node2D" parent="."]
+[node name="cristal_rotation_marker" type="Marker2D" parent="."]
 
-[node name="UbgradeTimer" type="Timer" parent="."]
+[node name="upgrade" type="Timer" parent="."]
 wait_time = 5.0
-
-[node name="Label" type="Label" parent="."]
-offset_left = -63.0
-offset_top = -126.0
-offset_right = 127.0
-offset_bottom = -70.0
-text = "MAINCRISTAL"

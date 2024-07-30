@@ -14,19 +14,19 @@ shape = SubResource("CircleShape2D_qn88v")
 
 [node name="Player" parent="." instance=ExtResource("2_74eph")]
 
-[node name="ExtraMobTimer" type="Timer" parent="."]
+[node name="extra_mob" type="Timer" parent="."]
 wait_time = 5.0
 
-[node name="NewWaveTimer" type="Timer" parent="."]
+[node name="new_wave" type="Timer" parent="."]
 wait_time = 5.0
 
-[node name="TierUpgradeTimer" type="Timer" parent="."]
+[node name="tier_upgrade" type="Timer" parent="."]
 wait_time = 60.0
 
-[node name="ScoreStreakTimer" type="Timer" parent="."]
+[node name="score_streak" type="Timer" parent="."]
 wait_time = 7.0
 one_shot = true
 
-[node name="ScoreMultiplicationTimer" type="Timer" parent="."]
+[node name="score_streak_multiplyer" type="Timer" parent="."]
 wait_time = 5.0
 one_shot = true

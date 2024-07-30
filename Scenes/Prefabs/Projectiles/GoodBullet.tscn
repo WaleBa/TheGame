@@ -16,7 +16,3 @@ shape = SubResource("CircleShape2D_bt25m")
 position = Vector2(-3.8147e-06, 0)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_e7o54")
-
-[node name="Timer" type="Timer" parent="."]
-wait_time = 5.0
-one_shot = true

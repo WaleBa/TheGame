@@ -38,9 +38,9 @@ public partial class MainCristal : Cristal
 		HitBox.GetNode<CollisionShape2D>("CollisionShape2D").Shape = new CircleShape2D();
 		HitBox.Scale = new Vector2(1, 1) * (float)Tier;
 		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1,1) * (float)radius / 60 ;
-		ubgradeTimer = GetNode<Timer>("UbgradeTimer");		
+		ubgradeTimer = GetNode<Timer>("upgrade");		
 		ubgradeTimer.Timeout += () => CallDeferred("Ubgrade");
-		rotationPointCristal = GetNode<Node2D>("rotationPointCristal");
+		rotationPointCristal = GetNode<Node2D>("cristal_rotation_marker");
 		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
 		Target = rootNode.GetNode<CharacterBody2D>("Player");
 

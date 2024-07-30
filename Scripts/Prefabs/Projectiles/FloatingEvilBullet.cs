@@ -1,7 +1,7 @@
 namespace GameE;
 public partial class FloatingEvilBullet : EvilBullet
 {
-    Timer timer;
+    Timer _respawnTimer;
     Sprite2D sprite;
     CollisionShape2D collisionShape;
     public int timerOffset;
@@ -9,10 +9,10 @@ public partial class FloatingEvilBullet : EvilBullet
     {
         collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
         base._Ready();
-        timer = GetNode<Timer>("Timer");
-        timer.WaitTime += timerOffset;
+        _respawnTimer = GetNode<Timer>("respawn");
+        _respawnTimer.WaitTime += timerOffset;
         sprite = GetNode<Sprite2D>("Sprite2D");
-        timer.Timeout += () => 
+        _respawnTimer.Timeout += () => 
         {
             collisionShape.Disabled = false;
             sprite.Visible = true;
@@ -41,6 +41,6 @@ public partial class FloatingEvilBullet : EvilBullet
     {
         collisionShape.Disabled = true;
         sprite.Visible = false;
-        timer.Start();
+        _respawnTimer.Start();
     }
 }
