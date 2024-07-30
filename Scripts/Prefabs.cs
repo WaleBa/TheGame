@@ -1,4 +1,5 @@
 namespace GameE;
+
 public partial class Prefabs
 {
     public static PackedScene MainCristal {get; } = Load("Mobs/Cristal/MainCristal");
@@ -11,5 +12,5 @@ public partial class Prefabs
     public static PackedScene GoodBullet {get; } = Load("Projectiles/GoodBullet");
     public static PackedScene FloatingEvilBullet {get; } = Load("Projectiles/FloatingEvilBullet");
     private static PackedScene Load(string path) =>
-        ResourceLoader.Load<PackedScene>($"res://Scenes/{path}.tscn");
+        ResourceLoader.Load<PackedScene>($"res://Scenes/Prefabs/{path}.tscn");
 }
