@@ -20,7 +20,7 @@ public partial class EvilBullet : Projectile
         }
         if(body is Player player)
         {
-            player.Hit(Damage, 3, (player.Position - Position).Normalized());
+            player.Hit();
             if(IsInstanceValid(this) == true)
                 QueueFree();
         }    

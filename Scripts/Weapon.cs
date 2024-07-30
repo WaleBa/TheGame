@@ -2,181 +2,149 @@ namespace GameE;
 
 public partial class Weapon : Node2D
 {
-	Marker2D bulletPlace;
-	public Timer ShootgunCooldown, AutomaticCooldown;
-	Node rootNode;//COOLDOWN FOR ONLY SHOTGUN
-	Player parent;
-	int TimesShoot = 0;
+	enum WeaponType
+	{
+		Shootgun,
+		Automatic
+	}
 
-	byte TimeTicks = 0;
-	public byte ShootgunBulletCount = 5;
-	public byte ShootgunPower = 10;
-	public byte AutomaticPower = 10; 
-	float oldVec;
-	    public bool Controller = false;
+	Marker2D _weaponMarker;
+	Marker2D _bulletMarker;
+	
+	MainScene _mainScene;
+
+	Timer _shootgunCooldownTimer;
+	Timer _automaticCooldownTimer;//cooldown only for shotgun?
+	
+	byte _timeTicks = 0; //check if even need this field //byte?
+	byte _shootgunBulletCount = 5;
+	byte _shootgunPower = 10;//need for extra?
+	byte _automaticPower = 10;
+
+	float _currentJoystickAngle;
+
+	public void LevelUp()
+	{
+		_automaticCooldownTimer.WaitTime /= 2;
+		_shootgunBulletCount += 2;
+		_shootgunPower *= 2;
+		_automaticPower *= 2;
+	}
+
+	void PreparingForShoot()
+	{
+		if(	
+			Input.IsActionJustReleased("SHOOT_AXIS_LEFT") ||
+			Input.IsActionJustReleased("SHOOT_AXIS_RIGHT") || 
+		 	Input.IsActionJustReleased("SHOOT_AXIS_UP") ||
+		 	Input.IsActionJustReleased("SHOOT_AXIS_DOWN") ||
+			Input.IsActionJustReleased("SHOOT") )
+		{
+			if(Input.GetVector(
+					"SHOOT_AXIS_LEFT",
+					"SHOOT_AXIS_RIGHT", 
+					"SHOOT_AXIS_UP", 
+					"SHOOT_AXIS_DOWN" ) != new Vector2(0,0)) return;
+
+			if(_timeTicks <= 15) 
+				Shoot(WeaponType.Shootgun);
+
+			_timeTicks = 0;
+		}
+		else if(
+			Input.IsActionPressed("SHOOT_AXIS_LEFT") ||
+			Input.IsActionPressed("SHOOT_AXIS_RIGHT") || 
+		 	Input.IsActionPressed("SHOOT_AXIS_UP") || 
+		 	Input.IsActionPressed("SHOOT_AXIS_DOWN") ||
+			Input.IsActionPressed("SHOOT") )
+		{
+			if(_timeTicks > 15) 
+				Shoot(WeaponType.Automatic);
+
+			_timeTicks++;
+		}
+	}
+
+	void Shoot(WeaponType weaponType)
+	{
+		switch(weaponType)
+		{
+			case WeaponType.Shootgun: 
+			{
+				if(_shootgunCooldownTimer.IsStopped() == false)
+					return;
+				double angle = 0.4 / (_shootgunBulletCount + 1);
+        		for (int i = 1; i <= _shootgunBulletCount; i++)
+        		{
+					double rotation = GlobalRotation + (-0.2 + (i * angle));
+					SpawnBullet((float)rotation, _shootgunPower);
+        		}
+				SetCooldowns(1f, 0.1f);
+				break;
+			}
+			case WeaponType.Automatic:
+			{
+				if(_automaticCooldownTimer.IsStopped() == false)
+					return;
+				SpawnBullet(Rotation, _automaticPower);
+				SetCooldowns(0.5f, 0.1f);			
+				break;
+			}
+		}
+	}
+
+	void SpawnBullet(float rotation, int power)
+	{
+		GoodBullet bullet = Prefabs.GoodBullet.Instantiate<GoodBullet>();
+
+		bullet.Position = _bulletMarker.GlobalPosition;
+        bullet.Rotation = rotation;
+		bullet.Damage = power; 
+        bullet.Speed = 700;
+        bullet.Range = 800;//can be changable
+
+		_mainScene.AddChild(bullet);
+	}
+
+	float GetRotation()
+	{
+		switch(Global.CONTROLLER)
+		{
+			case true:
+				return Input.GetVector(
+								"SHOOT_AXIS_LEFT",
+								"SHOOT_AXIS_RIGHT",
+								"SHOOT_AXIS_UP", 
+								"SHOOT_AXIS_DOWN" ).Angle();
+			case false:
+				return (GetGlobalMousePosition() - GlobalPosition).Angle();
+		}
+	}
+	
+	void SetCooldowns(float shotgunWaitTime, float automaticWaitTime)
+	{
+		_shootgunCooldownTimer.WaitTime = shotgunWaitTime;
+		_automaticCooldownTimer.WaitTime = automaticWaitTime;
+
+		_automaticCooldownTimer.Start();
+		_shootgunCooldownTimer.Start();
+	}
+	
 	public override void _Ready()
 	{
-		bulletPlace = GetNode<Marker2D>("bullet_marker");
-		ShootgunCooldown = GetNode<Timer>("shootgun_cooldown");
-		AutomaticCooldown = GetNode<Timer>("automatic_cooldown");
-		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
-		parent = rootNode.GetNode<Player>("Player");
-		LoadSave();	
+		_mainScene = GetTree().Root.GetNode<MainScene>("MainScene");
+		_bulletMarker = GetNode<Marker2D>("bullet_marker");
+		_shootgunCooldownTimer = GetNode<Timer>("shootgun_cooldown");
+		_automaticCooldownTimer = GetNode<Timer>("automatic_cooldown");
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if(Controller == true)
-			Rotation = GetAxis();
-		if(Controller == false)
-			Rotation = (GetGlobalMousePosition() - GlobalPosition).Angle();
+		Rotation = GetRotation(); //player(outside source) could decide on where to shoot
 
-		if(Rotation < new Vector2(1,0).Angle()) 
-				ZIndex = -1;
-			else	
-				ZIndex = 0;
+		ZIndex = Rotation < new Vector2(1,0).Angle() ? -1 : 0;
+		
 		PreparingForShoot();
 	}
-	float GetAxis()
-	{
-		Vector2 zer = new Vector2(0,0);
-		Vector2 newVec = Input.GetVector("shoot_axis_left", "shoot_axis_right", "shoot_axis_up", "shoot_axis_down");
-		if(newVec == zer) 
-		{
-			ShootugnAction();
-			return oldVec;
-		}
-		else
-		{
-			oldVec = newVec.Angle();
-			return newVec.Angle();
-		}
-	}
-	void ShootugnAction()
-	{
-				if(
-			Input.IsActionJustReleased("shoot_axis_left") &&
-			Input.IsActionJustReleased("shoot_axis_right") && 
-		 	Input.IsActionJustReleased("shoot_axis_up") && 
-		 	Input.IsActionJustReleased("shoot_axis_down") &&
-			Input.IsActionJustReleased("Shoot")
-		 )
-		{
-		if(TimeTicks <= 15) ShootRequest(0);
-		TimeTicks = 0;
-		}
-	}
-	void PreparingForShoot()
-	{
-		Vector2 zer = new Vector2(0,0);
-		Vector2 newVec = Input.GetVector("shoot_axis_left", "shoot_axis_right", "shoot_axis_up", "shoot_axis_down");
-		if(			
-			Input.IsActionJustReleased("shoot_axis_left") ||
-			Input.IsActionJustReleased("shoot_axis_right") || 
-		 	Input.IsActionJustReleased("shoot_axis_up") ||
-		 	Input.IsActionJustReleased("shoot_axis_down") ||
-			Input.IsActionJustReleased("Shoot"))
-		{if(newVec == zer)
-		{
-		if(TimeTicks <= 15) ShootRequest(0);
-		TimeTicks = 0;
-		}}
-		else if(
-			Input.IsActionPressed("shoot_axis_left") ||
-			Input.IsActionPressed("shoot_axis_right") || 
-		 	Input.IsActionPressed("shoot_axis_up") || 
-		 	Input.IsActionPressed("shoot_axis_down") ||
-			Input.IsActionPressed("Shoot")
-		 )
-		{
-			if(TimeTicks > 15) ShootRequest(1);
-			TimeTicks++;
-			return;
-		}
-	}
-	void ShootRequest(int type)
-	{
-		switch(type)
-		{
-			case 0: //shootgun power:20
-			{
-				if(ShootgunCooldown.IsStopped() == false)
-					return;
 
-				double angle = 0.4 / (ShootgunBulletCount + 1);
-        		for (int i = 1; i <= ShootgunBulletCount; i++)
-        		{
-					double rotation = GlobalRotation + (-0.2 + (i * angle));
-					Shoot((float)rotation, ShootgunPower);
-        		}
-
-				AutomaticCooldown.WaitTime = 0.1f;
-				ShootgunCooldown.WaitTime =1f;
-				AutomaticCooldown.Start();
-				ShootgunCooldown.Start();
-				break;
-			}
-			case 1: //automatic power:10
-			{
-				if(AutomaticCooldown.IsStopped() == false)
-					return;
-
-				Shoot(Rotation, AutomaticPower);
-
-				AutomaticCooldown.WaitTime = 0.1f;
-				ShootgunCooldown.WaitTime = 0.5f;
-				AutomaticCooldown.Start();
-				ShootgunCooldown.Start();
-				break;
-			}
-		}
-	}
-	void Shoot(float rotation, int power)
-	{
-		TimesShoot++;
-		GoodBullet bulle = Prefabs.GoodBullet.Instantiate<GoodBullet>();
-
-		bulle.Position = bulletPlace.GlobalPosition;
-        bulle.Rotation = rotation;
-		bulle.Damage = power;
-		rootNode.AddChild(bulle);
-	}
-
-	public Godot.Collections.Dictionary<string, Variant> Save()
-	{
-		return new Godot.Collections.Dictionary<string, Variant>()
-		{
-			{"TimesShoot", TimesShoot}	
-		};
-	} 
-
-	public override void _ExitTree()
-	{
-		using var SaveGame = FileAccess.Open("user://savegame.save", FileAccess.ModeFlags.Write);
-		Godot.Collections.Dictionary<string, Variant> weaponData = Save();
-		string jsonString = Json.Stringify(weaponData);
-		SaveGame.StoreLine(jsonString);
-		GD.Print("saved");
-	}
-	public void LoadSave()
-	{
-		if(!FileAccess.FileExists("user://savegame.save"))
-			return;
-		using var saveGame = FileAccess.Open("user://savegame.save", FileAccess.ModeFlags.Read);
-
-		while(saveGame.GetPosition() < saveGame.GetLength())
-		{
-			string jsonString = saveGame.GetLine();
-			Json json = new Json();
-			var ParseResult = json.Parse(jsonString);
-			if(ParseResult != Error.Ok)
-				continue;
-			Godot.Collections.Dictionary<string, Variant> nodeData = new Godot.Collections.Dictionary<string, Variant>((Godot.Collections.Dictionary)json.Data);
-			foreach(var (key, value) in nodeData)
-			{
-				if(key == "TimesShoot")	
-					GD.Print($"LOAD times shoot: {value}");
-			}
-		}
-	} 
 }

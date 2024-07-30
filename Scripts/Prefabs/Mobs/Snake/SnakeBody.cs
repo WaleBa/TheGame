@@ -28,7 +28,7 @@ public partial class SnakeBody : Area2D
         for(int i = 0; i< bodiez.Count; i++)
         {
             if(bodiez[i] is Player player)
-                player.Hit(1, 3, (player.Position - Position).Normalized());
+                player.Hit();
         }
     }
 

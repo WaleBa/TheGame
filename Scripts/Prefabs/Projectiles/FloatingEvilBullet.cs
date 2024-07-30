@@ -25,7 +25,7 @@ public partial class FloatingEvilBullet : EvilBullet
         {
             if(body is Player player)
             {
-                player.Hit(Damage, 3, (player.Position - Position).Normalized());
+                player.Hit();
                 CallDeferred("Vanish");
             }
             else if(body is GoodBullet)
