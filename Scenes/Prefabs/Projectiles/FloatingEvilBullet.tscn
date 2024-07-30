@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://ckbxe5mvod00"]
+
+[ext_resource type="Script" path="res://Scripts/Prefabs/Projectiles/FloatingEvilBullet.cs" id="1_vftcn"]
+[ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_5goat"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bt25m"]
+radius = 15.1327
+
+[node name="FloatingsEvilBullet" type="Area2D"]
+script = ExtResource("1_vftcn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_bt25m")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(1, 0, 0, 1)
+position = Vector2(-3.8147e-06, 0)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_5goat")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
