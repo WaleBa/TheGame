@@ -2,15 +2,14 @@
 
 [ext_resource type="Script" path="res://Scripts/Prefabs/Mobs/Cristal/MainCristal.cs" id="1_ryao4"]
 [ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_7fald"]
-[ext_resource type="PackedScene" uid="uid://bg155kx1f7skx" path="res://Scenes/HitBox.tscn" id="2_rdwst"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v3bmr"]
 radius = 80.3057
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_5061v"]
+
 [node name="MainCristal" type="Area2D"]
 script = ExtResource("1_ryao4")
-
-[node name="HitBox" parent="." instance=ExtResource("2_rdwst")]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 self_modulate = Color(1, 0, 1, 1)
@@ -19,7 +18,14 @@ texture = ExtResource("2_7fald")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_v3bmr")
 
-[node name="cristal_rotation_marker" type="Marker2D" parent="."]
+[node name="bullet_rotation_marker" type="Marker2D" parent="."]
 
-[node name="upgrade" type="Timer" parent="."]
+[node name="cristal_rotation_marker" type="Marker2D" parent="."]
+visibility_layer = 2
+
+[node name="ubgrade" type="Timer" parent="."]
 wait_time = 5.0
+autostart = true
+
+[node name="cristal_collision_box" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_5061v")

@@ -1,163 +1,181 @@
 namespace GameE;
+
 public partial class MainCristal : Cristal
 {
 	public new delegate void DeathEventHandler(Node2D me);
 	public new event DeathEventHandler Death;
-	Timer ubgradeTimer;
-	Node2D Target, rootNode, rotationPointCristal;
 
-	Random rand = new Random();
+	public Node2D Target;
+
+	const int SPEED = 50;
+
+	static int[] _hpPerTier = { 150, 750, 2700, 8700, 26850, 81450, 245400, 737400, 2213550, 6642150 };
+
+	List<Cristal> _cristals = new List<Cristal>();	
+
+	Queue<Vector2> _nextCristalPosition = new Queue<Vector2>();
+	
+	Marker2D _bulletRotationMarker;//for future use
+	Marker2D _cristalRotationMarker;
+
+	Timer _ubgradeTimer;
+
+	Node2D _mainScene;
+
 	Vector2 _velocity = new Vector2();
-	List<Cristal> cristals = new List<Cristal>();
-	(Node2D rotationPoint, float extra)[] rotationPoints;	
-	Area2D HitBox;
-	Queue<Vector2> NextCristalPosition;
-	int radius;
-	int Speed = 50;
-	float rotationPointCritalEXTRA = 0;
-	public int[] HpPerTier = {
-        150,
-		750,
-		2700,
-		8700,
-		26850,
-		81450,
-		245400,
-		737400,
-		2213550,
-		6642150
-    };
+	
+	int _radius;
 
+	int _cristalOffsetFromCentre;
+	int _bulletOffsetFromCentre;
+	int _bulletOffsetFromEachOther;
+	int _armCount;
+	int _bulletsPerArmCount;
 
-	public override void _Ready()
-	{
-		//AddToGroup("Mobs");
-		radius = 200 * Tier;
-		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier /2;
-		HitBox = GetNode<Area2D>("HitBox");
-		HitBox.GetNode<CollisionShape2D>("CollisionShape2D").Shape = new CircleShape2D();
-		HitBox.Scale = new Vector2(1, 1) * (float)Tier;
-		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1,1) * (float)radius / 60 ;
-		ubgradeTimer = GetNode<Timer>("upgrade");		
-		ubgradeTimer.Timeout += () => CallDeferred("Ubgrade");
-		rotationPointCristal = GetNode<Node2D>("cristal_rotation_marker");
-		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
-		Target = rootNode.GetNode<CharacterBody2D>("Player");
-
-		NextCristalPosition = new Queue<Vector2>();
-		int arraySize = 1 + Tier * 2;//8+
-		rotationPoints = new (Node2D, float)[arraySize];
-		HP = HpPerTier[Tier - 1];
-		ubgradeTimer.Start();
-		AddFloatingBullets();
-	}
-	public override void _PhysicsProcess(double delta)
-	{
-		for(int i = 0; i < rotationPoints.Length; i++)
-			rotationPoints[i].Item1.Rotate(-(float)delta/3 + rotationPoints[i].Item2);
-		rotationPointCristal.Rotate((float)delta/3 + rotationPointCritalEXTRA);
-
-		_velocity = newDir(delta);
-		_velocity = _velocity.Lerp(Vector2.Zero, 0.1f);
-		Position += _velocity;
-		        Godot.Collections.Array<Node2D> bodiez = HitBox.GetOverlappingBodies();
-        for(int i = 0; i< bodiez.Count; i++)
-        {
-            if(bodiez[i] is Player player)
-                player.Hit();
-        }
-	}
-
-	Vector2 newDir(double delta)
-    {
-		Vector2 Dir = new Vector2(0,0);
-		if(Position.DistanceTo(Target.Position) > radius)
-        	Dir = (Target.Position - Position).Normalized();
-        Godot.Collections.Array<Area2D> bodies = GetOverlappingAreas();
-        for(int i = 0; i < bodies.Count; i++)
-        {
-            if(bodies[i] is not MainCristal)
-                continue;
-            Vector2 awayDir = (Position - bodies[i].GlobalPosition).Normalized();
-            Dir += awayDir;
-        }
-        return Dir.Normalized() * Speed * (float)delta;
-    }
-
-	void Ubgrade()
-	{
-		if(IsInstanceValid(this) == false || cristals.Count >= Tier || Tier == 1)
-			return;
-
-		Cristal cris = Prefabs.Cristal.Instantiate<Cristal>();
-		cris.Death += (Cristal cristal) => 
-		{
-			if(IsInstanceValid(this) == false)
-				return;
-			ubgradeTimer.Start();
-			cristals.Remove(cristal);
-			NextCristalPosition.Enqueue(cristal.Position);
-		};
-		cris.parentCristal = this;
-		cris.Tier = Tier - 1;
-		cristals.Add(cris);
-
-		if(NextCristalPosition.Count != 0)
-			cris.Position = NextCristalPosition.Dequeue();
-		else
-		{
-			int offset = Tier * 50;
-			float angle = 2 * Mathf.Pi / cristals.Count;
-			float vec = rand.Next(0, 5);
-			for(int i = 0; i < cristals.Count;i++)
-			{
-				cristals[i].Position = new Vector2(offset,0).Rotated(vec + angle * i);
-			}
-		}	
-		rotationPointCristal.AddChild(cris);
-	}
-	void AddFloatingBullets()
-	{
-		if(IsInstanceValid(this) == false)
-			return;
-
-		int ArmCount = 2 + Tier;
-		int BulletArmCount = 1 + Tier * 2;//8+
-		float offsetFromCenter = 75 * Tier;
-		float angle = 2 * Mathf.Pi / ArmCount;
-		for(int i = 0; i < BulletArmCount;i++)
-		{
-			Node2D newRotationPoint = new Node2D();
-			for(int k = 0; k < ArmCount; k++)
-			{
-				FloatingEvilBullet bull = Prefabs.FloatingEvilBullet.Instantiate<FloatingEvilBullet>();
-				bull.timerOffset = i + 1;
-				var offset = angle/6 * (i + 1);//3 gives fun straight lines // 12 desired 
-				bull.Position = new Vector2(offsetFromCenter + 25 * (i + 1), 0).Rotated(-(angle * k + offset));//25->50
-				newRotationPoint.AddChild(bull);
-			}
-			rotationPoints[i] = (newRotationPoint, 0.0f);
-			AddChild(newRotationPoint);
-		}
-	}
 	public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
-		GD.Print($"cristal hit {HP}");
-		if(IsInstanceValid(this) == false)
-			return;
-		if(HP <= 0)
-			return;
         HP -= damage;
 		
         if(HP <= 0)
             CallDeferred("Die");
     }
+
 	protected override void Die()
     {
 		if(IsInstanceValid(this) == false)
 			return;
+
 		Death?.Invoke(this);
-		QueueFree();
+		//QueueFree();
     }
+	
+	void SpawnCristal()
+	{
+		if(IsInstanceValid(this) == false || _cristals.Count >= Tier || Tier == 1)
+			return;
+		GD.Print("spawnCristal");
+
+		Cristal cristal = Prefabs.Cristal.Instantiate<Cristal>();
+
+		cristal.Tier = Tier - 1;
+
+		cristal.Death += (Cristal cristal) => 
+		{
+			if(IsInstanceValid(this) == false)
+				return;
+
+			_nextCristalPosition.Enqueue(cristal.Position);
+			_cristals.Remove(cristal);
+
+			_ubgradeTimer.Start();
+		};
+		
+		_cristals.Add(cristal);	
+
+		if(_nextCristalPosition.Count != 0)
+			cristal.Position = _nextCristalPosition.Dequeue();
+		else
+		{
+			float angle = 2 * Mathf.Pi / _cristals.Count;
+			
+			for(int i = 0; i < _cristals.Count; i++)
+				_cristals[i].Position = new Vector2(_cristalOffsetFromCentre, 0).Rotated(angle * i);
+		}
+
+		_cristalRotationMarker.AddChild(cristal);
+	}
+
+/*
+	var offset = angle/6 * (i + 1);//3 gives fun straight lines // 12 desired 
+	bullet.Position = new Vector2(_bulletOffsetFromCentre + _bulletOffsetFromEachOther * (i + 1), 0).Rotated(-(angle * k + offset));//25->50
+*/
+ 	void SpawnFloatingBullets()
+	{	
+		float angle = 2 * Mathf.Pi / _armCount;
+	
+		for(int i = 0; i < _bulletsPerArmCount; i++)
+		{
+			for(int k = 0; k < _armCount; k++)
+			{
+				FloatingEvilBullet bullet = Prefabs.FloatingEvilBullet.Instantiate<FloatingEvilBullet>();
+
+				bullet.SpawnTimerOffset = i + 1;
+				bullet.Position = new Vector2(
+								_bulletOffsetFromCentre + _bulletOffsetFromEachOther * (i + 1), 0)
+								.Rotated(angle * k + _bulletOffsetFromEachOther  * i);//shouldn't propably be again offset from eachother
+				
+				_bulletRotationMarker.AddChild(bullet);
+			}
+		}
+	}
+	
+	Vector2 NewDirection()
+    {
+		Vector2 newDirection = new Vector2(0,0);
+
+		if(Position.DistanceTo(Target.Position) > _radius)
+        	newDirection = (Target.Position - Position).Normalized();
+
+        Godot.Collections.Array<Area2D> bodies = GetOverlappingAreas();
+
+        for(int i = 0; i < bodies.Count; i++)
+        {
+            if(bodies[i] is not MainCristal)
+                continue;
+        
+            newDirection += (Position - bodies[i].GlobalPosition).Normalized();
+        }
+        return newDirection.Normalized();
+    }
+
+	public override void _Ready()
+	{
+		AddToGroup("Mobs");
+		
+		Tier = 3;
+		_radius = 200 * Tier;//all those should be calculated properly
+
+		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
+		Target = _mainScene.GetNode<CharacterBody2D>("Player");		
+		_ubgradeTimer = GetNode<Timer>("ubgrade");		
+		_bulletRotationMarker = GetNode<Marker2D>("bullet_rotation_marker");
+		_cristalRotationMarker = GetNode<Marker2D>("cristal_rotation_marker");
+
+		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier;// /2?
+		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1, 1) * (float)Tier;
+		GetNode<CollisionShape2D>("cristal_collision_box").Scale = new Vector2(1,1) * (float)_radius / 60;
+
+		_ubgradeTimer.Timeout += SpawnCristal;
+		
+		HP = _hpPerTier[Tier - 1];
+		//_bulletRotationPoints = new Marker2D[1 + Tier * 2];//8+
+		
+		//_radius = 200 * Tier;//all those should be calculated properly
+		_cristalOffsetFromCentre = 250 * Tier;
+		_bulletOffsetFromCentre = 75 * Tier;//too long names
+		_bulletOffsetFromEachOther = 45;
+		_armCount = Tier + 2;
+		_bulletsPerArmCount = 1 + Tier * 2;
+
+		SpawnFloatingBullets();
+
+		BodyEntered += (Node2D body) =>
+        {
+            if(body is Player player)
+                player.Hit();
+        };
+	}
+
+	public override void _PhysicsProcess(double delta)
+	{	
+		_bulletRotationMarker.Rotate(-(float)delta/3);// /3 good speed?
+		_cristalRotationMarker.Rotate((float)delta/3);
+
+		_velocity = NewDirection() * SPEED * (float)delta;
+		_velocity = _velocity.Lerp(Vector2.Zero, 0.1f);
+
+		Position += _velocity;
+	}
+
 }
 
