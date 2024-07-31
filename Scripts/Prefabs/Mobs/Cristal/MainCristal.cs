@@ -132,7 +132,6 @@ public partial class MainCristal : Cristal
 	{
 		AddToGroup("Mobs");
 		
-		Tier = 3;
 		_radius = 200 * Tier;//all those should be calculated properly
 
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");

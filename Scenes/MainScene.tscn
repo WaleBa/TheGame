@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_kstqi"]
 [ext_resource type="PackedScene" uid="uid://d4mbdecvc8325" path="res://Scenes/Player.tscn" id="2_74eph"]
-[ext_resource type="PackedScene" uid="uid://bcjlwuhon762x" path="res://Scenes/Prefabs/Mobs/Cristal/MainCristal.tscn" id="3_yhe7h"]
+[ext_resource type="PackedScene" uid="uid://cp0p70jultqv3" path="res://Scenes/Prefabs/Mobs/Snake/SnakeHead.tscn" id="3_lu0u8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qn88v"]
 
@@ -35,5 +35,5 @@ one_shot = true
 wait_time = 5.0
 one_shot = true
 
-[node name="MainCristal" parent="." instance=ExtResource("3_yhe7h")]
-position = Vector2(395, 85)
+[node name="SnakeHead" parent="." instance=ExtResource("3_lu0u8")]
+position = Vector2(605, 46)

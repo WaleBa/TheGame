@@ -6,7 +6,7 @@ public partial class Cristal : Area2D
 	public event DeathEventHandler Death;
 
 	public int HP { get; set; }
-	public int Tier;
+	public int Tier { get; set; }
 
 	Cristal _parentCristal;
 	

@@ -65,7 +65,7 @@ public partial class Zombie : RigidBody2D
         Godot.Collections.Array<Area2D> bodies = contactArea.GetOverlappingAreas();
         for(int i = 0;i< bodies.Count; i++)
         {
-            if(bodies[i] is not SnakeBody)
+            if(bodies[i] is not SnakeCell)
                 continue;
             Vector2 awayDir = (Position - bodies[i].GlobalPosition).Normalized();
             Dir += awayDir;

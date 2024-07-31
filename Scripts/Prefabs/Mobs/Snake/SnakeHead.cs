@@ -1,164 +1,143 @@
 namespace GameE;
 
-public partial class SnakeHead : SnakeBody
+public partial class SnakeHead : SnakeCell
 {
-	List<SnakeBody> body = new();
-	Node rootNode;
-	Vector2? hidingSpot = null;
-	int length, bodySize;//niker
-	float radius;
-    Timer timer;
-    public int Tier;
+    static int[] _hpPerTier = { 75, 375, 1350, 4350, 13425, 40725, 122700, 368700, 1106775, 3321075 };
+    static int[] _maxBodySizePerTier = { 10, 30, 90, 270, 810, 2430, 7290, 21870, 65610, 196830 };
 
-    int LastCellHP;
-    public int[] HpPerTier = {
-        75,
-        375,
-        1350,
-        4350,
-        13425,
-        40725,
-        122700,
-        368700,
-        1106775,
-        3321075
-    };
+	List<SnakeCell> _body = new();//no add head?
 
-    public int[] BodySizePerTier = {
-        10,
-        30,
-        90,
-        270,
-        810,
-        2430,
-        7290,
-        21870,
-        65610,
-        196830
-    };
+    Timer _regenerationTimer;
+	Node _mainScene;
+
+	Vector2? _hidingSpot = null;
+
+	float _radius;
 	
-	public override void _Ready()
-	{
-        DistanceBetweenCells = 30;
-        body.Add(this);
-        timer = new()
-        {
-            Autostart = true,
-            WaitTime = 1.0
-        };
-        timer.Timeout += () => 
-        {
-            SnakeBody target = body.Last() as SnakeBody;
-            if(body.Count < bodySize) //not growing over body limit
-                AddCell(target);
-            Sizing();
-            timer.WaitTime = 1.0f;
-        };
-        AddChild(timer);
+    public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
+    {   
+        Escape();
         
-        HP = HpPerTier[Tier -1];
-        bodySize = BodySizePerTier[Tier -1] + 1;
-		rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
-		Target = rootNode.GetNode<Player>("Player");
-		length = bodySize * (int)DistanceBetweenCells;
-        radius = length / 3.14f;// /2
-        CallDeferred("CreateBody");
-	}
-
-
-    public override void _PhysicsProcess(double delta)
-    {
-        Vector2 targetVector;
-        Vector2 currentVector = new Vector2(1, 0).Rotated(Rotation);
-        if (hidingSpot == null)
-        {
-			float dys = Position.DistanceTo(Target.Position);
-			Vector2 targetPos = Target.Position + (Position - Target.Position).Normalized().Rotated(radius / dys) * radius;
-			targetVector = targetPos - Position;
-        }
-        else
-            targetVector = (Vector2)hidingSpot - Position;
-
-        Rotation = currentVector.Angle() + (currentVector.AngleTo(targetVector) * (float)delta);
-        Position += Transform.X * (float)delta * Speed;	
-        if (hidingSpot != null && Position.DistanceTo((Vector2)hidingSpot) <= 80) 
-        {
-            hidingSpot = null;
-        }
-        Godot.Collections.Array<Node2D> bodiez = GetOverlappingBodies();
-        for(int i = 0; i< bodiez.Count; i++)
-        {
-            if(bodiez[i] is Player player)
-                player.Hit();
-        }
-	}
-
-    protected override async void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
-    {
-        var count = body.Count;
-        hidingSpot = Position + (Position - Target.Position).Normalized() * (600 + count/2);
-        foreach(SnakeBody cell in body)
-            cell.Speed = 600;
-        RemoveEscape();
         HP -= damage;
+        
         if(HP <= 0)
             Die();
     }
 
-    async void RemoveEscape()
+    async void Escape()
     {
+        _hidingSpot = Position + (Position - Target.Position).Normalized() * _body.Count * DistanceBetweenCells;//CHECK
+
+        foreach(SnakeCell cell in _body)
+            cell.Speed = 600;
+
         await Task.Delay(5000);
-        foreach(SnakeBody cell in body)
+        
+        foreach(SnakeCell cell in _body)
             cell.Speed = 300;
-        hidingSpot = null;
+        
+        _hidingSpot = null;
     }
 
-	void CreateBody()
+	void CreateBody()//check if spawn cell should be called deferred
     {
-        LastCellHP = bodySize * 10;
-		SnakeBody target = this;
-        for (int i = 1; i < bodySize; i++)
-        {
-            AddCell(target);
-            target = body.Last() as SnakeBody;
-        }
-        Sizing();
+        for (int i = 1; i < _maxBodySizePerTier[Tier -1]; i++)
+            SpawnCell();
+
+        Scaling();
+        SetRadious();
+        
+        foreach(SnakeCell cell in _body)//where should this be?
+            cell.Speed = 300;
     }
-    void AddCell(SnakeBody target)
+
+    void SpawnCell()//could check if this is valid (same for zombies and cristals)
     {
-        SnakeBody sc = Prefabs.SnakeCell.Instantiate<SnakeBody>();
-        sc.Target = target;
-        sc.Position = target.Position;
-        sc.Speed = Speed;
-        body.Add(sc);
-        sc.Death += ManageCut;
-        sc.HP = LastCellHP;
-        LastCellHP -= 10;
-        rootNode.AddChild(sc);
-		rootNode.MoveChild(sc, 0);
+        if(IsInstanceValid(this) == false && _hidingSpot != null)
+            return;
+
+        SnakeCell snakeCell = Prefabs.SnakeCell.Instantiate<SnakeCell>();
+        
+        snakeCell.Target = _body.Last();
+        snakeCell.Position = _body.Last().Position;
+        snakeCell.Death += ManageCut;
+        _body.Add(snakeCell);
+        snakeCell.HP = (_maxBodySizePerTier[Tier -1] - (_body.Count - 1)) * 10;//-1 -> head
+        
+        _mainScene.AddChild(snakeCell);
+		//_mainScene.MoveChild(_mainScene, 0); // ?
     }
     
-    void Sizing()
+    void Scaling()
     {
-        var count = body.Count;
-        float offset = 0.0025f * count;
-        for(int i = 0; i < count; i++)//calls from head to last
+        float offset = 0.0025f * _body.Count;//scakubg iffset 
+        foreach(SnakeCell cell in _body)
         {
-            body[i].Scale = new Vector2(0.5f + offset,0.5f + offset);
-            body[i].DistanceBetweenCells = 30 + offset;
+            cell.DistanceBetweenCells = 30 + _body.Count;
+            cell.Scale = new Vector2(0.5f + offset,0.5f + offset);
         }
     }
-    void ManageCut(Node2D cell)
-    {
-        LastCellHP = ((SnakeBody)cell).HP;
-        int index = body.IndexOf((SnakeBody)cell);
-        if(index != -1)
-            body.RemoveRange(index, body.Count - index);
-        Sizing();
-        length = body.Count * (int)DistanceBetweenCells;
-        radius = length /2 / 3.14f;
-        timer.WaitTime = 5.0f;
-        timer.Start();
-    }
-}
 
+    void ManageCut(Node2D cell)//should trigger escaping?
+    {
+        int index = _body.IndexOf((SnakeCell)cell);
+        
+        if(index != -1)
+            _body.RemoveRange(index, _body.Count - index);
+        
+        Scaling();
+        SetRadious();
+    }
+
+    void SetRadious() => _radius = _body.Count * DistanceBetweenCells / 2 / 3.14f;// /2 pi r
+    
+    float FinalRotation()
+    {
+        if(_hidingSpot != null)
+            return ((Vector2)_hidingSpot - Position).Angle();
+
+        Vector2 currentVector = new Vector2(1,0).Rotated(Rotation);
+        Vector2 targetPosition = (Position - Target.Position).Normalized() * _radius;//need bc: can have negative value
+        Vector2 vectorToTargetPosition = (targetPosition - Position).Normalized();
+        Vector2 finalVector = (vectorToTargetPosition + currentVector).Normalized();
+        //return finalVector.Angle();//(Target.Position - Position).Angle();
+        return (Target.Position + (Position - Target.Position).Normalized().Rotated(_radius) * _radius).Angle();
+    }
+
+    public override void _Ready()
+	{
+        AddToGroup("Mobs");
+        Tier = 1;
+
+		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
+        Target = _mainScene.GetNode<Player>("Player");
+        _regenerationTimer = GetNode<Timer>("regeneration");
+        _body.Add(this);
+
+        _regenerationTimer.Timeout += () => 
+        {            
+            if(_body.Count >= _maxBodySizePerTier[Tier -1] + 1)//+1 is for head
+                return;
+
+            SpawnCell();
+            Scaling();
+            SetRadious();
+        };
+        
+        HP =_hpPerTier[Tier -1];
+
+        CallDeferred("CreateBody");
+
+        BodyEntered += (Node2D body) =>
+        {
+            if(body is Player player)
+                player.Hit();
+        };
+	}
+    
+    public override void _PhysicsProcess(double delta)
+    {
+        Rotation += FinalRotation() * (float)delta;
+        Position += Transform.X * (float)delta * Speed;	
+	}
+}
