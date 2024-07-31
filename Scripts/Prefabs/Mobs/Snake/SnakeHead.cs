@@ -46,9 +46,6 @@ public partial class SnakeHead : SnakeCell
 
         Scaling();
         SetRadious();
-        
-        foreach(SnakeCell cell in _body)//where should this be?
-            cell.Speed = 300;
     }
 
     void SpawnCell()//could check if this is valid (same for zombies and cristals)
@@ -74,6 +71,7 @@ public partial class SnakeHead : SnakeCell
         {
             cell.DistanceBetweenCells = 30 + _body.Count;
             cell.Scale = new Vector2(0.5f + offset,0.5f + offset);
+            cell.Speed = 300;
         }
     }
 
@@ -90,17 +88,21 @@ public partial class SnakeHead : SnakeCell
 
     void SetRadious() => _radius = _body.Count * DistanceBetweenCells / 2 / 3.14f;// /2 pi r
     
-    float FinalRotation()
+    float GetRotation(float delta)
     {
-        if(_hidingSpot != null)
-            return ((Vector2)_hidingSpot - Position).Angle();
+        Vector2 targetVector;
+        Vector2 currentVector = new Vector2(1, 0).Rotated(Rotation);
 
-        Vector2 currentVector = new Vector2(1,0).Rotated(Rotation);
-        Vector2 targetPosition = (Position - Target.Position).Normalized() * _radius;//need bc: can have negative value
-        Vector2 vectorToTargetPosition = (targetPosition - Position).Normalized();
-        Vector2 finalVector = (vectorToTargetPosition + currentVector).Normalized();
-        //return finalVector.Angle();//(Target.Position - Position).Angle();
-        return (Target.Position + (Position - Target.Position).Normalized().Rotated(_radius) * _radius).Angle();
+        if (_hidingSpot == null)
+        {
+			float dys = Position.DistanceTo(Target.Position);
+			Vector2 targetPos = Target.Position + (Position - Target.Position).Normalized().Rotated(_radius) * _radius;
+			targetVector = targetPos - Position;
+        }
+        else
+            targetVector = (Vector2)_hidingSpot - Position;
+
+        return currentVector.Angle() + (currentVector.AngleTo(targetVector) * (float)delta);
     }
 
     public override void _Ready()
@@ -136,24 +138,7 @@ public partial class SnakeHead : SnakeCell
 
     public override void _PhysicsProcess(double delta)
     {
-        Vector2 targetVector;
-        Vector2 currentVector = new Vector2(1, 0).Rotated(Rotation);
-        if (_hidingSpot == null)
-        {
-			float dys = Position.DistanceTo(Target.Position);
-			Vector2 targetPos = Target.Position + (Position - Target.Position).Normalized().Rotated(_radius / dys) * _radius;
-			targetVector = targetPos - Position;
-        }
-        else
-            targetVector = (Vector2)_hidingSpot - Position;
-
-        Rotation = currentVector.Angle() + (currentVector.AngleTo(targetVector) * (float)delta);
+        Rotation = GetRotation((float)delta);
         Position += Transform.X * (float)delta * Speed;	
 	}
-    /*
-    public override void _PhysicsProcess(double delta)
-    {
-        Rotation += FinalRotation() * (float)delta;
-        Position += Transform.X * (float)delta * Speed;	
-	}*/
 }
