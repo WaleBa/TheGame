@@ -54,7 +54,7 @@ public partial class MainScene : Node2D
                     
                     zombie.Position = newMobPosition;
                     zombie.Tier = _tieredMobsForNextWave.Dequeue();
-                    //zombie.Death += MobKill(MobType.Zombie, zombie.Tier);
+                    zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier);
                     
                     AddChild(zombie);
                     break;
@@ -63,7 +63,7 @@ public partial class MainScene : Node2D
                     
                     snake.Position = newMobPosition;
                     snake.Tier = _tieredMobsForNextWave.Dequeue();
-                    //snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier);
+                    snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier);
 
                     AddChild(snake);
                     break;
@@ -75,7 +75,7 @@ public partial class MainScene : Node2D
                     cristal.Position = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE + radius, 0)
                                                                 .Rotated(_random.Next(1, 5)); //cristal.Position = newMobPosition
                     cristal.Tier = _tieredMobsForNextWave.Dequeue();
-                    //cristal.Death += (Node2D mob) => MobKill(MobType.MainCristal, cristal.Tier);
+                    cristal.Death += (Node2D mob) => MobKill(MobType.MainCristal, cristal.Tier);
 
                     AddChild(cristal);
                     break;

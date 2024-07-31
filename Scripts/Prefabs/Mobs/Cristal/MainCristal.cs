@@ -7,10 +7,6 @@ public partial class MainCristal : Cristal
 
 	public Node2D Target;
 
-	const int SPEED = 50;
-
-	static int[] _hpPerTier = { 150, 750, 2700, 8700, 26850, 81450, 245400, 737400, 2213550, 6642150 };
-
 	List<Cristal> _cristals = new List<Cristal>();	
 
 	Queue<Vector2> _nextCristalPosition = new Queue<Vector2>();
@@ -26,6 +22,8 @@ public partial class MainCristal : Cristal
 	
 	int _radius;
 
+	int _speed = 50;
+
 	int _cristalOffsetFromCentre;
 	int _bulletOffsetFromCentre;
 	int _bulletOffsetFromEachOther;
@@ -34,9 +32,9 @@ public partial class MainCristal : Cristal
 
 	public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
-        HP -= damage;
+        _hp -= damage;
 		
-        if(HP <= 0)
+        if(_hp <= 0)
             CallDeferred("Die");
     }
 
@@ -46,7 +44,8 @@ public partial class MainCristal : Cristal
 			return;
 
 		Death?.Invoke(this);
-		//QueueFree();
+        ProcessMode =  ProcessModeEnum.Disabled;
+        Visible = false;         
     }
 	
 	void SpawnCristal()
@@ -146,7 +145,7 @@ public partial class MainCristal : Cristal
 
 		_ubgradeTimer.Timeout += SpawnCristal;
 		
-		HP = _hpPerTier[Tier - 1];
+		_hp = _hpPerTier[Tier - 1];
 		//_bulletRotationPoints = new Marker2D[1 + Tier * 2];//8+
 		
 		//_radius = 200 * Tier;//all those should be calculated properly
@@ -170,7 +169,7 @@ public partial class MainCristal : Cristal
 		_bulletRotationMarker.Rotate(-(float)delta/3);// /3 good speed?
 		_cristalRotationMarker.Rotate((float)delta/3);
 
-		_velocity = NewDirection() * SPEED * (float)delta;
+		_velocity = NewDirection() * _speed * (float)delta;
 		_velocity = _velocity.Lerp(Vector2.Zero, 0.1f);
 
 		Position += _velocity;

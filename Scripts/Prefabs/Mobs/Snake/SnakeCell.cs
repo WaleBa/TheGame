@@ -6,7 +6,6 @@ public partial class SnakeCell : Area2D
 	public event DeathEventHandler Death;
 
     public Node2D Target { get; set; }
-    public int Tier { get; set; }
     public int HP { get; set; }
     public int Speed { get; set; }
     
@@ -26,7 +25,8 @@ public partial class SnakeCell : Area2D
             return;
 
         Death?.Invoke(this);
-        QueueFree();
+        ProcessMode =  ProcessModeEnum.Disabled;
+        Visible = false;         
     }
 
     public override void _Ready()

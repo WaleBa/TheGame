@@ -2,6 +2,8 @@ namespace GameE;
 
 public partial class SnakeHead : SnakeCell
 {
+    public int Tier { get; set; }
+    
     static int[] _hpPerTier = { 75, 375, 1350, 4350, 13425, 40725, 122700, 368700, 1106775, 3321075 };
     static int[] _maxBodySizePerTier = { 10, 30, 90, 270, 810, 2430, 7290, 21870, 65610, 196830 };
 
@@ -107,7 +109,7 @@ public partial class SnakeHead : SnakeCell
     public override void _Ready()
 	{
         AddToGroup("Mobs");
-        
+
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = _mainScene.GetNode<Player>("Player");
         _regenerationTimer = GetNode<Timer>("regeneration");

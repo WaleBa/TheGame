@@ -5,10 +5,7 @@ public partial class Zombie : RigidBody2D
     public delegate void DeathEventHandler(Node2D me);//add mob type and tier
 	public event DeathEventHandler Death;
 
-    public Node2D Target { get; set; }
     public int Tier { get; set; }
-    public int HP { get; set; }
-    public int Speed { get; set; }//somehow works
 
     static int[] _hpPerTier = { 50, 100, 150, 200, 250, 300, 350, 400, 450, 500 };
 
@@ -19,40 +16,47 @@ public partial class Zombie : RigidBody2D
 
     Node2D _mainScene;
     Area2D _collisionBox;
+    Node2D _target;
+    
+    int _hp; 
+    int _speed = 150;
     
     public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
-        HP -= damage;
+        _hp -= damage;
 
         ApplyCentralImpulse(recoilVectorGiven * recoilPower * 500);
 
-        if(HP <= 0)
+        if(_hp <= 0)
             CallDeferred("Die");
     }
 
     void Die()//differednt name "death"?
     {
-        if(IsInstanceValid(this) == false || Tier == 1)
+        if(IsInstanceValid(this) == false)
             return;
         
-        for(int i = 0; i < 3;i++)
+        if(Tier > 1)
         {
+            for(int i = 0; i < 3;i++)
+            {
             Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
-                    
-            zombie.Position = Position + _spreadDirection[i];
-            zombie.Tier = Tier - 1;
+                
+                zombie.Position = Position + _spreadDirection[i];
+                zombie.Tier = Tier - 1;
             
-            _mainScene.AddChild(zombie);
+                _mainScene.AddChild(zombie);
+            }
         }
-        
-        //Death?.Invoke(this, MobType.Zombie, Tier);
+
+        Death?.Invoke(this);
         ProcessMode =  ProcessModeEnum.Disabled;
         Visible = false;            //QueueFree
     }
 
     Vector2 NewDirection()
     {
-        Vector2 newDirection = (Target.Position - Position).Normalized();
+        Vector2 newDirection = (_target.Position - Position).Normalized();
         
         Godot.Collections.Array<Area2D> bodies = _collisionBox.GetOverlappingAreas();
         
@@ -70,9 +74,9 @@ public partial class Zombie : RigidBody2D
     public override void _Ready()
     {
         AddToGroup("Mobs");
-        Tier = 3;
+
         _mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
-        Target = _mainScene.GetNode<Player>("Player");
+        _target = _mainScene.GetNode<Player>("Player");
         _collisionBox = GetNode<Area2D>("collision_box");
         
         _collisionBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
@@ -80,8 +84,8 @@ public partial class Zombie : RigidBody2D
         GetNode<Sprite2D>("Sprite2D").Scale *= Tier;
         
         Mass = Tier;
-        HP = _hpPerTier[Tier - 1];
-        Speed = 150;
+        _hp = _hpPerTier[Tier - 1];
+        _speed = 150;
 
         _collisionBox.BodyEntered += (Node2D body) =>
         {
@@ -92,6 +96,6 @@ public partial class Zombie : RigidBody2D
 
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
     {
-        ApplyCentralForce(NewDirection() * Speed * 10);
+        ApplyCentralForce(NewDirection() * _speed * 10);
     }
 }
