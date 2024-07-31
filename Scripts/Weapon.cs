@@ -111,11 +111,15 @@ public partial class Weapon : Node2D
 		switch(Global.CONTROLLER)
 		{
 			case true:
-				return Input.GetVector(
+
+				Vector2 input = Input.GetVector(
 								"SHOOT_AXIS_LEFT",
 								"SHOOT_AXIS_RIGHT",
 								"SHOOT_AXIS_UP", 
-								"SHOOT_AXIS_DOWN" ).Angle();
+								"SHOOT_AXIS_DOWN" );
+				if(input == Vector2.Zero)
+					return Rotation;
+				else return input.Angle();
 			case false:
 				return (GetGlobalMousePosition() - GlobalPosition).Angle();
 		}

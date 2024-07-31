@@ -32,7 +32,7 @@ public partial class SnakeCell : Area2D
     public override void _Ready()
     {    
         AddToGroup("Mobs");
-        GD.Print(Target);
+
         ((SnakeCell)Target).Death +=  someCell => Die();
 
         BodyEntered += (Node2D body) =>

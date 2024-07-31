@@ -5,8 +5,6 @@ public partial class MainCristal : Cristal
 	public new delegate void DeathEventHandler(Node2D me);
 	public new event DeathEventHandler Death;
 
-	public Node2D Target;
-
 	List<Cristal> _cristals = new List<Cristal>();	
 
 	Queue<Vector2> _nextCristalPosition = new Queue<Vector2>();
@@ -17,6 +15,8 @@ public partial class MainCristal : Cristal
 	Timer _ubgradeTimer;
 
 	Node2D _mainScene;
+	
+	Node2D _target;
 
 	Vector2 _velocity = new Vector2();
 	
@@ -33,7 +33,7 @@ public partial class MainCristal : Cristal
 	public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
         _hp -= damage;
-		
+
         if(_hp <= 0)
             CallDeferred("Die");
     }
@@ -52,7 +52,6 @@ public partial class MainCristal : Cristal
 	{
 		if(IsInstanceValid(this) == false || _cristals.Count >= Tier || Tier == 1)
 			return;
-		GD.Print("spawnCristal");
 
 		Cristal cristal = Prefabs.Cristal.Instantiate<Cristal>();
 
@@ -112,8 +111,8 @@ public partial class MainCristal : Cristal
     {
 		Vector2 newDirection = new Vector2(0,0);
 
-		if(Position.DistanceTo(Target.Position) > _radius)
-        	newDirection = (Target.Position - Position).Normalized();
+		if(Position.DistanceTo(_target.Position) > _radius)
+        	newDirection = (_target.Position - Position).Normalized();
 
         Godot.Collections.Array<Area2D> bodies = GetOverlappingAreas();
 
@@ -130,11 +129,12 @@ public partial class MainCristal : Cristal
 	public override void _Ready()
 	{
 		AddToGroup("Mobs");
-		
+
+		Tier = 3;
 		_radius = 200 * Tier;//all those should be calculated properly
 
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
-		Target = _mainScene.GetNode<CharacterBody2D>("Player");		
+		_target = _mainScene.GetNode<CharacterBody2D>("Player");		
 		_ubgradeTimer = GetNode<Timer>("ubgrade");		
 		_bulletRotationMarker = GetNode<Marker2D>("bullet_rotation_marker");
 		_cristalRotationMarker = GetNode<Marker2D>("cristal_rotation_marker");

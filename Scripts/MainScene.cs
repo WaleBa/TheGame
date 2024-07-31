@@ -15,7 +15,8 @@ public partial class MainScene : Node2D
     Queue<int> _tieredMobsForNextWave = new Queue<int>();//change//tiers for new wave
 
     Random _random = new Random();
-    MobType _currentMob;
+
+    MobType? _currentMob;
 
     Player _player;//get rid of saying +timer
 
@@ -58,7 +59,8 @@ public partial class MainScene : Node2D
                     
                     AddChild(zombie);
                     break;
-               case 4 | 5:
+
+                case 4 | 5:
                     SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     
                     snake.Position = newMobPosition;
@@ -67,16 +69,17 @@ public partial class MainScene : Node2D
 
                     AddChild(snake);
                     break;
-                case 6:
+
+               default://bad luck ? or not working?
                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
+                    cristal.Tier = _tieredMobsForNextWave.Dequeue();
                     int radius = 200 * cristal.Tier;
 
                     cristal.Position = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE + radius, 0)
                                                                 .Rotated(_random.Next(1, 5)); //cristal.Position = newMobPosition
-                    cristal.Tier = _tieredMobsForNextWave.Dequeue();
                     cristal.Death += (Node2D mob) => MobKill(MobType.MainCristal, cristal.Tier);
-
+                    
                     AddChild(cristal);
                     break;
             }
@@ -90,10 +93,10 @@ public partial class MainScene : Node2D
         Scoring(mobType, mobTier);
         _currentMob = mobType;
 
-        _mobKills++;
+        //_mobKills++;
         if((_mobKills - _lastMobKills) >= 10)//should not be always 10
         {
-            _lastMobKills += 10;
+            _lastMobKills += 10;//looks goofy
             _player.LevelUp();
         }
     }
@@ -124,15 +127,15 @@ public partial class MainScene : Node2D
     }
 
     void MultiplyerSet(MobType mob)
-    {
+    {   
         if(_currentMob != mob)
         {
-           _mobsKilledStreak = 1;
-            StreakReset();
+            MultiplyerReset();
+            return;
         }
-                
+
         _mobsKilledStreak++;
-                    
+
         if(_mobsKilledStreak < _multiplicationValuesPerMob[mob].Min)
             return;
         
@@ -142,9 +145,9 @@ public partial class MainScene : Node2D
             m >= _multiplicationValuesPerMob[mob].Next; //to long
             m -= _multiplicationValuesPerMob[mob].Next)
         {
-            multiplication *= 2;
-        }
-                
+             multiplication *= 2;
+        }     
+
         _scoreStreakMultiplyer = multiplication;
         _scoreStreakMultiplyerLabel.Text = _scoreStreakMultiplyer.ToString();
         _scoreStreakMultiplyerTimer.Start();
@@ -159,20 +162,27 @@ public partial class MainScene : Node2D
     
     void MultiplyerReset()
     {
-        _scoreStreak *= _scoreStreakMultiplyer;
-       _scoreStreakMultiplyer = 0;
+        _currentMob = null;
+        _mobsKilledStreak = 0;
+        
+        if(_scoreStreakMultiplyer != 0)
+            _scoreStreak *= _scoreStreakMultiplyer;
+        _scoreStreakMultiplyer = 0;
 
         _scoreStreakLabel.Text = _scoreStreak.ToString();
-       _scoreStreakMultiplyerLabel.Text = "";
+        _scoreStreakMultiplyerLabel.Text = _scoreStreakMultiplyer.ToString();
     }
 
     void StreakReset()
     {
+        _currentMob = null;
+        _mobsKilledStreak = 0;
+
         _score += (ulong)_scoreStreak;
         _scoreStreak = 0;
 
         _scoreLabel.Text = _score.ToString(); 
-        _scoreStreakLabel.Text = "";
+        _scoreStreakLabel.Text = _scoreStreakMultiplyer.ToString();
     }
 
     public override void _Ready()

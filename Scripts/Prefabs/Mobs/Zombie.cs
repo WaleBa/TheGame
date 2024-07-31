@@ -48,10 +48,11 @@ public partial class Zombie : RigidBody2D
                 _mainScene.AddChild(zombie);
             }
         }
-
-        Death?.Invoke(this);
+        
         ProcessMode =  ProcessModeEnum.Disabled;
-        Visible = false;            //QueueFree
+        Visible = false; 
+        Death?.Invoke(this);
+                   //QueueFree
     }
 
     Vector2 NewDirection()
