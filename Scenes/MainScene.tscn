@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://bvarykskkkffb"]
+[gd_scene load_steps=5 format=3 uid="uid://bvarykskkkffb"]
 
 [ext_resource type="Script" path="res://Scripts/MainScene.cs" id="1_kstqi"]
 [ext_resource type="PackedScene" uid="uid://d4mbdecvc8325" path="res://Scenes/Player.tscn" id="2_74eph"]
+[ext_resource type="PackedScene" uid="uid://bcjlwuhon762x" path="res://Scenes/Prefabs/Mobs/Cristal/MainCristal.tscn" id="3_yhe7h"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qn88v"]
 
@@ -16,12 +17,15 @@ shape = SubResource("CircleShape2D_qn88v")
 
 [node name="extra_mob" type="Timer" parent="."]
 wait_time = 5.0
+autostart = true
 
 [node name="new_wave" type="Timer" parent="."]
 wait_time = 5.0
+autostart = true
 
 [node name="tier_upgrade" type="Timer" parent="."]
 wait_time = 60.0
+autostart = true
 
 [node name="score_streak" type="Timer" parent="."]
 wait_time = 7.0
@@ -30,3 +34,6 @@ one_shot = true
 [node name="score_streak_multiplyer" type="Timer" parent="."]
 wait_time = 5.0
 one_shot = true
+
+[node name="MainCristal" parent="." instance=ExtResource("3_yhe7h")]
+position = Vector2(395, 85)

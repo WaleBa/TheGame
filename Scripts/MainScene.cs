@@ -1,258 +1,199 @@
-using System.Collections;
-
 namespace GameE;
+
 public partial class MainScene : Node2D
 {
-    Random rand = new Random();
-    Timer NewWaveTimer, TierUpgradeTimer, ExtraMobTimer, ScoreStreakTimer, ScoreMultiplicationTimer;
-    int currentTier = 1;
-    Queue<int> TieredMobsForNextWave = new Queue<int>();
-    ulong StartTime;
-    int kills, lastKills;
+    static readonly Dictionary<MobType, (int Min, int Next)> _multiplicationValuesPerMob = //too long name
+                            new Dictionary<MobType, (int Min, int Next)>() {
+                                                            {MobType.Zombie, (6, 3)},
+                                                            {MobType.SnakeHead, (4, 2)},
+                                                            {MobType.MainCristal, (2, 1)} };
 
-    ulong Score = 0;
-    int ScoreStreak = 0;
-    int ScoreMultiplication = 0;
-    int mobsKilledStreak = 0;
-    string currMob;
-    Label ScoreStreakLabel, ScoreMultiLabel, ScoreLabel;
+    static readonly int[] _zombieScorePerTier = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+    static readonly int[] _mainCristalScorePerTier = { 300, 600, 900, 1200, 1500, 1800, 2100, 2400, 2700, 3000 };
+    static readonly int[] _snakeHeadScorePerTier = { 150, 300, 450, 600, 750, 900, 1050, 1200, 1350, 1500 };
 
+    Queue<int> _tieredMobsForNextWave = new Queue<int>();//change//tiers for new wave
 
-    public int[] ZombieScorePerTier = {
-        100,
-        200,
-        300,
-        400,
-        500,
-        600,
-        700,
-        800,
-        900,
-        1000
-    };
-    public int[] MainCristalScorePerTier = {
-        300,
-        600,
-        900,
-        1200,
-        1500,
-        1800,
-        2100,
-        2400,
-        2700,
-        3000
-    };
-    public int[] SnakeHeadScorePerTier = {
-        150,
-        300,
-        450,
-        600,
-        750,
-        900,
-        1050,
-        1200,
-        1350,
-        1500
-    };
-    public override void _Ready()
+    Random _random = new Random();
+    MobType _currentMob;
+
+    Player _player;//get rid of saying +timer
+
+    Timer _newWaveTimer;
+    Timer _tierUpgradeTimer;
+    Timer _extraMobTimer;
+
+    Timer _scoreStreakTimer; 
+    Timer _scoreStreakMultiplyerTimer;
+
+    Label _scoreStreakLabel; 
+    Label _scoreStreakMultiplyerLabel; 
+    Label _scoreLabel;
+
+    ulong _score = 0; //START_time
+    
+    int _scoreStreak = 0; 
+    int _scoreStreakMultiplyer = 0;
+    int  _mobsKilledStreak = 0;
+
+    int _currentMobTier = 1;
+    int _mobKills = 0;
+    int _lastMobKills = 0;
+
+    void NewWave()//name: spawn random mob
     {
-        ScoreStreakTimer = GetNode<Timer>("score_streak");
-        ScoreMultiplicationTimer = GetNode<Timer>("score_streak_multiplyer");
-        ScoreStreakTimer.Timeout += StreakTimeout;
-        ScoreMultiplicationTimer.Timeout += MultiTimeout;
-
-        ScoreLabel = GetNode<Player>("Player").GetNode<Camera2D>("Camera2D").GetNode<Label>("score");
-        ScoreStreakLabel = GetNode<Player>("Player").GetNode<Camera2D>("Camera2D").GetNode<Label>("score_streak");
-        ScoreMultiLabel = GetNode<Player>("Player").GetNode<Camera2D>("Camera2D").GetNode<Label>("score_streak_multiplyer");
-
-
-        StartTime = Time.GetTicksMsec();
-        NewWaveTimer = GetNode<Timer>("new_wave");
-        TierUpgradeTimer = GetNode<Timer>("tier_upgrade");
-        ExtraMobTimer = GetNode<Timer>("extra_mob");
-        NewWaveTimer.Timeout += NewWave;
-        TierUpgradeTimer.Timeout += () => currentTier++;
-        ExtraMobTimer.Timeout += () => TieredMobsForNextWave.Enqueue(currentTier);
-        NewWaveTimer.Start();
-        TierUpgradeTimer.Start();
-        ExtraMobTimer.Start();
-        TieredMobsForNextWave.Enqueue(1);
-    }
-
-    void StreakTimeout()
-    {
-        Score += (ulong)ScoreStreak;
-        ScoreLabel.Text = Score.ToString(); 
-        ScoreStreakLabel.Text = "0";
-        ScoreStreak = 0;
-    }
-    void MultiTimeout()
-    {
-        ScoreStreak *= ScoreMultiplication;
-        ScoreStreakLabel.Text = ScoreStreak.ToString();
-        ScoreMultiplication = 0;
-    }
-
-    private void NewWave()
-    {
-        GD.Print($"next wave mobs count: {TieredMobsForNextWave.Count},time passed: {(Time.GetTicksMsec() - StartTime) / 1000}, and kills:{kills}");
-        while(TieredMobsForNextWave.Count > 0)
+        while(_tieredMobsForNextWave.Count > 0)
         {
-            Vector2 FromPlayerPosition = GetNode<Player>("Player").Position + new Vector2(1250, 0).Rotated(rand.Next(1, 5));//not perfect
+            Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
+                                                                .Rotated(_random.Next(1, 5));//not perfect
 
-            int value = rand.Next(1 ,6);
-            switch(value)
+            switch(_random.Next(1, 6))
             {
-                case 1:
-                    MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
-                    cristal.Death += (Node2D mob) => 
-                    {
-                        TieredMobsForNextWave.Enqueue(((MainCristal)mob).Tier); 
-                        kills++;
-                        check();
-                        currMob = "MainCristal";
-                        Scoring(mob);
-                    };
-                    cristal.Tier = TieredMobsForNextWave.Dequeue();
-                    //cristal.Position = FromPlayerPosition;
-                    int radius = 200 * cristal.Tier;
-                    cristal.Position = GetNode<Player>("Player").Position + new Vector2(1250 + radius, 0).Rotated(rand.Next(1, 5));
-                    AddChild(cristal);
-                    break;
-                case 2:
-                    SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
-                    snake.Death += (Node2D mob) => 
-                    {
-                        TieredMobsForNextWave.Enqueue(((SnakeHead)mob).Tier); 
-                        kills++; 
-                        check();
-                        currMob = "SnakeHead"; // zla kolejnosc
-                        Scoring(mob);
-                    };
-                    snake.Position = FromPlayerPosition;
-                    snake.Tier = TieredMobsForNextWave.Dequeue();
-                    AddChild(snake);
-                    break;
-                case 3:
-                    SnakeHead snake2 = Prefabs.SnakeHead.Instantiate<SnakeHead>();
-                    snake2.Death += (Node2D mob) => 
-                    {
-                        TieredMobsForNextWave.Enqueue(((SnakeHead)mob).Tier); 
-                        kills++; 
-                        check();
-                        currMob = "SnakeHead";
-                        Scoring(mob);
-                    };
-                    snake2.Position = FromPlayerPosition;
-                    snake2.Tier = TieredMobsForNextWave.Dequeue();
-                    AddChild(snake2);
-                    break;
-                default:
+                case 1 | 2 | 3:
                     Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
-                    zombie.Death += (Node2D mob) => 
-                    {
-                        TieredMobsForNextWave.Enqueue(((Zombie)mob).Tier); 
-                        kills++; 
-                        check();
-                        currMob = "zombie";
-                        Scoring(mob);
-                    };
-                    zombie.Position = FromPlayerPosition;
-                    zombie.Tier = TieredMobsForNextWave.Dequeue();
+                    
+                    zombie.Position = newMobPosition;
+                    zombie.Tier = _tieredMobsForNextWave.Dequeue();
+                    //zombie.Death += MobKill(MobType.Zombie, zombie.Tier);
+                    
                     AddChild(zombie);
                     break;
+               case 4 | 5:
+                    SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
+                    
+                    snake.Position = newMobPosition;
+                    snake.Tier = _tieredMobsForNextWave.Dequeue();
+                    //snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier);
+
+                    AddChild(snake);
+                    break;
+                case 6:
+                    MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
+
+                    int radius = 200 * cristal.Tier;
+
+                    cristal.Position = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE + radius, 0)
+                                                                .Rotated(_random.Next(1, 5)); //cristal.Position = newMobPosition
+                    cristal.Tier = _tieredMobsForNextWave.Dequeue();
+                    //cristal.Death += (Node2D mob) => MobKill(MobType.MainCristal, cristal.Tier);
+
+                    AddChild(cristal);
+                    break;
             }
+       }
+    }
+        
+    void MobKill(MobType mobType, int mobTier)//event parameter?
+    {
+        _tieredMobsForNextWave.Enqueue(mobTier);
+        
+        Scoring(mobType, mobTier);
+        _currentMob = mobType;
+
+        _mobKills++;
+        if((_mobKills - _lastMobKills) >= 10)//should not be always 10
+        {
+            _lastMobKills += 10;
+            _player.LevelUp();
         }
     }
 
-    public void Scoring(Node2D mob)
+    void Scoring(MobType mobKilled, int mobTier)
     {
-        if(mob is Zombie zombie)
+        switch(mobKilled)
         {
-            if(currMob == "zombie")
-            {
-                mobsKilledStreak++;
-                if(mobsKilledStreak >= 6)
-                {
-                    ScoreMultiplicationTimer.Start();
-                    if(mobsKilledStreak == 6) ScoreMultiplication = 2;
-                    else if(mobsKilledStreak - 6 >= 3)
-                    {
-                        mobsKilledStreak = 6;
-                        ScoreMultiplication *= 2;
-                        ScoreMultiLabel.Text = ScoreMultiplication.ToString();
-                    }
-                }
+            case MobType.Zombie:
+            {   
+                MultiplyerSet(MobType.Zombie);
+                StreakSet(_zombieScorePerTier[mobTier -1]);
+                break;
             }
-            else
-            {
-                MultiTimeout();
-                mobsKilledStreak = 0;
+            case MobType.SnakeHead:
+            {   
+                MultiplyerSet(MobType.SnakeHead);
+                StreakSet(_snakeHeadScorePerTier[mobTier -1]);
+                break;
             }
-            ScoreStreak += ZombieScorePerTier[zombie.Tier -1];
-            ScoreStreakLabel.Text = ScoreStreak.ToString();
-            ScoreStreakTimer.Start();
-        }
-        else if(mob is MainCristal mainCristal)
-        {
-            if(currMob == "MainCristal")
-            {
-                mobsKilledStreak++;
-                if(mobsKilledStreak >= 4)
-                {
-                    ScoreMultiplicationTimer.Start();
-                    if(mobsKilledStreak == 4) ScoreMultiplication = 2;
-                    else if(mobsKilledStreak - 4 >= 2)
-                    {
-                        mobsKilledStreak = 4;
-                        ScoreMultiplication *= 2;
-                        ScoreMultiLabel.Text = ScoreMultiplication.ToString();
-                    }
-                }
+            case MobType.MainCristal:
+            {   
+                MultiplyerSet(MobType.MainCristal);
+                StreakSet(_mainCristalScorePerTier[mobTier -1]);
+                break;
             }
-            else
-            {
-                MultiTimeout();
-                mobsKilledStreak = 0;
-            }
-            ScoreStreak += MainCristalScorePerTier[mainCristal.Tier -1];
-            ScoreStreakLabel.Text = ScoreStreak.ToString();
-            ScoreStreakTimer.Start();
-        }
-        else if(mob is SnakeHead snakeHead)
-        {
-            GD.Print($"snake killed + {currMob}");
-            if(currMob == "SnakeHead")
-            {
-                mobsKilledStreak++;
-                if(mobsKilledStreak >= 2)
-                {
-                    ScoreMultiplicationTimer.Start();
-                    if(mobsKilledStreak == 2) ScoreMultiplication = 2;
-                    else if(mobsKilledStreak - 2 >= 1)
-                    {
-                        mobsKilledStreak = 2;
-                        ScoreMultiplication *= 2;
-                        ScoreMultiLabel.Text = ScoreMultiplication.ToString();
-                    }
-                }
-            }
-            else
-            {
-                MultiTimeout();
-                mobsKilledStreak = 0;
-            }
-            ScoreStreak += SnakeHeadScorePerTier[snakeHead.Tier -1];
-            ScoreStreakLabel.Text = ScoreStreak.ToString();
-            ScoreStreakTimer.Start();
-        }
+        } 
     }
-    private void check()
+
+    void MultiplyerSet(MobType mob)
     {
-        if((kills - lastKills) >= 10)//should not be always 10
+        if(_currentMob != mob)
         {
-            GetNode<Player>("Player").Call("lvl");
-            lastKills = lastKills + 10;
+           _mobsKilledStreak = 1;
+            StreakReset();
         }
+                
+        _mobsKilledStreak++;
+                    
+        if(_mobsKilledStreak < _multiplicationValuesPerMob[mob].Min)
+            return;
+        
+        int multiplication = 2;        
+        for(    
+            int m = _mobsKilledStreak - _multiplicationValuesPerMob[mob].Min;
+            m >= _multiplicationValuesPerMob[mob].Next; //to long
+            m -= _multiplicationValuesPerMob[mob].Next)
+        {
+            multiplication *= 2;
+        }
+                
+        _scoreStreakMultiplyer = multiplication;
+        _scoreStreakMultiplyerLabel.Text = _scoreStreakMultiplyer.ToString();
+        _scoreStreakMultiplyerTimer.Start();
+    }
+    
+    void StreakSet(int value)
+    {
+        _scoreStreak += value;
+        _scoreStreakLabel.Text = _scoreStreak.ToString();
+        _scoreStreakTimer.Start();
+    }
+    
+    void MultiplyerReset()
+    {
+        _scoreStreak *= _scoreStreakMultiplyer;
+       _scoreStreakMultiplyer = 0;
+
+        _scoreStreakLabel.Text = _scoreStreak.ToString();
+       _scoreStreakMultiplyerLabel.Text = "";
+    }
+
+    void StreakReset()
+    {
+        _score += (ulong)_scoreStreak;
+        _scoreStreak = 0;
+
+        _scoreLabel.Text = _score.ToString(); 
+        _scoreStreakLabel.Text = "";
+    }
+
+    public override void _Ready()
+    {
+        _scoreStreakTimer = GetNode<Timer>("score_streak");
+        _scoreStreakMultiplyerTimer = GetNode<Timer>("score_streak_multiplyer");
+        _newWaveTimer = GetNode<Timer>("new_wave");
+        _tierUpgradeTimer = GetNode<Timer>("tier_upgrade");
+        _extraMobTimer = GetNode<Timer>("extra_mob");
+        _player = GetNode<Player>("Player");
+        _scoreLabel= _player.GetNode<Camera2D>("Camera2D").GetNode<Label>("score");
+        _scoreStreakLabel = _player.GetNode<Camera2D>("Camera2D").GetNode<Label>("score_streak");
+        _scoreStreakMultiplyerLabel = _player.GetNode<Camera2D>("Camera2D").GetNode<Label>("score_streak_multiplyer");
+
+        _scoreStreakTimer.Timeout += StreakReset;
+        _scoreStreakMultiplyerTimer.Timeout += MultiplyerReset;//toolong
+        _newWaveTimer.Timeout += NewWave;
+        _tierUpgradeTimer.Timeout += () => _currentMobTier++;
+        _extraMobTimer.Timeout += () => _tieredMobsForNextWave.Enqueue(_currentMobTier);
+        
+        _tieredMobsForNextWave.Enqueue(1);
+        NewWave();
     }
 }

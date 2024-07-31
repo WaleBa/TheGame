@@ -3,7 +3,6 @@ namespace GameE;
 public partial class Player : CharacterBody2D
 {
 	const float SPEED = 50.0f;//not changable?
-	const int MAX_DISTANCE_FROM_CENTRE = 1250;
 	
 	Weapon _weapon;
 
@@ -42,8 +41,8 @@ public partial class Player : CharacterBody2D
 		Velocity += GetMovementInput() * SPEED;
 		Velocity = Velocity.Lerp(Vector2.Zero, 0.1f);
 
-		if(Position.DistanceTo(new Vector2(0,0)) > MAX_DISTANCE_FROM_CENTRE)
-			Position = (Position - new Vector2(0,0)).Normalized() * MAX_DISTANCE_FROM_CENTRE;
+		if(Position.DistanceTo(new Vector2(0,0)) > Global.MAX_DISTANCE_FROM_CENTRE)
+			Position = (Position - new Vector2(0,0)).Normalized() * Global.MAX_DISTANCE_FROM_CENTRE;
 		
 		MoveAndSlide();
 	}

@@ -1,46 +1,55 @@
 namespace GameE;
-public partial class FloatingEvilBullet : EvilBullet
+public partial class FloatingEvilBullet : Area2D
 {
-    Timer _respawnTimer;
-    Sprite2D sprite;
-    CollisionShape2D collisionShape;
-    public int timerOffset;
-    public override void _Ready()
-    {
-        collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
-        base._Ready();
-        _respawnTimer = GetNode<Timer>("respawn");
-        _respawnTimer.WaitTime += timerOffset;
-        sprite = GetNode<Sprite2D>("Sprite2D");
-        _respawnTimer.Timeout += () => 
-        {
-            collisionShape.Disabled = false;
-            sprite.Visible = true;
-        };
-        Vanish();
-    }
-    public override void Contact(Node2D body)
-    {
-        if(collisionShape.Disabled == false)
-        {
-            if(body is Player player)
-            {
-                player.Hit();
-                CallDeferred("Vanish");
-            }
-            else if(body is GoodBullet)
-                CallDeferred("Vanish");
-        }
-    }
-    public override void _PhysicsProcess(double delta)
-    {
+    public int SpawnTimerOffset;
+    
+    Timer _vanishTimer;
+    CollisionShape2D _collisionShape;
+    Sprite2D _sprite;
 
+    void Contact(Node2D body)
+    {            
+        if(body is Player player)
+        {
+            CallDeferred("Vanish");
+        }
+        else if(body is GoodBullet)
+            CallDeferred("Vanish");
     }
     
-    private void Vanish()
+    void Vanish()
     {
-        collisionShape.Disabled = true;
-        sprite.Visible = false;
-        _respawnTimer.Start();
+        _collisionShape.Disabled = true;
+        _sprite.Visible = false;
+        _vanishTimer.Start();
+    }
+
+    public override void _Ready()
+    {
+        AddToGroup("Projectiles");
+
+        _sprite = GetNode<Sprite2D>("Sprite2D");
+        _collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
+        _vanishTimer = GetNode<Timer>("vanish_cooldown");
+        
+        AreaEntered += Contact;
+        BodyEntered += Contact;
+
+        _vanishTimer.Timeout += () => 
+        {
+            _vanishTimer.WaitTime = 5.0f;
+
+            _collisionShape.Disabled = false;
+            _sprite.Visible = true;
+        };
+
+        _vanishTimer.WaitTime += SpawnTimerOffset;
+        Vanish();
+
+        BodyEntered += (Node2D body) =>
+        {
+            if(body is Player player)
+                player.Hit();
+        };
     }
 }
