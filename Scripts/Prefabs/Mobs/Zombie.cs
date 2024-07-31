@@ -40,6 +40,7 @@ public partial class Zombie : RigidBody2D
 
     public override void _Ready()
     {
+        AddToGroup("Mobs");
         rootNode = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = GetTree().Root.GetNode<Node2D>("MainScene").GetNode<CharacterBody2D>("Player");
         contactArea = GetNode<Area2D>("collision_box");

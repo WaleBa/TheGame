@@ -9,7 +9,7 @@ radius = 55.3494
 [sub_resource type="CircleShape2D" id="CircleShape2D_nanjp"]
 radius = 26.6271
 
-[node name="Zombie" type="RigidBody2D" groups=["Mobs"]]
+[node name="Zombie" type="RigidBody2D"]
 light_mask = 4
 visibility_layer = 4
 gravity_scale = 0.0

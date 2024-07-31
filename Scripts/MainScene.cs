@@ -46,7 +46,7 @@ public partial class MainScene : Node2D
         {
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
-
+            
             switch(_random.Next(1, 6))
             {
                 case 1 | 2 | 3:

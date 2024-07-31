@@ -31,7 +31,7 @@ public partial class SnakeHead : SnakeCell
         foreach(SnakeCell cell in _body)
             cell.Speed = 600;
 
-        await Task.Delay(5000);
+        await Task.Delay(3000);//how logn
         
         foreach(SnakeCell cell in _body)
             cell.Speed = 300;
@@ -63,7 +63,6 @@ public partial class SnakeHead : SnakeCell
         snakeCell.Death += ManageCut;
         _body.Add(snakeCell);
         snakeCell.HP = (_maxBodySizePerTier[Tier -1] - (_body.Count - 1)) * 10;//-1 -> head
-        
         _mainScene.AddChild(snakeCell);
 		//_mainScene.MoveChild(_mainScene, 0); // ?
     }
@@ -116,7 +115,7 @@ public partial class SnakeHead : SnakeCell
 
         _regenerationTimer.Timeout += () => 
         {            
-            if(_body.Count >= _maxBodySizePerTier[Tier -1] + 1)//+1 is for head
+            if(_body.Count >= _maxBodySizePerTier[Tier -1])
                 return;
 
             SpawnCell();
@@ -134,10 +133,27 @@ public partial class SnakeHead : SnakeCell
                 player.Hit();
         };
 	}
-    
+
+    public override void _PhysicsProcess(double delta)
+    {
+        Vector2 targetVector;
+        Vector2 currentVector = new Vector2(1, 0).Rotated(Rotation);
+        if (_hidingSpot == null)
+        {
+			float dys = Position.DistanceTo(Target.Position);
+			Vector2 targetPos = Target.Position + (Position - Target.Position).Normalized().Rotated(_radius / dys) * _radius;
+			targetVector = targetPos - Position;
+        }
+        else
+            targetVector = (Vector2)_hidingSpot - Position;
+
+        Rotation = currentVector.Angle() + (currentVector.AngleTo(targetVector) * (float)delta);
+        Position += Transform.X * (float)delta * Speed;	
+	}
+    /*
     public override void _PhysicsProcess(double delta)
     {
         Rotation += FinalRotation() * (float)delta;
         Position += Transform.X * (float)delta * Speed;	
-	}
+	}*/
 }
