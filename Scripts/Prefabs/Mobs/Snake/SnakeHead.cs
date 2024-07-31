@@ -95,7 +95,6 @@ public partial class SnakeHead : SnakeCell
 
         if (_hidingSpot == null)
         {
-			float dys = Position.DistanceTo(Target.Position);
 			Vector2 targetPos = Target.Position + (Position - Target.Position).Normalized().Rotated(_radius) * _radius;
 			targetVector = targetPos - Position;
         }
@@ -108,8 +107,7 @@ public partial class SnakeHead : SnakeCell
     public override void _Ready()
 	{
         AddToGroup("Mobs");
-        Tier = 1;
-
+        
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = _mainScene.GetNode<Player>("Player");
         _regenerationTimer = GetNode<Timer>("regeneration");
