@@ -8,6 +8,8 @@ public partial class MainCristal : Cristal
 	List<Cristal> _cristals = new List<Cristal>();	
 
 	Queue<Vector2> _nextCristalPosition = new Queue<Vector2>();
+
+	Area2D _cristalCollisionBox;
 	
 	Marker2D _bulletRotationMarker;//for future use
 	Marker2D _cristalRotationMarker;
@@ -114,7 +116,7 @@ public partial class MainCristal : Cristal
 		if(Position.DistanceTo(_target.Position) > _radius)
         	newDirection = (_target.Position - Position).Normalized();
 
-        Godot.Collections.Array<Area2D> bodies = GetOverlappingAreas();
+        Godot.Collections.Array<Area2D> bodies = _cristalCollisionBox.GetOverlappingAreas();
 
         for(int i = 0; i < bodies.Count; i++)
         {
@@ -130,7 +132,6 @@ public partial class MainCristal : Cristal
 	{
 		AddToGroup("Mobs");
 
-		Tier = 3;
 		_radius = 200 * Tier;//all those should be calculated properly
 
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
@@ -138,10 +139,11 @@ public partial class MainCristal : Cristal
 		_ubgradeTimer = GetNode<Timer>("ubgrade");		
 		_bulletRotationMarker = GetNode<Marker2D>("bullet_rotation_marker");
 		_cristalRotationMarker = GetNode<Marker2D>("cristal_rotation_marker");
+		_cristalCollisionBox = GetNode<Area2D>("cristal_collision_box");
 
-		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier;// /2?
+		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier / 2;// /2?
 		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1, 1) * (float)Tier;
-		GetNode<CollisionShape2D>("cristal_collision_box").Scale = new Vector2(1,1) * (float)_radius / 60;
+		_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 2;
 
 		_ubgradeTimer.Timeout += SpawnCristal;
 		
@@ -149,7 +151,7 @@ public partial class MainCristal : Cristal
 		//_bulletRotationPoints = new Marker2D[1 + Tier * 2];//8+
 		
 		//_radius = 200 * Tier;//all those should be calculated properly
-		_cristalOffsetFromCentre = 250 * Tier;
+		_cristalOffsetFromCentre = 50 * Tier;
 		_bulletOffsetFromCentre = 75 * Tier;//too long names
 		_bulletOffsetFromEachOther = 45;
 		_armCount = Tier + 2;
