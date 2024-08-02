@@ -9,7 +9,7 @@ public partial class SnakeCell : Area2D
     public int HP { get; set; }
     public int Speed { get; set; }
     
-    public int DistanceBetweenCells;//not constant -> if larger can't shoot easly
+    public float DistanceBetweenCells;//not constant -> if larger can't shoot easly
 
     public virtual void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {

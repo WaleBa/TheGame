@@ -2,7 +2,7 @@ namespace GameE;
 
 public partial class Player : CharacterBody2D
 {
-	const float SPEED = 50.0f;//not changable?
+	const float SPEED = 100.0f;//not changable?
 	
 	Weapon _weapon;
 

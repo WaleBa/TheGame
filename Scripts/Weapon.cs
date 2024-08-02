@@ -100,8 +100,8 @@ public partial class Weapon : Node2D
 		bullet.Position = _bulletMarker.GlobalPosition;
         bullet.Rotation = rotation;
 		bullet.Damage = power; 
-        bullet.Speed = 700;
-        bullet.Range = 800;//can be changable
+        bullet.Speed = 3000;
+        bullet.Range = 1500;//can be changable
 
 		_mainScene.AddChild(bullet);
 	}

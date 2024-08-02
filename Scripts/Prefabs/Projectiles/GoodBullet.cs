@@ -31,6 +31,8 @@ public partial class GoodBullet : Area2D
     {  
         AddToGroup("Projectiles");
 
+        Scale = new Vector2(0.5f, 0.5f);
+
         _startingPosition = Position;
 
         AreaEntered += Contact;

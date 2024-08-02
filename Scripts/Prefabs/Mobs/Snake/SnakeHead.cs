@@ -7,6 +7,8 @@ public partial class SnakeHead : SnakeCell
     static int[] _hpPerTier = { 75, 375, 1350, 4350, 13425, 40725, 122700, 368700, 1106775, 3321075 };
     static int[] _maxBodySizePerTier = { 10, 30, 90, 270, 810, 2430, 7290, 21870, 65610, 196830 };
 
+    const float A_SCALE = 130;
+
 	List<SnakeCell> _body = new();//no add head?
 
     Timer _regenerationTimer;
@@ -68,11 +70,13 @@ public partial class SnakeHead : SnakeCell
     
     void Scaling()
     {
-        float offset = 0.0025f * _body.Count;//scakubg iffset 
+        float A = (A_SCALE + A_SCALE * 0.5f * (Tier - 1)) / 4;
+
+       // float offset = 0.025f * _body.Count;//scakubg iffset 
         foreach(SnakeCell cell in _body)
         {
-            cell.DistanceBetweenCells =  50 + _body.Count;
-            cell.Scale = new Vector2(0.5f + offset,0.5f + offset);
+            cell.DistanceBetweenCells =  3 * A;//97;//4 * _body.Count;
+            cell.Scale = new Vector2(1 + 0.5f * (Tier - 1), 1 + 0.5f * (Tier - 1));
             cell.Speed = 300;
         }
     }
@@ -88,7 +92,7 @@ public partial class SnakeHead : SnakeCell
         SetRadious();
     }
 
-    void SetRadious() => _radius = _body.Count * DistanceBetweenCells /3.14f;// / 2 / 3.14f;// /2 pi r
+    void SetRadious() => _radius = _body.Count * DistanceBetweenCells / 2 / Mathf.Pi + (A_SCALE + A_SCALE * 0.5f * (Tier - 1)) / 2;// /2 pi r
     
     float GetRotation(float delta)
     {
@@ -109,7 +113,7 @@ public partial class SnakeHead : SnakeCell
     public override void _Ready()
 	{
         AddToGroup("Mobs");
-        Tier += 1;
+        Tier = 4;
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = _mainScene.GetNode<Player>("Player");
         _regenerationTimer = GetNode<Timer>("regeneration");

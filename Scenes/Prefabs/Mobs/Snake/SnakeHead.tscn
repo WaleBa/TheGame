@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_bu3h1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_twb3t"]
-radius = 64.4981
+radius = 65.0
 
 [node name="SnakeHead" type="Area2D"]
 script = ExtResource("1_uwfgi")

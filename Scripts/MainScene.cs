@@ -202,11 +202,11 @@ public partial class MainScene : Node2D
 
         _scoreStreakTimer.Timeout += StreakReset;
         _scoreStreakMultiplyerTimer.Timeout += MultiplyerReset;//toolong
-        _newWaveTimer.Timeout += NewWave;
+        //_newWaveTimer.Timeout += NewWave;
         _tierUpgradeTimer.Timeout += () => _currentMobTier++;
         _extraMobTimer.Timeout += () => _tieredMobsForNextWave.Enqueue(_currentMobTier);
         
         _tieredMobsForNextWave.Enqueue(1);
-        NewWave();
+        //NewWave();
     }
 }

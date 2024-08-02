@@ -1,3 +1,4 @@
+
 namespace GameE;
 public partial class FloatingEvilBullet : Area2D
 {
@@ -29,9 +30,11 @@ public partial class FloatingEvilBullet : Area2D
         AddToGroup("Projectiles");
 
         _sprite = GetNode<Sprite2D>("Sprite2D");
-        _collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
+        _collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");//naming conventin in editor
         _vanishTimer = GetNode<Timer>("vanish_cooldown");
         
+        Scale = new Vector2(0.5f, 0.5f);
+
         AreaEntered += Contact;
         BodyEntered += Contact;
 
