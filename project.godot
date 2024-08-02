@@ -20,6 +20,11 @@ config/icon="res://icon.svg"
 Console="*res://addons/sofiaconsole/Console.tscn"
 Global="*res://Scenes/Autoloads/Global.tscn"
 
+[display]
+
+window/size/initial_position_type=3
+window/stretch/mode="canvas_items"
+
 [dotnet]
 
 project/assembly_name="Game E"

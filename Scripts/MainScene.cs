@@ -50,7 +50,8 @@ public partial class MainScene : Node2D
             
             switch(_random.Next(1, 6))
             {
-                case 1 | 2 | 3:
+                case 1 | 6:
+                GD.Print("ZOMBIE");
                     Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
                     
                     zombie.Position = newMobPosition;
@@ -61,6 +62,7 @@ public partial class MainScene : Node2D
                     break;
 
                 case 4 | 5:
+                GD.Print("SNAKE");
                     SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     
                     snake.Position = newMobPosition;
@@ -70,7 +72,8 @@ public partial class MainScene : Node2D
                     AddChild(snake);
                     break;
 
-               default://bad luck ? or not working?
+               case 2 | 3://bad luck ? or not working?
+               GD.Print("cristal");
                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
                     cristal.Tier = _tieredMobsForNextWave.Dequeue();
