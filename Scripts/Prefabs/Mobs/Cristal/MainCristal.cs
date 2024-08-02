@@ -131,7 +131,7 @@ public partial class MainCristal : Cristal
 	public override void _Ready()
 	{
 		AddToGroup("Mobs");
-
+Tier = 3;
 		_radius = 200 * Tier;//all those should be calculated properly
 
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
@@ -141,9 +141,9 @@ public partial class MainCristal : Cristal
 		_cristalRotationMarker = GetNode<Marker2D>("cristal_rotation_marker");
 		_cristalCollisionBox = GetNode<Area2D>("cristal_collision_box");
 
-		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier / 2;// /2?
+		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier;// /2?
 		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1, 1) * (float)Tier;
-		_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 2;
+		_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 4;
 
 		_ubgradeTimer.Timeout += SpawnCristal;
 		

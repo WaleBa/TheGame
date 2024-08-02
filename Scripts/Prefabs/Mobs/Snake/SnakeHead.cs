@@ -113,7 +113,7 @@ public partial class SnakeHead : SnakeCell
     public override void _Ready()
 	{
         AddToGroup("Mobs");
-        Tier = 4;
+
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = _mainScene.GetNode<Player>("Player");
         _regenerationTimer = GetNode<Timer>("regeneration");
