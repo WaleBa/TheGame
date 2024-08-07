@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_etgr5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v3bmr"]
-radius = 80.3057
+radius = 65.0
 
 [node name="Cristal" type="Area2D"]
 script = ExtResource("1_kwhtk")
