@@ -35,10 +35,10 @@ public partial class Cristal : Area2D
 	{
 		AddToGroup("Mobs");
 
-		_parentCristal = GetParent().GetParent<Cristal>();
+		_parentCristal = GetParent().GetParent<Cristal>();//already tier -1
 		
-		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier /2;
-		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1,1) * (float)Tier/2;
+		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1 + 0.5f * (Tier -1), 1 + 0.5f * (Tier -1 )); //= new Vector2(1,1) * (float)Tier /2;
+		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1 + 0.5f * (Tier - 1), 1 + 0.5f * (Tier -1));//= new Vector2(1,1) * (float)Tier/2;
 
 		_hp = _hpPerTier[Tier - 1];
 

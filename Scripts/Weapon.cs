@@ -25,10 +25,10 @@ public partial class Weapon : Node2D
 
 	public void LevelUp()
 	{
-		_automaticCooldownTimer.WaitTime /= 2;
+		_automaticCooldownTimer.WaitTime *= 0.75f;
 		_shootgunBulletCount += 2;
-		_shootgunPower *= 2;
-		_automaticPower *= 2;
+		_shootgunPower += 10;
+		_automaticPower += 10;
 	}
 
 	void PreparingForShoot()
@@ -87,7 +87,7 @@ public partial class Weapon : Node2D
 				if(_automaticCooldownTimer.IsStopped() == false)
 					return;
 				SpawnBullet(Rotation, _automaticPower);
-				SetCooldowns(0.5f, 0.1f);			
+				SetCooldowns(0.5f, 0.05f);			
 				break;
 			}
 		}
@@ -118,7 +118,7 @@ public partial class Weapon : Node2D
 								"SHOOT_AXIS_UP", 
 								"SHOOT_AXIS_DOWN" );
 				if(input == Vector2.Zero)
-					return Rotation;
+					return Rotation;// ?:
 				else return input.Angle();
 			case false:
 				return (GetGlobalMousePosition() - GlobalPosition).Angle();

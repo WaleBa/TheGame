@@ -22,15 +22,17 @@ public partial class MainCristal : Cristal
 
 	Vector2 _velocity = new Vector2();
 	
-	int _radius;
+	public float Radius;
+	float _radius;
 
 	int _speed = 50;
 
-	int _cristalOffsetFromCentre;
-	int _bulletOffsetFromCentre;
-	int _bulletOffsetFromEachOther;
+	float _cristalOffsetFromCentre;
+	float _bulletOffsetFromCentre;
+	float _bulletOffsetFromEachOther;
 	int _armCount;
 	int _bulletsPerArmCount;
+	float _bulletOffsetFromEachOtherRotation;
 
 	public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
@@ -102,7 +104,7 @@ public partial class MainCristal : Cristal
 				bullet.SpawnTimerOffset = i + 1;
 				bullet.Position = new Vector2(
 								_bulletOffsetFromCentre + _bulletOffsetFromEachOther * (i + 1), 0)
-								.Rotated(angle * k + _bulletOffsetFromEachOther  * i);//shouldn't propably be again offset from eachother
+								.Rotated(angle * k + _bulletOffsetFromEachOtherRotation  * i);//shouldn't propably be again offset from eachother
 				
 				_bulletRotationMarker.AddChild(bullet);
 			}
@@ -117,10 +119,9 @@ public partial class MainCristal : Cristal
         	newDirection = (_target.Position - Position).Normalized();
 
         Godot.Collections.Array<Area2D> bodies = _cristalCollisionBox.GetOverlappingAreas();
-
         for(int i = 0; i < bodies.Count; i++)
         {
-            if(bodies[i] is not MainCristal)
+            if(bodies[i].GetParent() is not MainCristal)
                 continue;
         
             newDirection += (Position - bodies[i].GlobalPosition).Normalized();
@@ -131,8 +132,8 @@ public partial class MainCristal : Cristal
 	public override void _Ready()
 	{
 		AddToGroup("Mobs");
-Tier = 3;
-		_radius = 200 * Tier;//all those should be calculated properly
+
+		 _radius = Radius = 1250 * (1 + 0.5f * (Tier - 1)); //all those should be calculated properly
 
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
 		_target = _mainScene.GetNode<CharacterBody2D>("Player");		
@@ -141,21 +142,24 @@ Tier = 3;
 		_cristalRotationMarker = GetNode<Marker2D>("cristal_rotation_marker");
 		_cristalCollisionBox = GetNode<Area2D>("cristal_collision_box");
 
-		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(1,1) * (float)Tier;// /2?
-		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1, 1) * (float)Tier;
-		_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 4;
+		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(2+ 0.5f * (Tier - 2), 2 + 0.5f * (Tier - 2));// * (float)Tier;// /2?
+		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(2 + 0.5f * (Tier -2), 2 + 0.5f * (Tier - 2));// = new Vector2(1, 1) * (float)Tier;
+		//_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 4;
+		_cristalCollisionBox.Scale = new Vector2(1 + 0.5f * (Tier -1), 1 + 0.5f * (Tier - 1));
 
 		_ubgradeTimer.Timeout += SpawnCristal;
 		
 		_hp = _hpPerTier[Tier - 1];
 		//_bulletRotationPoints = new Marker2D[1 + Tier * 2];//8+
-		
+		float MCrad = 65 * (2 + 0.5f * (Tier -2));
+		float Crad = 65 * (1 + 0.5f * (Tier - 1));
 		//_radius = 200 * Tier;//all those should be calculated properly
-		_cristalOffsetFromCentre = 50 * Tier;
-		_bulletOffsetFromCentre = 75 * Tier;//too long names
-		_bulletOffsetFromEachOther = 45;
-		_armCount = Tier + 2;
-		_bulletsPerArmCount = 1 + Tier * 2;
+		_cristalOffsetFromCentre = MCrad + Crad;//= 80 * Tier;
+		_bulletOffsetFromCentre = MCrad + Crad * 2;// + 32.5f;//130 * Tier;//too long names
+		_bulletOffsetFromEachOther = 96.5f;
+		_bulletOffsetFromEachOtherRotation = 0.05f;
+		_armCount = Tier + 3;
+		_bulletsPerArmCount =  (int)((_radius - MCrad - 2 * Crad + 65 ) / 97.5f);//= 9 + Tier * 2;
 
 		SpawnFloatingBullets();
 
@@ -164,6 +168,19 @@ Tier = 3;
             if(body is Player player)
                 player.Hit();
         };
+
+		Godot.Collections.Array<Area2D> bodies;
+		do
+		{
+		bodies = _cristalCollisionBox.GetOverlappingAreas();
+        for(int i = 0; i < bodies.Count; i++)
+        {
+            if(bodies[i].GetParent() is not MainCristal)
+               continue;
+			Position += (bodies[i].GetParent<MainCristal>().Position - Player.Position).Normalized() * bodies[i].GetParent<MainCristal>().Radius * 2;
+            
+        }
+		}while(bodies.Count > 0);
 	}
 
 	public override void _PhysicsProcess(double delta)

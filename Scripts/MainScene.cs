@@ -23,7 +23,7 @@ public partial class MainScene : Node2D
     Timer _newWaveTimer;
     Timer _tierUpgradeTimer;
     Timer _extraMobTimer;
-
+//all timers in-editor got waittime /2
     Timer _scoreStreakTimer; 
     Timer _scoreStreakMultiplyerTimer;
 
@@ -48,10 +48,9 @@ public partial class MainScene : Node2D
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
-            switch(_random.Next(1, 6))
+            switch(_random.Next(1, 7))
             {
-                case 1 | 6:
-                GD.Print("ZOMBIE");
+                case 1 | 2 | 3:
                     Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
                     
                     zombie.Position = newMobPosition;
@@ -62,7 +61,6 @@ public partial class MainScene : Node2D
                     break;
 
                 case 4 | 5:
-                GD.Print("SNAKE");
                     SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     
                     snake.Position = newMobPosition;
@@ -72,8 +70,7 @@ public partial class MainScene : Node2D
                     AddChild(snake);
                     break;
 
-               case 2 | 3://bad luck ? or not working?
-               GD.Print("cristal");
+               default://bad luck ? or not working?
                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
                     cristal.Tier = _tieredMobsForNextWave.Dequeue();
@@ -96,7 +93,7 @@ public partial class MainScene : Node2D
         Scoring(mobType, mobTier);
         _currentMob = mobType;
 
-        //_mobKills++;
+        _mobKills++;
         if((_mobKills - _lastMobKills) >= 10)//should not be always 10
         {
             _lastMobKills += 10;//looks goofy
@@ -202,11 +199,11 @@ public partial class MainScene : Node2D
 
         _scoreStreakTimer.Timeout += StreakReset;
         _scoreStreakMultiplyerTimer.Timeout += MultiplyerReset;//toolong
-        //_newWaveTimer.Timeout += NewWave;
+        _newWaveTimer.Timeout += NewWave;
         _tierUpgradeTimer.Timeout += () => _currentMobTier++;
         _extraMobTimer.Timeout += () => _tieredMobsForNextWave.Enqueue(_currentMobTier);
         
         _tieredMobsForNextWave.Enqueue(1);
-        //NewWave();
+        NewWave();
     }
 }
