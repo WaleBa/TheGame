@@ -2,6 +2,9 @@ namespace GameE;
 
 public partial class Player : CharacterBody2D
 {
+	public delegate void DeathEventHandler(Node2D me);
+	public event DeathEventHandler Death;
+
 	const float SPEED = 100.0f;//not changable?
 	
 	Weapon _weapon;
@@ -10,8 +13,12 @@ public partial class Player : CharacterBody2D
 
 	public void Hit() => Die();
 	
-	void Die() => GetTree().ReloadCurrentScene();//future: calls event and mainscene reloads itself
-	
+	void Die()
+	{
+		Death?.Invoke(this);
+		GetTree().ReloadCurrentScene();//future: calls event and mainscene reloads itself
+	}
+
 	Vector2 GetMovementInput()
 	{
 		switch(Global.CONTROLLER)

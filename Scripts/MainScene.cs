@@ -52,7 +52,7 @@ public partial class MainScene : Node2D
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
-            switch(_random.Next(1, 7))
+            switch(_random.Next(1, 5))
             {
                 case 1 | 2 | 3:
                     Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
@@ -64,10 +64,10 @@ public partial class MainScene : Node2D
                     AddChild(zombie);
                     break;
 
-                case 4 | 5:
+                case 4:
                     //GD.Print("snake pre");
-                    if(_tieredMobsForNextWave.Peek() == 1)
-                        break;
+                    //if(_tieredMobsForNextWave.Peek() == 1)
+                        //break;
                     //GD.Print("snake po");
                     SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     
@@ -80,8 +80,8 @@ public partial class MainScene : Node2D
 
                default://bad luck ? or not working?
                     //GD.Print("cristsl pre");                    
-                    if(_tieredMobsForNextWave.Peek() == 1 || _tieredMobsForNextWave.Peek() == 2)
-                        break;
+                    //if(_tieredMobsForNextWave.Peek() == 1 || _tieredMobsForNextWave.Peek() == 2)
+                     //   break;
                     //GD.Print("cristal po");
                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
@@ -207,18 +207,18 @@ public partial class MainScene : Node2D
             switch(mobType)
             {
                 case MobType.Zombie:
-                    sl.GetNode<Label>("Label").Text = (_zombieScorePerTier[mobTier -1] * lastSS).ToString();
-                    _score += (ulong)_zombieScorePerTier[mobTier -1];
+                    sl.GetNode<Label>("Label").Text = (_zombieScorePerTier[mobTier -1] * (1 + lastSS)).ToString();
+                    _score += (ulong)(_zombieScorePerTier[mobTier -1] * (1 + lastSS));
                     _scoreLabel.Text = _score.ToString(); 
                     break;
                 case MobType.SnakeHead:
-                    sl.GetNode<Label>("Label").Text = (_snakeHeadScorePerTier[mobTier - 1] * lastSS).ToString();
-                    _score += (ulong)_snakeHeadScorePerTier[mobTier -1];
+                    sl.GetNode<Label>("Label").Text = (_snakeHeadScorePerTier[mobTier - 1] * (1 + lastSS)).ToString();
+                    _score += (ulong)(_snakeHeadScorePerTier[mobTier -1] * (1 + lastSS));
                     _scoreLabel.Text = _score.ToString(); 
                     break;
                 case MobType.MainCristal:
-                    sl.GetNode<Label>("Label").Text = (_mainCristalScorePerTier[mobTier - 1] * lastSS).ToString();
-                   _score += (ulong)_mainCristalScorePerTier[mobTier -1];
+                    sl.GetNode<Label>("Label").Text = (_mainCristalScorePerTier[mobTier - 1] * (1 + lastSS)).ToString();
+                   _score += (ulong)(_mainCristalScorePerTier[mobTier -1] * (1 + lastSS));
                     _scoreLabel.Text = _score.ToString(); 
                     break;
             }
@@ -266,7 +266,7 @@ public partial class MainScene : Node2D
         _scoreStreakLabel = _player.GetNode<Camera2D>("Camera2D").GetNode<Label>("score_streak");
         _scoreStreakMultiplyerLabel = _player.GetNode<Camera2D>("Camera2D").GetNode<Label>("score_streak_multiplyer");
 
-        //_scoreStreakTimer.Timeout += StreakReset;
+        _scoreStreakTimer.Timeout += () => { lastSS = 0; }; //StreakReset;
         //_scoreStreakMultiplyerTimer.Timeout += MultiplyerReset;//toolong
         _newWaveTimer.Timeout += NewWave;
         _tierUpgradeTimer.Timeout += () => _currentMobTier++;
@@ -274,6 +274,7 @@ public partial class MainScene : Node2D
         
         _tieredMobsForNextWave.Enqueue(1);
         NewWave();
+        _player.Death  += (Node2D mob) => {GD.Print($"score: {_score} !!!");};
     }
     public override void _Draw()
     {

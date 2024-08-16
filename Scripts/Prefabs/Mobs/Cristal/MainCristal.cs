@@ -148,7 +148,7 @@ public partial class MainCristal : Cristal
 		_cristalCollisionBox = GetNode<Area2D>("cristal_collision_box");
 
 		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(2+ 0.5f * (Tier - 2), 2 + 0.5f * (Tier - 2));// * (float)Tier;// /2?
-		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(2 + 0.5f * (Tier -2), 2 + 0.5f * (Tier - 2));// = new Vector2(1, 1) * (float)Tier;
+		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(2+ 0.5f * (Tier - 2), 2 + 0.5f * (Tier - 2));// = new Vector2(1, 1) * (float)Tier;
 		//_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 4;
 		_cristalCollisionBox.Scale = new Vector2(1 + 0.5f * (Tier -1), 1 + 0.5f * (Tier - 1));
 

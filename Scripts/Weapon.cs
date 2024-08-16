@@ -25,6 +25,7 @@ public partial class Weapon : Node2D
 
 	public void LevelUp()
 	{
+		GD.Print("lvlup");
 		_automaticCooldownTimer.WaitTime *= 0.75f;
 		_shootgunBulletCount += 2;
 		_shootgunPower += 10;
@@ -87,7 +88,7 @@ public partial class Weapon : Node2D
 				if(_automaticCooldownTimer.IsStopped() == false)
 					return;
 				SpawnBullet(Rotation, _automaticPower);
-				SetCooldowns(0.5f, 0.075f);			
+				SetCooldowns(0.5f, 0.1f);			
 				break;
 			}
 		}
