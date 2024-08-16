@@ -104,13 +104,18 @@ public partial class MainCristal : Cristal
 				bullet.SpawnTimerOffset = i + 1;
 				bullet.Position = new Vector2(
 								_bulletOffsetFromCentre + _bulletOffsetFromEachOther * (i + 1), 0)
-								.Rotated(angle * k + _bulletOffsetFromEachOtherRotation  * i);//shouldn't propably be again offset from eachother
+								.Rotated(-(angle * k + _bulletOffsetFromEachOtherRotation  * i));//shouldn't propably be again offset from eachother
 				
 				_bulletRotationMarker.AddChild(bullet);
 			}
 		}
 	}
 	
+	int  caseArena()
+	{
+		return (Position.DistanceTo(new Vector2(0,0)) >= Global.MAX_DISTANCE_FROM_CENTRE) ? 4 : 1;
+	}
+
 	Vector2 NewDirection()
     {
 		Vector2 newDirection = new Vector2(0,0);
@@ -126,14 +131,14 @@ public partial class MainCristal : Cristal
         
             newDirection += (Position - bodies[i].GlobalPosition).Normalized();
         }
-        return newDirection.Normalized();
+        return newDirection.Normalized() * caseArena();
     }
 
 	public override void _Ready()
 	{
 		AddToGroup("Mobs");
 
-		 _radius = Radius = 1250 * (1 + 0.5f * (Tier - 1)); //all those should be calculated properly
+		 _radius = Radius; //all those should be calculated properly
 
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
 		_target = _mainScene.GetNode<CharacterBody2D>("Player");		
@@ -168,19 +173,6 @@ public partial class MainCristal : Cristal
             if(body is Player player)
                 player.Hit();
         };
-
-		Godot.Collections.Array<Area2D> bodies;
-		do
-		{
-		bodies = _cristalCollisionBox.GetOverlappingAreas();
-        for(int i = 0; i < bodies.Count; i++)
-        {
-            if(bodies[i].GetParent() is not MainCristal)
-               continue;
-			Position += (bodies[i].GetParent<MainCristal>().Position - Player.Position).Normalized() * bodies[i].GetParent<MainCristal>().Radius * 2;
-            
-        }
-		}while(bodies.Count > 0);
 	}
 
 	public override void _PhysicsProcess(double delta)
