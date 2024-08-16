@@ -20,6 +20,8 @@ public partial class MainScene : Node2D
 
     Player _player;//get rid of saying +timer
 
+    int bariera = 10;
+
     Timer _newWaveTimer;
     Timer _tierUpgradeTimer;
     Timer _extraMobTimer;
@@ -50,7 +52,7 @@ public partial class MainScene : Node2D
             
             switch(_random.Next(1, 7))
             {
-                case 1:// | 2 | 3:
+                case 1 | 2 | 3:
                     Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
                     
                     zombie.Position = newMobPosition;
@@ -60,7 +62,11 @@ public partial class MainScene : Node2D
                     AddChild(zombie);
                     break;
 
-                case 4:// | 5:
+                case 4 | 5:
+                    //GD.Print("snake pre");
+                    if(_tieredMobsForNextWave.Peek() == 1)
+                        break;
+                    //GD.Print("snake po");
                     SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     
                     snake.Position = newMobPosition;
@@ -71,6 +77,10 @@ public partial class MainScene : Node2D
                     break;
 
                default://bad luck ? or not working?
+                    //GD.Print("cristsl pre");                    
+                    if(_tieredMobsForNextWave.Peek() == 1 || _tieredMobsForNextWave.Peek() == 2)
+                        break;
+                    //GD.Print("cristal po");
                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
                     cristal.Tier = _tieredMobsForNextWave.Dequeue();
@@ -94,10 +104,11 @@ public partial class MainScene : Node2D
         _currentMob = mobType;
 
         _mobKills++;
-        if((_mobKills - _lastMobKills) >= 10)//should not be always 10
+        if((_mobKills - _lastMobKills) >= bariera)//should not be always 10
         {
-            _lastMobKills += 10;//looks goofy
+            _lastMobKills += bariera;//looks goofy
             _player.LevelUp();
+            bariera *= 2;
         }
     }
 

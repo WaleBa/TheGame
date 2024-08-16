@@ -28,7 +28,7 @@ public partial class Weapon : Node2D
 		_automaticCooldownTimer.WaitTime *= 0.75f;
 		_shootgunBulletCount += 2;
 		_shootgunPower += 10;
-		_automaticPower += 10;
+		_automaticPower += 5;
 	}
 
 	void PreparingForShoot()
@@ -36,7 +36,7 @@ public partial class Weapon : Node2D
 		if(	
 			Input.IsActionJustReleased("SHOOT_AXIS_LEFT") ||
 			Input.IsActionJustReleased("SHOOT_AXIS_RIGHT") || 
-		 	Input.IsActionJustReleased("SHOOT_AXIS_UP") ||
+			Input.IsActionJustReleased("SHOOT_AXIS_UP") ||
 		 	Input.IsActionJustReleased("SHOOT_AXIS_DOWN") ||
 			Input.IsActionJustReleased("SHOOT") )
 		{
@@ -87,7 +87,7 @@ public partial class Weapon : Node2D
 				if(_automaticCooldownTimer.IsStopped() == false)
 					return;
 				SpawnBullet(Rotation, _automaticPower);
-				SetCooldowns(0.5f, 0.05f);			
+				SetCooldowns(0.5f, 0.075f);			
 				break;
 			}
 		}
@@ -119,7 +119,12 @@ public partial class Weapon : Node2D
 								"SHOOT_AXIS_DOWN" );
 				if(input == Vector2.Zero)
 					return Rotation;// ?:
-				else return input.Angle();
+				else 
+				{
+					Shoot(WeaponType.Automatic);
+
+					return input.Angle();
+				}
 			case false:
 				return (GetGlobalMousePosition() - GlobalPosition).Angle();
 		}
@@ -148,7 +153,7 @@ public partial class Weapon : Node2D
 
 		ZIndex = Rotation < new Vector2(1,0).Angle() ? -1 : 0;
 		
-		PreparingForShoot();
+		//PreparingForShoot();
 	}
 
 }

@@ -6,7 +6,7 @@ public partial class SnakeHead : SnakeCell
     
     static int[] _hpPerTier = { 75, 375, 1350, 4350, 13425, 40725, 122700, 368700, 1106775, 3321075 };
     static int[] _maxBodySizePerTier = { 10, 30, 90, 270, 810, 2430, 7290, 21870, 65610, 196830 };
-
+    
     const float A_SCALE = 130;
 
 	List<SnakeCell> _body = new();//no add head?
@@ -76,7 +76,7 @@ public partial class SnakeHead : SnakeCell
         foreach(SnakeCell cell in _body)
         {
             cell.DistanceBetweenCells =  3 * A;//97;//4 * _body.Count;
-            cell.Scale = new Vector2(1 + 0.5f * (Tier - 1), 1 + 0.5f * (Tier - 1));
+            cell.Scale = new Vector2(1 + 0.3f * (Tier - 1), 1 + 0.3f * (Tier - 1));
             cell.Speed = 300;
         }
     }
@@ -92,7 +92,7 @@ public partial class SnakeHead : SnakeCell
         SetRadious();
     }
 
-    void SetRadious() => _radius = _body.Count * DistanceBetweenCells / 2 / Mathf.Pi + (A_SCALE + A_SCALE * 0.5f * (Tier - 1)) / 2;// /2 pi r
+    void SetRadious() => _radius = _body.Count * DistanceBetweenCells / 2 / Mathf.Pi + (A_SCALE + A_SCALE * 0.3f * (Tier - 1)) / 2;// /2 pi r
     
     float GetRotation(float delta)
     {
