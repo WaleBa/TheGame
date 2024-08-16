@@ -275,4 +275,8 @@ public partial class MainScene : Node2D
         _tieredMobsForNextWave.Enqueue(1);
         NewWave();
     }
+    public override void _Draw()
+    {
+        DrawCircle(new Vector2(0,0), 2500, new Color(0.361f, 0.361f, 0.353f));
+    }
 }

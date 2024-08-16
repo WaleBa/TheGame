@@ -151,7 +151,7 @@ public partial class Weapon : Node2D
 	{
 		Rotation = GetRotation(); //player(outside source) could decide on where to shoot
 
-		ZIndex = Rotation < new Vector2(1,0).Angle() ? -1 : 0;
+		//ZIndex = Rotation < new Vector2(1,0).Angle() ? -1 : 0;
 		
 		//PreparingForShoot();
 	}
