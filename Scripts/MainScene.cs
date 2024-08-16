@@ -33,6 +33,8 @@ public partial class MainScene : Node2D
     Label _scoreStreakMultiplyerLabel; 
     Label _scoreLabel;
 
+    int lastSS = 0;
+
     ulong _score = 0; //START_time
     
     int _scoreStreak = 0; 
@@ -57,7 +59,7 @@ public partial class MainScene : Node2D
                     
                     zombie.Position = newMobPosition;
                     zombie.Tier = _tieredMobsForNextWave.Dequeue();
-                    zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier);
+                    zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
                     
                     AddChild(zombie);
                     break;
@@ -71,7 +73,7 @@ public partial class MainScene : Node2D
                     
                     snake.Position = newMobPosition;
                     snake.Tier = _tieredMobsForNextWave.Dequeue();
-                    snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier);
+                    snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier, snake.Position);
 
                     AddChild(snake);
                     break;
@@ -88,7 +90,7 @@ public partial class MainScene : Node2D
 
                     cristal.Position = new Vector2(Global.MAX_DISTANCE_FROM_CENTRE + cristal.Radius, 0)
                                                                 .Rotated(_random.Next(1, 5)); //cristal.Position = newMobPosition
-                    cristal.Death += (Node2D mob) => MobKill(MobType.MainCristal, cristal.Tier);
+                    cristal.Death += (Node2D mob) => MobKill(MobType.MainCristal, cristal.Tier, cristal.Position);
                     
                     AddChild(cristal);
                     break;
@@ -96,11 +98,11 @@ public partial class MainScene : Node2D
        }
     }
         
-    void MobKill(MobType mobType, int mobTier)//event parameter?
+    void MobKill(MobType mobType, int mobTier, Vector2 pos)//event parameter?
     {
         _tieredMobsForNextWave.Enqueue(mobTier);
         
-        Scoring(mobType, mobTier);
+        Scoring(mobType, mobTier, pos);
         _currentMob = mobType;
 
         _mobKills++;
@@ -112,26 +114,29 @@ public partial class MainScene : Node2D
         }
     }
 
-    void Scoring(MobType mobKilled, int mobTier)
+    void Scoring(MobType mobKilled, int mobTier, Vector2 pos)
     {
         switch(mobKilled)
         {
             case MobType.Zombie:
             {   
-                MultiplyerSet(MobType.Zombie);
-                StreakSet(_zombieScorePerTier[mobTier -1]);
+                ScoreNew(MobType.Zombie, mobTier, pos);
+                //MultiplyerSet(MobType.Zombie);
+                //StreakSet(_zombieScorePerTier[mobTier -1]);
                 break;
             }
             case MobType.SnakeHead:
             {   
-                MultiplyerSet(MobType.SnakeHead);
-                StreakSet(_snakeHeadScorePerTier[mobTier -1]);
+                ScoreNew(MobType.SnakeHead, mobTier, pos);
+                //MultiplyerSet(MobType.SnakeHead);
+                //StreakSet(_snakeHeadScorePerTier[mobTier -1]);
                 break;
             }
             case MobType.MainCristal:
             {   
-                MultiplyerSet(MobType.MainCristal);
-                StreakSet(_mainCristalScorePerTier[mobTier -1]);
+                ScoreNew(MobType.MainCristal, mobTier, pos);
+                //MultiplyerSet(MobType.MainCristal);
+                //StreakSet(_mainCristalScorePerTier[mobTier -1]);
                 break;
             }
         } 
@@ -169,6 +174,47 @@ public partial class MainScene : Node2D
         _scoreStreak += value;
         _scoreStreakLabel.Text = _scoreStreak.ToString();
         _scoreStreakTimer.Start();
+    }
+
+    void ScoreNew(MobType mobType, int mobTier, Vector2 pos)
+    {
+                Node2D sl = Prefabs.ScoreLabel.Instantiate<Node2D>();
+        if(mobType != _currentMob)
+        {
+            lastSS = 0;
+            _currentMob = mobType;
+            switch(mobType)
+            {
+                case MobType.Zombie:
+                    sl.GetNode<Label>("Label").Text = (_zombieScorePerTier[mobTier -1]).ToString();
+                    break;
+                case MobType.SnakeHead:
+                    sl.GetNode<Label>("Label").Text = (_snakeHeadScorePerTier[mobTier - 1]).ToString();
+                    break;
+                case MobType.MainCristal:
+                    sl.GetNode<Label>("Label").Text = (_mainCristalScorePerTier[mobTier - 1]).ToString();
+                    break;
+            }
+        }
+        else
+        {
+            switch(mobType)
+            {
+                case MobType.Zombie:
+                    sl.GetNode<Label>("Label").Text = (_zombieScorePerTier[mobTier -1] * lastSS).ToString();
+                    break;
+                case MobType.SnakeHead:
+                    sl.GetNode<Label>("Label").Text = (_snakeHeadScorePerTier[mobTier - 1] * lastSS).ToString();
+                    break;
+                case MobType.MainCristal:
+                    sl.GetNode<Label>("Label").Text = (_mainCristalScorePerTier[mobTier - 1] * lastSS).ToString();
+                    break;
+            }
+            lastSS++;
+        }
+        //sl.GetNode<Label>("Label").Text = 
+        sl.Position = pos;
+        AddChild(sl);
     }
     
     void MultiplyerReset()
@@ -208,8 +254,8 @@ public partial class MainScene : Node2D
         _scoreStreakLabel = _player.GetNode<Camera2D>("Camera2D").GetNode<Label>("score_streak");
         _scoreStreakMultiplyerLabel = _player.GetNode<Camera2D>("Camera2D").GetNode<Label>("score_streak_multiplyer");
 
-        _scoreStreakTimer.Timeout += StreakReset;
-        _scoreStreakMultiplyerTimer.Timeout += MultiplyerReset;//toolong
+        //_scoreStreakTimer.Timeout += StreakReset;
+        //_scoreStreakMultiplyerTimer.Timeout += MultiplyerReset;//toolong
         _newWaveTimer.Timeout += NewWave;
         _tierUpgradeTimer.Timeout += () => _currentMobTier++;
         _extraMobTimer.Timeout += () => _tieredMobsForNextWave.Enqueue(_currentMobTier);

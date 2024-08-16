@@ -2,6 +2,7 @@ namespace GameE;
 
 public partial class Prefabs
 {
+    public static PackedScene ScoreLabel {get; } = Load("ScoreNode");
     public static PackedScene MainCristal {get; } = Load("Mobs/Cristal/MainCristal");
     public static PackedScene Cristal {get; } = Load("Mobs/Cristal/Cristal");
     public static PackedScene SnakeHead {get; } = Load("Mobs/Snake/SnakeHead");

@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://pkl5ytj4sfwa"]
+
+[ext_resource type="Script" path="res://ScoreNode.cs" id="1_obrin"]
+
+[node name="ScoreNode" type="Node2D"]
+script = ExtResource("1_obrin")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -147.0
+offset_top = -68.0
+offset_right = 144.0
+offset_bottom = 53.0
