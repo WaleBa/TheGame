@@ -187,12 +187,18 @@ public partial class MainScene : Node2D
             {
                 case MobType.Zombie:
                     sl.GetNode<Label>("Label").Text = (_zombieScorePerTier[mobTier -1]).ToString();
+                    _score += (ulong)_zombieScorePerTier[mobTier -1];
+                    _scoreLabel.Text = _score.ToString(); 
                     break;
                 case MobType.SnakeHead:
                     sl.GetNode<Label>("Label").Text = (_snakeHeadScorePerTier[mobTier - 1]).ToString();
+                    _score += (ulong)_snakeHeadScorePerTier[mobTier -1];
+                    _scoreLabel.Text = _score.ToString(); 
                     break;
                 case MobType.MainCristal:
                     sl.GetNode<Label>("Label").Text = (_mainCristalScorePerTier[mobTier - 1]).ToString();
+                    _score += (ulong)_mainCristalScorePerTier[mobTier -1];
+                    _scoreLabel.Text = _score.ToString(); 
                     break;
             }
         }
@@ -202,12 +208,18 @@ public partial class MainScene : Node2D
             {
                 case MobType.Zombie:
                     sl.GetNode<Label>("Label").Text = (_zombieScorePerTier[mobTier -1] * lastSS).ToString();
+                    _score += (ulong)_zombieScorePerTier[mobTier -1];
+                    _scoreLabel.Text = _score.ToString(); 
                     break;
                 case MobType.SnakeHead:
                     sl.GetNode<Label>("Label").Text = (_snakeHeadScorePerTier[mobTier - 1] * lastSS).ToString();
+                    _score += (ulong)_snakeHeadScorePerTier[mobTier -1];
+                    _scoreLabel.Text = _score.ToString(); 
                     break;
                 case MobType.MainCristal:
                     sl.GetNode<Label>("Label").Text = (_mainCristalScorePerTier[mobTier - 1] * lastSS).ToString();
+                   _score += (ulong)_mainCristalScorePerTier[mobTier -1];
+                    _scoreLabel.Text = _score.ToString(); 
                     break;
             }
             lastSS++;

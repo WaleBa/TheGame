@@ -22,10 +22,14 @@ shape = SubResource("CircleShape2D_fsqpp")
 zoom = Vector2(0.5, 0.5)
 
 [node name="score" type="Label" parent="Camera2D"]
-offset_left = 261.0
-offset_top = -315.0
+offset_left = -540.0
+offset_top = -599.0
 offset_right = 565.0
-offset_bottom = -288.0
+offset_bottom = -497.0
+theme_override_font_sizes/font_size = 30
+text = "yuyuyuyuuyyuuy"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="score_streak" type="Label" parent="Camera2D"]
 offset_left = -107.0
