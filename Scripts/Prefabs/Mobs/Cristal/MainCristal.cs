@@ -54,7 +54,7 @@ public partial class MainCristal : Cristal
 	
 	void SpawnCristal()
 	{
-		if(IsInstanceValid(this) == false || _cristals.Count >= Tier || Tier == 1)
+		if(IsInstanceValid(this) == false || _cristals.Count >= (Tier + 3) || Tier == 1)
 			return;
 
 		Cristal cristal = Prefabs.Cristal.Instantiate<Cristal>();
@@ -163,7 +163,7 @@ public partial class MainCristal : Cristal
 		_bulletOffsetFromCentre = MCrad + Crad * 2;// + 32.5f;//130 * Tier;//too long names
 		_bulletOffsetFromEachOther = 96.5f;
 		_bulletOffsetFromEachOtherRotation = 0.05f;
-		_armCount = Tier + 3;
+		_armCount = Tier + 5;
 		_bulletsPerArmCount =  (int)((_radius - MCrad - 2 * Crad + 65 ) / 97.5f);//= 9 + Tier * 2;
 
 		SpawnFloatingBullets();

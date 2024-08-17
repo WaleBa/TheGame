@@ -22,6 +22,7 @@ public partial class MainScene : Node2D
 
     int bariera = 10;
 
+    ulong lazyticks = 0;
     Timer _newWaveTimer;
     Timer _tierUpgradeTimer;
     Timer _extraMobTimer;
@@ -52,18 +53,8 @@ public partial class MainScene : Node2D
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
-            switch(_random.Next(1, 5))
+            switch(_random.Next(1, 6))
             {
-                case 1 | 2 | 3:
-                    Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
-                    
-                    zombie.Position = newMobPosition;
-                    zombie.Tier = _tieredMobsForNextWave.Dequeue();
-                    zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
-                    
-                    AddChild(zombie);
-                    break;
-
                 case 4:
                     //GD.Print("snake pre");
                     //if(_tieredMobsForNextWave.Peek() == 1)
@@ -78,7 +69,7 @@ public partial class MainScene : Node2D
                     AddChild(snake);
                     break;
 
-               default://bad luck ? or not working?
+               case 6://bad luck ? or not working?
                     //GD.Print("cristsl pre");                    
                     //if(_tieredMobsForNextWave.Peek() == 1 || _tieredMobsForNextWave.Peek() == 2)
                      //   break;
@@ -94,6 +85,16 @@ public partial class MainScene : Node2D
                     
                     AddChild(cristal);
                     break;
+                                    default:
+                    Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
+                    
+                    zombie.Position = newMobPosition;
+                    zombie.Tier = _tieredMobsForNextWave.Dequeue();
+                    zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
+                    
+                    AddChild(zombie);
+                    break;
+
             }
        }
     }
@@ -274,10 +275,14 @@ public partial class MainScene : Node2D
         
         _tieredMobsForNextWave.Enqueue(1);
         NewWave();
-        _player.Death  += (Node2D mob) => {GD.Print($"score: {_score} !!!");};
+        _player.Death  += (Node2D mob) => {GD.Print($"score: {_score} !!! and time: {lazyticks / 60}s");};
     }
     public override void _Draw()
     {
         DrawCircle(new Vector2(0,0), 2500, new Color(0.361f, 0.361f, 0.353f));
+    }
+    public override void _PhysicsProcess(double delta)
+    {
+        lazyticks++;
     }
 }

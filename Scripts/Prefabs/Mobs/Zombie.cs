@@ -51,6 +51,7 @@ public partial class Zombie : RigidBody2D
         
         ProcessMode =  ProcessModeEnum.Disabled;
         Visible = false; 
+        //Global.zombiePool.Enqueue(this);
         Death?.Invoke(this);
                    //QueueFree
     }

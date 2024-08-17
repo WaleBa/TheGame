@@ -26,7 +26,7 @@ public partial class Weapon : Node2D
 	public void LevelUp()
 	{
 		GD.Print("lvlup");
-		_automaticCooldownTimer.WaitTime *= 0.75f;
+		_automaticCooldownTimer.WaitTime = _automaticCooldownTimer.WaitTime - 0.025f;
 		_shootgunBulletCount += 2;
 		_shootgunPower += 10;
 		_automaticPower += 5;

@@ -20,7 +20,7 @@ public partial class SnakeHead : SnakeCell
 	
     public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {   
-        Escape();
+        //Escape();
         
         HP -= damage;
         
@@ -77,7 +77,7 @@ public partial class SnakeHead : SnakeCell
         {
             cell.DistanceBetweenCells =  3 * A;//97;//4 * _body.Count;
             cell.Scale = new Vector2(1 + 0.3f * (Tier - 1), 1 + 0.3f * (Tier - 1));
-            cell.Speed = 300;
+            cell.Speed = 400;
         }
     }
 
