@@ -92,11 +92,11 @@ public partial class Zombie : RigidBody2D
         _collisionBox.BodyEntered += (Node2D body) =>
         {
             if(body is Player player)
-                player.Hit();
+                player.Hit(Tier * 5, false);
         };
     }
 
-    public override void _IntegrateForces(PhysicsDirectBodyState2D state)
+    public override void _IntegrateForces(PhysicsDirectBodyState2D state)//change place
     {
         ApplyCentralForce(NewDirection() * _speed * 10);
     }

@@ -38,7 +38,7 @@ public partial class SnakeCell : Area2D
         BodyEntered += (Node2D body) =>
         {
             if(body is Player player)
-                player.Hit();
+                player.Hit(15, false);
         };
     }
 

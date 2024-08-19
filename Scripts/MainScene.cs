@@ -53,13 +53,19 @@ public partial class MainScene : Node2D
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
-            switch(_random.Next(1, 6))
+            int rand = _random.Next(1, 6);
+            if(rand == 1 | rand == 2 | rand == 3 | rand == 6)
             {
-                case 4:
-                    //GD.Print("snake pre");
-                    //if(_tieredMobsForNextWave.Peek() == 1)
-                        //break;
-                    //GD.Print("snake po");
+                Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
+                    
+                    zombie.Position = newMobPosition;
+                    zombie.Tier = _tieredMobsForNextWave.Dequeue();
+                    zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
+                    
+                    AddChild(zombie);
+            }
+            else if(rand == 4)
+            {
                     SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     
                     snake.Position = newMobPosition;
@@ -67,14 +73,12 @@ public partial class MainScene : Node2D
                     snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier, snake.Position);
 
                     AddChild(snake);
-                    break;
 
-               case 6://bad luck ? or not working?
-                    //GD.Print("cristsl pre");                    
-                    //if(_tieredMobsForNextWave.Peek() == 1 || _tieredMobsForNextWave.Peek() == 2)
-                     //   break;
-                    //GD.Print("cristal po");
-                    MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
+            }
+            else if(rand == 5)
+            {
+                GD.Print("cristal");
+                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
                     cristal.Tier = _tieredMobsForNextWave.Dequeue();
                     cristal.Radius = 1250 * (1 + 0.5f * (cristal.Tier - 1));
@@ -84,17 +88,6 @@ public partial class MainScene : Node2D
                     cristal.Death += (Node2D mob) => MobKill(MobType.MainCristal, cristal.Tier, cristal.Position);
                     
                     AddChild(cristal);
-                    break;
-                                    default:
-                    Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
-                    
-                    zombie.Position = newMobPosition;
-                    zombie.Tier = _tieredMobsForNextWave.Dequeue();
-                    zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
-                    
-                    AddChild(zombie);
-                    break;
-
             }
        }
     }

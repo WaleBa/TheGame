@@ -92,7 +92,7 @@ public partial class SnakeHead : SnakeCell
         SetRadious();
     }
 
-    void SetRadious() => _radius = _body.Count * DistanceBetweenCells / 2 / Mathf.Pi + (A_SCALE + A_SCALE * 0.3f * (Tier - 1)) / 2;// /2 pi r
+    void SetRadious() => _radius = _hpPerTier[Tier] * 0.75f * DistanceBetweenCells / 2 / Mathf.Pi + (A_SCALE + A_SCALE * 0.3f * (Tier - 1)) / 2;// /2 pi r
     
     float GetRotation(float delta)
     {
@@ -136,7 +136,7 @@ public partial class SnakeHead : SnakeCell
         BodyEntered += (Node2D body) =>
         {
             if(body is Player player)
-                player.Hit();
+                player.Hit(15, false);
         };
 	}
 

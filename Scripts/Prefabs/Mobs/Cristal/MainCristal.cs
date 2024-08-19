@@ -171,7 +171,7 @@ public partial class MainCristal : Cristal
 		BodyEntered += (Node2D body) =>
         {
             if(body is Player player)
-                player.Hit();
+                player.Hit(20, false);
         };
 	}
 

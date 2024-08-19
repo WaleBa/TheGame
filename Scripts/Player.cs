@@ -6,12 +6,30 @@ public partial class Player : CharacterBody2D
 	public event DeathEventHandler Death;
 
 	const float SPEED = 100.0f;//not changable?
-	
+	int _hp = 20;
 	Weapon _weapon;
+	Timer timer;
+	bool floa = false;
 
 	public void LevelUp() => _weapon.LevelUp(); //need?
 
-	public void Hit() => Die();
+	public void Hit(int damage, bool flo)
+	{
+		if(floa == true)
+			timer.WaitTime = 2.5f;
+		if(timer.IsStopped() == false)
+			return;
+		_hp -= damage;
+		if(flo == true)
+		{
+			floa = true;
+			timer.WaitTime = 0.25f;
+		}
+		timer.Start();
+		GetNode<ProgressBar>("ProgressBar").Value -= damage;
+        if(_hp <= 0)
+            CallDeferred("Die");
+	}
 	
 	void Die()
 	{
@@ -40,7 +58,9 @@ public partial class Player : CharacterBody2D
 
     public override void _Ready()
     {
+		timer = GetNode<Timer>("Timer");
 		_weapon = GetNode<Weapon>("Weapon");
+		GetNode<ProgressBar>("ProgressBar").Value = 20;
     }
 
     public override void _PhysicsProcess(double delta)
