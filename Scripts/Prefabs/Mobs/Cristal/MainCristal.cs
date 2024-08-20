@@ -1,15 +1,21 @@
 namespace GameE;
 
-public partial class MainCristal : Cristal
+public partial class MainCristal : RigidBody2D
 {
-	public new delegate void DeathEventHandler(Node2D me);
-	public new event DeathEventHandler Death;
+	public delegate void DeathEventHandler(Node2D me);
+	public event DeathEventHandler Death;
 
-	List<Cristal> _cristals = new List<Cristal>();	
+    public int Tier { get; set; }
 
-	Queue<Vector2> _nextCristalPosition = new Queue<Vector2>();
+	protected static int[] _hpPerTier = { 150, 750, 2700, 8700, 26850, 81450, 245400, 737400, 2213550, 6642150 };
 
-	Area2D _cristalCollisionBox;
+    protected int _hp;
+
+	List<Cristal> _cristals = new List<Cristal>();	//bullet at edge overllapoign
+
+	Queue<Vector2> _nextCristalPosition = new Queue<Vector2>();//too brutal rigid bosies
+
+	CollisionShape2D _cristalCollisionBox;//check if scaling should only work on whole node
 	
 	Marker2D _bulletRotationMarker;//for future use
 	Marker2D _cristalRotationMarker;
@@ -34,7 +40,7 @@ public partial class MainCristal : Cristal
 	int _bulletsPerArmCount;
 	float _bulletOffsetFromEachOtherRotation;
 
-	public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
+	public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
         _hp -= damage;
 
@@ -42,7 +48,7 @@ public partial class MainCristal : Cristal
             CallDeferred("Die");
     }
 
-	protected override void Die()
+	protected void Die()
     {
 		if(IsInstanceValid(this) == false)
 			return;
@@ -110,11 +116,6 @@ public partial class MainCristal : Cristal
 			}
 		}
 	}
-	
-	int  caseArena()
-	{
-		return (Position.DistanceTo(new Vector2(0,0)) >= Global.MAX_DISTANCE_FROM_CENTRE) ? 4 : 1;
-	}
 
 	Vector2 NewDirection()
     {
@@ -123,15 +124,7 @@ public partial class MainCristal : Cristal
 		if(Position.DistanceTo(_target.Position) > _radius)
         	newDirection = (_target.Position - Position).Normalized();
 
-        Godot.Collections.Array<Area2D> bodies = _cristalCollisionBox.GetOverlappingAreas();
-        for(int i = 0; i < bodies.Count; i++)
-        {
-            if(bodies[i].GetParent() is not MainCristal)
-                continue;
-        
-            newDirection += (Position - bodies[i].GlobalPosition).Normalized();
-        }
-        return newDirection.Normalized() * caseArena();
+        return newDirection.Normalized();
     }
 
 	public override void _Ready()
@@ -145,10 +138,10 @@ public partial class MainCristal : Cristal
 		_ubgradeTimer = GetNode<Timer>("ubgrade");		
 		_bulletRotationMarker = GetNode<Marker2D>("bullet_rotation_marker");
 		_cristalRotationMarker = GetNode<Marker2D>("cristal_rotation_marker");
-		_cristalCollisionBox = GetNode<Area2D>("cristal_collision_box");
+		_cristalCollisionBox = GetNode<CollisionShape2D>("CollisionShape2D");
 
 		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(2+ 0.5f * (Tier - 2), 2 + 0.5f * (Tier - 2));// * (float)Tier;// /2?
-		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(2+ 0.5f * (Tier - 2), 2 + 0.5f * (Tier - 2));// = new Vector2(1, 1) * (float)Tier;
+		GetNode<Area2D>("hit_box").GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(2+ 0.5f * (Tier - 2), 2 + 0.5f * (Tier - 2));// = new Vector2(1, 1) * (float)Tier;
 		//_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 4;
 		_cristalCollisionBox.Scale = new Vector2(1 + 0.5f * (Tier -1), 1 + 0.5f * (Tier - 1));
 
@@ -168,7 +161,7 @@ public partial class MainCristal : Cristal
 
 		SpawnFloatingBullets();
 
-		BodyEntered += (Node2D body) =>
+		GetNode<Area2D>("hit_box").BodyEntered += (Node2D body) =>
         {
             if(body is Player player)
                 player.Hit(20, false);
@@ -179,12 +172,11 @@ public partial class MainCristal : Cristal
 	{	
 		_bulletRotationMarker.Rotate(-(float)delta/3);// /3 good speed?
 		_cristalRotationMarker.Rotate((float)delta/3);
-
-		_velocity = NewDirection() * _speed * (float)delta;
-		_velocity = _velocity.Lerp(Vector2.Zero, 0.1f);
-
-		Position += _velocity;
 	}
 
+    public override void _IntegrateForces(PhysicsDirectBodyState2D state)//change place
+    {
+        ApplyCentralForce(NewDirection() * _speed * 10);
+    }
 }
 

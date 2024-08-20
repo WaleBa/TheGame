@@ -25,6 +25,13 @@ public partial class GoodBullet : Area2D
             if(IsInstanceValid(this) == true)
                 QueueFree();
         }
+        else if(body.IsInGroup("HitBox"))
+        {
+            body.GetParent().Call("Hit", Damage, 3, (body.Position - Position).Normalized());
+
+            if(IsInstanceValid(this) == true)
+                QueueFree();
+        }
     }
 
     public override void _Ready()

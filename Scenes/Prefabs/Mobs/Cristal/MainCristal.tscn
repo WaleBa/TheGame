@@ -4,12 +4,18 @@
 [ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_7fald"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v3bmr"]
-radius = 65.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_5061v"]
 radius = 1250.0
 
-[node name="MainCristal" type="Area2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_5061v"]
+radius = 65.0
+
+[node name="MainCristal" type="RigidBody2D"]
+visibility_layer = 2
+collision_layer = 2
+collision_mask = 2
+continuous_cd = 1
+lock_rotation = true
+linear_damp = 5.0
 script = ExtResource("1_ryao4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -17,6 +23,7 @@ self_modulate = Color(1, 0, 1, 1)
 texture = ExtResource("2_7fald")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visibility_layer = 2
 shape = SubResource("CircleShape2D_v3bmr")
 
 [node name="bullet_rotation_marker" type="Marker2D" parent="."]
@@ -28,7 +35,9 @@ visibility_layer = 2
 wait_time = 5.0
 autostart = true
 
-[node name="cristal_collision_box" type="Area2D" parent="."]
+[node name="hit_box" type="Area2D" parent="." groups=["HitBox"]]
+visibility_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="cristal_collision_box"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hit_box"]
+visibility_layer = 2
 shape = SubResource("CircleShape2D_5061v")

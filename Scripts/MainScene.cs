@@ -54,7 +54,7 @@ public partial class MainScene : Node2D
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
             int rand = _random.Next(1, 6);
-            if(rand == 1 | rand == 2 | rand == 3 | rand == 6)
+            if(rand == 1 | rand == 2 | rand == 3 | rand == 4)
             {
                 Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
                     
@@ -64,7 +64,7 @@ public partial class MainScene : Node2D
                     
                     AddChild(zombie);
             }
-            else if(rand == 4)
+            else if(rand == 5)
             {
                     SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     
@@ -75,9 +75,8 @@ public partial class MainScene : Node2D
                     AddChild(snake);
 
             }
-            else if(rand == 5)
+            else if(rand == 6)
             {
-                GD.Print("cristal");
                      MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
                     cristal.Tier = _tieredMobsForNextWave.Dequeue();
