@@ -4,6 +4,9 @@ public partial class FloatingEvilBullet : Area2D
 {
     public int SpawnTimerOffset;
     
+    Player Target;
+    Node2D _mainScene;
+
     Timer _vanishTimer;
     CollisionShape2D _collisionShape;
     Sprite2D _sprite;
@@ -29,6 +32,8 @@ public partial class FloatingEvilBullet : Area2D
     {
         AddToGroup("Projectiles");
 
+		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
+        Target = _mainScene.GetNode<Player>("Player");
         _sprite = GetNode<Sprite2D>("Sprite2D");
         _collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");//naming conventin in editor
         _vanishTimer = GetNode<Timer>("vanish_cooldown");
@@ -40,6 +45,12 @@ public partial class FloatingEvilBullet : Area2D
 
         _vanishTimer.Timeout += () => 
         {
+            if(Position.DistanceTo(Target.Position) <= 130)
+            {
+                _vanishTimer.WaitTime = 2.0f;
+                _vanishTimer.Start();
+                return;
+            }
             _vanishTimer.WaitTime = 5.0f;
 
             _collisionShape.Disabled = false;

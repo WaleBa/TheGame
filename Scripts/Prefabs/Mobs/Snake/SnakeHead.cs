@@ -5,16 +5,16 @@ public partial class SnakeHead : SnakeCell
     public int Tier { get; set; }
     
     static int[] _hpPerTier = { 75, 150, 300, 700, 13425, 40725, 122700, 368700, 1106775, 3321075 };
-    static int[] _maxBodySizePerTier = { 10, 30, 50, 100, 150, 2430, 7290, 21870, 65610, 196830 };
+    static int[] _maxBodySizePerTier = { 10, 30, 90, 270, 810, 2430, 7290, 21870, 65610, 196830 };
     
     const float A_SCALE = 130;
 
 	List<SnakeCell> _body = new();//no add head?
 
-    Timer _regenerationTimer;
+    Timer _regenerationTimer;//dis bet cell smaller
 	Node _mainScene;
-
-	Vector2? _hidingSpot = null;
+//sometimes snake overriding can look cool
+    Vector2? _hidingSpot = null;
 
 	float _radius;
 	
@@ -54,7 +54,7 @@ public partial class SnakeHead : SnakeCell
 
     void SpawnCell()//could check if this is valid (same for zombies and cristals)
     {
-        if(IsInstanceValid(this) == false && _hidingSpot != null)
+        if(IsInstanceValid(this) == false && _hidingSpot != null)//last cell hp helps in player escaping
             return;
 
         SnakeCell snakeCell = Prefabs.SnakeCell.Instantiate<SnakeCell>();
@@ -77,7 +77,7 @@ public partial class SnakeHead : SnakeCell
         {
             cell.DistanceBetweenCells =  3 * A;//97;//4 * _body.Count;
             cell.Scale = new Vector2(1 + 0.3f * (Tier - 1), 1 + 0.3f * (Tier - 1));
-            cell.Speed = 400;
+            cell.Speed = 600;//do we need A?
         }
     }
 
@@ -91,8 +91,8 @@ public partial class SnakeHead : SnakeCell
         Scaling();
         SetRadious();
     }
-
-    void SetRadious() => _radius = _hpPerTier[Tier] * 0.75f * DistanceBetweenCells / 2 / Mathf.Pi + (A_SCALE + A_SCALE * 0.3f * (Tier - 1)) / 2;// /2 pi r
+// : 4 most classic one
+    void SetRadious() => _radius = _maxBodySizePerTier[Tier] * DistanceBetweenCells / Mathf.Pi / 4; //-  (A_SCALE + A_SCALE * 0.3f * (Tier - 1)) / 2;// /2 pi r // * 0.75f / 2
     
     float GetRotation(float delta)
     {
@@ -101,7 +101,8 @@ public partial class SnakeHead : SnakeCell
 
         if (_hidingSpot == null)
         {
-			Vector2 targetPos = Target.Position + (Position - Target.Position).Normalized().Rotated(_radius) * _radius;
+            //Vector2 targetPos = Target.Position + (Position - Target.Position).Normalized() * _radius; // cool snakey effect and escaping without hit
+			Vector2 targetPos = Target.Position + (Position - Target.Position).Normalized().Rotated(Mathf.Pi / 2) * _radius;//most classic
 			targetVector = targetPos - Position;
         }
         else
