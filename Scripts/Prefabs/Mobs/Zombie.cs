@@ -15,15 +15,26 @@ public partial class Zombie : RigidBody2D
                                 new Vector2(-1,-1) };//nie dokladne
 
     Node2D _mainScene;
-    Area2D _collisionBox;
+    Area2D _collisionBox;//less hp - stasiu more bullets
     Node2D _target;
-    
+    Sprite2D _sprite;
     int _hp; 
     int _speed = 150;
+
+    Color _finalColor = new Color(1, 0.5f, 0, 1);
+    Color _startColor = new Color(0, 0.5f, 0, 1);
     
     public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
+        if(IsInstanceValid(this) == false)
+            return;
+
         _hp -= damage;
+
+        float ht =_hpPerTier[Tier - 1];
+        float h = _hp;
+        float offset = 1 - ((float)_hp / (float)_hpPerTier[Tier -1]);
+        _sprite.Modulate = _startColor.Lerp(_finalColor, offset);
 
         ApplyCentralImpulse(recoilVectorGiven * recoilPower * 500);
 
@@ -80,7 +91,9 @@ public partial class Zombie : RigidBody2D
         _mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
         _target = _mainScene.GetNode<Player>("Player");
         _collisionBox = GetNode<Area2D>("collision_box");
-        
+        _sprite = GetNode<Sprite2D>("Sprite2D");
+
+        _sprite.Modulate = _startColor;
         _collisionBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
         GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
         GetNode<Sprite2D>("Sprite2D").Scale *= Tier;

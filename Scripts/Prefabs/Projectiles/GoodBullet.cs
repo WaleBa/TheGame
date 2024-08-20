@@ -15,7 +15,7 @@ public partial class GoodBullet : Area2D
             if(IsInstanceValid(body) == false)  
                 return;
 
-            body.Call("Hit",Damage, 1, (body.Position - Position).Normalized());//recoil is only for zombies so they should calculate it 
+            body.Call("Hit",Damage, 3, (body.Position - Position).Normalized());//recoil is only for zombies so they should calculate it 
 
             if(IsInstanceValid(this))
                 QueueFree();

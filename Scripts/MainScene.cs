@@ -48,14 +48,13 @@ public partial class MainScene : Node2D
 
     void NewWave()//name: spawn random mob
     {
-        return;
         while(_tieredMobsForNextWave.Count > 0)
         {
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
             int rand = _random.Next(1, 6);
-            if(rand == 6 | rand == 5 | rand == 4)
+            if(rand == 6 | rand == 5 | rand == 4 | rand == 1)
             {
                 Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
                     
@@ -76,7 +75,7 @@ public partial class MainScene : Node2D
                     AddChild(snake);
 
             }
-            else if(rand == 1 | rand == 2)
+            else if(rand == 2)
             {
                      MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
