@@ -15,5 +15,4 @@ public partial class Prefabs
     static PackedScene Load(string path) =>
         ResourceLoader.Load<PackedScene>($"res://Scenes/Prefabs/{path}.tscn");
 
-    public Queue<Node2D> zombiePool;
 }

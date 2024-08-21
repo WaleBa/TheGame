@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Console="*res://addons/sofiaconsole/Console.tscn"
 Global="*res://Scenes/Autoloads/Global.tscn"
+MobFabric="*res://MobFabric.tscn"
 
 [display]
 

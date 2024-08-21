@@ -10,7 +10,7 @@ public partial class Weapon : Node2D
 
 	Marker2D _weaponMarker;
 	Marker2D _bulletMarker;
-	
+	//add comments
 	MainScene _mainScene;
 
 	Timer _shootgunCooldownTimer;

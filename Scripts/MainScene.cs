@@ -17,6 +17,8 @@ public partial class MainScene : Node2D
     Random _random = new Random();
 
     MobType? _currentMob;
+    
+    MobFabric Fabricate;//good naming?
 
     Player _player;//get rid of saying +timer
 
@@ -56,13 +58,9 @@ public partial class MainScene : Node2D
             int rand = _random.Next(1, 6);
             if(rand == 6 | rand == 5 | rand == 4 | rand == 1)
             {
-                Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
-                    
-                    zombie.Position = newMobPosition;
-                    zombie.Tier = _tieredMobsForNextWave.Dequeue();
-                    zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
-                    
-                    AddChild(zombie);
+                   // zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
+                    //scoring outisde of main scene!
+                    AddChild(Fabricate.Zombie(_tieredMobsForNextWave.Dequeue(), newMobPosition));
             }
             else if(rand == 3)
             {
@@ -77,7 +75,7 @@ public partial class MainScene : Node2D
             }
             else if(rand == 2)
             {
-                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
+                    MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
                     cristal.Tier = _tieredMobsForNextWave.Dequeue();
                     cristal.Radius = 1250 * (1 + 0.5f * (cristal.Tier - 1));
@@ -249,6 +247,7 @@ public partial class MainScene : Node2D
 
     public override void _Ready()
     {
+        Fabricate = GetTree().Root.GetNode<MobFabric>("MobFabric");
         _scoreStreakTimer = GetNode<Timer>("score_streak");
         _scoreStreakMultiplyerTimer = GetNode<Timer>("score_streak_multiplyer");
         _newWaveTimer = GetNode<Timer>("new_wave");

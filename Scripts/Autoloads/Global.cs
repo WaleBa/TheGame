@@ -22,6 +22,6 @@ public partial class Global : Node
 
     public override void _Ready()
 	{
-        _instance = this;
+        _instance = this;//works?
     }
 }

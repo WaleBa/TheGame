@@ -63,6 +63,7 @@ public partial class Zombie : RigidBody2D
         ProcessMode =  ProcessModeEnum.Disabled;
         Visible = false; 
         //Global.zombiePool.Enqueue(this);
+        GetParent().RemoveChild(this);
         Death?.Invoke(this);
                    //QueueFree
     }
@@ -86,6 +87,9 @@ public partial class Zombie : RigidBody2D
 
     public override void _Ready()
     {
+        ProcessMode =  ProcessModeEnum.Pausable;
+        Visible = true; 
+
         AddToGroup("Mobs");
 
         _mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
@@ -102,8 +106,8 @@ public partial class Zombie : RigidBody2D
         _hp = _hpPerTier[Tier - 1];
         _speed = 150;
 
-        _collisionBox.BodyEntered += (Node2D body) =>
-        {
+        _collisionBox.BodyEntered += (Node2D body) =>//throws soft error
+        {//could init values in diff function
             if(body is Player player)
                 player.Hit(Tier * 5, false);
         };

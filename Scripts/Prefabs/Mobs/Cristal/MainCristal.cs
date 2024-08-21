@@ -12,7 +12,7 @@ public partial class MainCristal : RigidBody2D
     protected int _hp;
 
 	List<Cristal> _cristals = new List<Cristal>();	//bullet at edge overllapoign
-
+//no need for next crista pos -> as with floatings vanish()
 	Queue<Vector2> _nextCristalPosition = new Queue<Vector2>();//too brutal rigid bosies
 
 	CollisionShape2D _cristalCollisionBox;//check if scaling should only work on whole node
