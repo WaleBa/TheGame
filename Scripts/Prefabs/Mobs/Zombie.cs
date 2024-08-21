@@ -65,10 +65,7 @@ public partial class Zombie : RigidBody2D
         
         ProcessMode =  ProcessModeEnum.Disabled;
         Visible = false; 
-        //Global.zombiePool.Enqueue(this);
-        //GetParent().RemoveChild(this);
         Death?.Invoke(this);
-                   //QueueFree
     }
 
     Vector2 NewDirection()
@@ -90,18 +87,17 @@ public partial class Zombie : RigidBody2D
 
     public void DirtySet(int tier, Vector2 position)
     {
-        GD.Print($"{tier}, {position}");
         ProcessMode =  ProcessModeEnum.Pausable;
         Visible = true; 
+
         Tier = tier; 
-        GD.Print($"tier {Tier}");
         Position = position;
-                
-        Mass = Tier;
+        Mass = Tier;//need mass:?
         _hp = _hpPerTier[Tier - 1];
         _speed = 150;
-        
+
         _sprite.Modulate = _startColor;
+
         _collisionBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; //snake collision box
         GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; 
         GetNode<Sprite2D>("Sprite2D").Scale  = new Vector2(0.2f, 0.2f) * Tier; 

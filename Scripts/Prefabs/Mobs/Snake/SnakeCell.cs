@@ -4,6 +4,7 @@ public partial class SnakeCell : Area2D
 {
 	public delegate void DeathEventHandler(Node2D me);
 	public event DeathEventHandler Death;
+    //public DeathEventHandler handler = Die();///check
 
     public Node2D Target { get; set; }
     public int HP { get; set; }
@@ -16,24 +17,34 @@ public partial class SnakeCell : Area2D
         HP -= damage;
 
         if(HP <= 0)
-            Die();
+            CallDeferred("Die", this);
     }
 
-    protected virtual void Die()
+    protected virtual void Die(Node2D me)
     {
         if(IsInstanceValid(this) == false)
             return;
 
-        Death?.Invoke(this);
+        ((SnakeCell)Target).Death -= Die;
         ProcessMode =  ProcessModeEnum.Disabled;
-        Visible = false;         
+        Visible = false; 
+        Death?.Invoke(this);     
+    }
+
+    public void DirtySet(Node2D target, Vector2 position, int hp)
+    {
+        ProcessMode =  ProcessModeEnum.Pausable;
+        Visible = true; 
+        
+        Target = target;
+        Position = position;
+        HP = hp;
+        ((SnakeCell)Target).Death += Die;//someCell => Die();        
     }
 
     public override void _Ready()
     {    
         AddToGroup("Mobs");
-
-        ((SnakeCell)Target).Death +=  someCell => Die();
 
         BodyEntered += (Node2D body) =>
         {

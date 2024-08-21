@@ -50,39 +50,34 @@ public partial class MainScene : Node2D
 
     void NewWave()//name: spawn random mob
     {
-        Zombie z = Fabricate.Zombie();
-        z.DirtySet(3, new Vector2(-100,0));
-        Zombie z2 = Fabricate.Zombie();
-        z2.DirtySet(3, new Vector2(100,0));
-        Zombie z3 = Fabricate.Zombie();
-        z3.DirtySet(1, new Vector2(1000,0));
-        Zombie z4 = Fabricate.Zombie();
-        z4.DirtySet(1, new Vector2(1000,0));
-        Zombie z5 = Fabricate.Zombie();
-        z5.DirtySet(1, new Vector2(1000,0));
-        return;
+       // SnakeHead s = Fabricate.SnakeHead();
+       // s.DirtySet(2, new Vector2(500,0));
+        //SnakeHead s2 = Fabricate.SnakeHead();
+        //s2.DirtySet(2, new Vector2(-500,0));
+        //return;
         while(_tieredMobsForNextWave.Count > 0)
         {
+                    SnakeHead snake = Fabricate.SnakeHead();
+                    snake.DirtySet(2, new Vector2(1000, 0));
+            return;
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
             int rand = _random.Next(1, 6);
-            if(rand == 6 | rand == 5 | rand == 4 | rand == 1)
+            if(rand == 7)
             {
                    // zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
                     //scoring outisde of main scene!
                     //Zombie z = Fabricate.Zombie();
                   //  z.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
             }
-            else if(rand == 7)
+            else if(rand == 6 | rand == 5 | rand == 4 | rand == 1)
             {
-                    SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
-                    
-                    snake.Position = newMobPosition;
-                    snake.Tier = _tieredMobsForNextWave.Dequeue();
+                   // SnakeHead snake = Fabricate.SnakeHead();
+                   // snake.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
+                    //snake.Position = newMobPosition;
+                    //snake.Tier = _tieredMobsForNextWave.Dequeue();
                     snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier, snake.Position);
-
-                    AddChild(snake);
 
             }
             else if(rand == 7)

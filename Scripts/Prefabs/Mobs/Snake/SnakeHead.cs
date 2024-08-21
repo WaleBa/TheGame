@@ -2,6 +2,9 @@ namespace GameE;
 
 public partial class SnakeHead : SnakeCell
 {
+    	public new delegate void DeathEventHandler(Node2D me);
+	public new event DeathEventHandler Death;
+
     public int Tier { get; set; }
     
     static int[] _hpPerTier = { 75, 150, 300, 700, 13425, 40725, 122700, 368700, 1106775, 3321075 };
@@ -16,6 +19,7 @@ public partial class SnakeHead : SnakeCell
 //sometimes snake overriding can look cool
     Vector2? _hidingSpot = null;
 
+    MobFabric Fabricate;
 	float _radius;
 	
     public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
@@ -25,7 +29,7 @@ public partial class SnakeHead : SnakeCell
         HP -= damage;
         
         if(HP <= 0)
-            Die();
+            CallDeferred("Die", this);
     }
 
     async void Escape()
@@ -57,14 +61,11 @@ public partial class SnakeHead : SnakeCell
         if(IsInstanceValid(this) == false && _hidingSpot != null)//last cell hp helps in player escaping
             return;
 
-        SnakeCell snakeCell = Prefabs.SnakeCell.Instantiate<SnakeCell>();
-        
-        snakeCell.Target = _body.Last();
-        snakeCell.Position = _body.Last().Position;
+        SnakeCell snakeCell = Fabricate.SnakeCell();
+        snakeCell.DirtySet(_body.Last(), _body.Last().Position, (_maxBodySizePerTier[Tier -1] - (_body.Count - 1)) * 10);//-1 -> head
+
         snakeCell.Death += ManageCut;
         _body.Add(snakeCell);
-        snakeCell.HP = (_maxBodySizePerTier[Tier -1] - (_body.Count - 1)) * 10;//-1 -> head
-        _mainScene.AddChild(snakeCell);
 		//_mainScene.MoveChild(_mainScene, 0); // ?
     }
     
@@ -88,7 +89,7 @@ public partial class SnakeHead : SnakeCell
         if(index != -1)
             _body.RemoveRange(index, _body.Count - index);
         
-        Scaling();
+        Scaling();//won't be needed if snakes beakes as whole
         SetRadious();
     }
 // : 4 most classic one
@@ -111,14 +112,50 @@ public partial class SnakeHead : SnakeCell
         return currentVector.Angle() + (currentVector.AngleTo(targetVector) * (float)delta);
     }
 
+    protected override void Die(Node2D me)
+    {
+        if(IsInstanceValid(this) == false)
+            return;
+
+        ProcessMode =  ProcessModeEnum.Disabled;
+        Visible = false; 
+        Death?.Invoke(this);     
+    }
+
+
+    public void DirtySet(int tier, Vector2 position)
+    {
+        ProcessMode =  ProcessModeEnum.Pausable;
+        Visible = true; 
+
+        Tier = tier; 
+        Position = position;
+        //Mass = Tier;
+        HP = _hpPerTier[Tier - 1];
+        //_speed = 150;
+        
+        _body = new();//here bc snakeCell doesn't have body( could override)
+        _body.Add(this);
+        _regenerationTimer.Start();
+        
+        CallDeferred("CreateBody");
+
+        //_sprite.Modulate = _startColor;
+        
+        //_collisionBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; //snake collision box
+        //GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; 
+        //GetNode<Sprite2D>("Sprite2D").Scale  = new Vector2(0.2f, 0.2f) * Tier; 
+    }
+
     public override void _Ready()
 	{
         AddToGroup("Mobs");
 
+Fabricate = GetTree().Root.GetNode<MobFabric>("MobFabric");
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = _mainScene.GetNode<Player>("Player");
         _regenerationTimer = GetNode<Timer>("regeneration");
-        _body.Add(this);
+        //_body.Add(this);
 
         _regenerationTimer.Timeout += () => 
         {            
@@ -130,7 +167,7 @@ public partial class SnakeHead : SnakeCell
             SetRadious();
         };
         
-        HP =_hpPerTier[Tier -1];
+        //HP =_hpPerTier[Tier -1];
 
         CallDeferred("CreateBody");
 
