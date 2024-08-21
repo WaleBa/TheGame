@@ -50,6 +50,17 @@ public partial class MainScene : Node2D
 
     void NewWave()//name: spawn random mob
     {
+        Zombie z = Fabricate.Zombie();
+        z.DirtySet(3, new Vector2(-100,0));
+        Zombie z2 = Fabricate.Zombie();
+        z2.DirtySet(3, new Vector2(100,0));
+        Zombie z3 = Fabricate.Zombie();
+        z3.DirtySet(1, new Vector2(1000,0));
+        Zombie z4 = Fabricate.Zombie();
+        z4.DirtySet(1, new Vector2(1000,0));
+        Zombie z5 = Fabricate.Zombie();
+        z5.DirtySet(1, new Vector2(1000,0));
+        return;
         while(_tieredMobsForNextWave.Count > 0)
         {
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
@@ -60,9 +71,10 @@ public partial class MainScene : Node2D
             {
                    // zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
                     //scoring outisde of main scene!
-                    AddChild(Fabricate.Zombie(_tieredMobsForNextWave.Dequeue(), newMobPosition));
+                    //Zombie z = Fabricate.Zombie();
+                  //  z.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
             }
-            else if(rand == 3)
+            else if(rand == 7)
             {
                     SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     
@@ -73,7 +85,7 @@ public partial class MainScene : Node2D
                     AddChild(snake);
 
             }
-            else if(rand == 2)
+            else if(rand == 7)
             {
                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
@@ -260,7 +272,7 @@ public partial class MainScene : Node2D
 
         _scoreStreakTimer.Timeout += () => { lastSS = 0; }; //StreakReset;
         //_scoreStreakMultiplyerTimer.Timeout += MultiplyerReset;//toolong
-        _newWaveTimer.Timeout += NewWave;
+        //_newWaveTimer.Timeout += NewWave;
         _tierUpgradeTimer.Timeout += () => _currentMobTier++;
         _extraMobTimer.Timeout += () => _tieredMobsForNextWave.Enqueue(_currentMobTier);
         

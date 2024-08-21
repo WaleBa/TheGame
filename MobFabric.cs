@@ -6,17 +6,37 @@ public partial class MobFabric : Node
 
     Queue<Zombie> _zombiePool;
 
-    public Zombie Zombie(int tier, Vector2 position)
+    Zombie dek()
+    {
+        GD.Print("dek");
+        Zombie z =_zombiePool.Dequeue();
+        //z.DirtySet(tier, position);
+               // z.Tier = tier;
+       // z.Position = position;//death event passes node2D or zombie?
+        z.Death += (Node2D mob) => _zombiePool.Enqueue((Zombie)mob);//pause mobs
+        return z;
+    }
+    Zombie zap()
+    {
+        GD.Print("zap");
+        Zombie z = Prefabs.Zombie.Instantiate<Zombie>();
+        //z.Position = position;//death event passes node2D or zombie?
+        z.Death += (Node2D mob) => _zombiePool.Enqueue((Zombie)mob);//pause mobs
+         GetTree().Root.GetNode<Node2D>("MainScene").AddChild(z);
+         return z;
+    }
+
+    public Zombie Zombie()
     {
         Zombie zombie = (_zombiePool.Count() <= 0) 
-            ? Prefabs.Zombie.Instantiate<Zombie>() 
-            : _zombiePool.Dequeue();        
+            ? zap()
+            : dek();        
     
-        zombie.Tier = tier;
-        zombie.Position = position;//death event passes node2D or zombie?
-        zombie.Death += (Node2D mob) => _zombiePool.Enqueue((Zombie)mob);//pause mobs
+       // zombie.Tier = tier;
+       // zombie.Position = position;//death event passes node2D or zombie?
+       // zombie.Death += (Node2D mob) => _zombiePool.Enqueue((Zombie)mob);//pause mobs
         //zombie._Ready();//check
-        zombie.RequestReady();
+        //zombie.RequestReady();
 
         return zombie;
     }

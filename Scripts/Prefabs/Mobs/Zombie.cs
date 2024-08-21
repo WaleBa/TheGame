@@ -21,6 +21,8 @@ public partial class Zombie : RigidBody2D
     int _hp; 
     int _speed = 150;
 
+    MobFabric Fabricate;
+
     Color _finalColor = new Color(1, 0.5f, 0, 1);
     Color _startColor = new Color(0, 0.5f, 0, 1);
     
@@ -51,19 +53,20 @@ public partial class Zombie : RigidBody2D
         {
             for(int i = 0; i < 3;i++)
             {
-            Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
+            //Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
                 
-                zombie.Position = Position + _spreadDirection[i];
-                zombie.Tier = Tier - 1;
+                //zombie.Position = Position + _spreadDirection[i];
+                //zombie.Tier = Tier - 1;
             
-                _mainScene.AddChild(zombie);
+                Zombie z = Fabricate.Zombie();
+                z.DirtySet(Tier - 1, Position + _spreadDirection[i]);
             }
         }
         
         ProcessMode =  ProcessModeEnum.Disabled;
         Visible = false; 
         //Global.zombiePool.Enqueue(this);
-        GetParent().RemoveChild(this);
+        //GetParent().RemoveChild(this);
         Death?.Invoke(this);
                    //QueueFree
     }
@@ -85,18 +88,35 @@ public partial class Zombie : RigidBody2D
         return newDirection.Normalized();
     }
 
-    public override void _Ready()
+    public void DirtySet(int tier, Vector2 position)
     {
+        GD.Print($"{tier}, {position}");
         ProcessMode =  ProcessModeEnum.Pausable;
         Visible = true; 
+        Tier = tier; 
+        GD.Print($"tier {Tier}");
+        Position = position;
+                
+        Mass = Tier;
+        _hp = _hpPerTier[Tier - 1];
+        _speed = 150;
+        
+        _sprite.Modulate = _startColor;
+        _collisionBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; //snake collision box
+        GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; 
+        GetNode<Sprite2D>("Sprite2D").Scale  = new Vector2(0.2f, 0.2f) * Tier; 
+        }
 
+    public override void _Ready()
+    {
+                Fabricate = GetTree().Root.GetNode<MobFabric>("MobFabric");
         AddToGroup("Mobs");
 
         _mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
         _target = _mainScene.GetNode<Player>("Player");
         _collisionBox = GetNode<Area2D>("collision_box");
         _sprite = GetNode<Sprite2D>("Sprite2D");
-
+/*
         _sprite.Modulate = _startColor;
         _collisionBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
         GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
@@ -105,7 +125,7 @@ public partial class Zombie : RigidBody2D
         Mass = Tier;
         _hp = _hpPerTier[Tier - 1];
         _speed = 150;
-
+*/
         _collisionBox.BodyEntered += (Node2D body) =>//throws soft error
         {//could init values in diff function
             if(body is Player player)

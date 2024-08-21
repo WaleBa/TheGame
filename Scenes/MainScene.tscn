@@ -15,15 +15,15 @@ shape = SubResource("CircleShape2D_qn88v")
 [node name="Player" parent="." instance=ExtResource("2_74eph")]
 
 [node name="extra_mob" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 3.5
 autostart = true
 
 [node name="new_wave" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 7.0
 autostart = true
 
 [node name="tier_upgrade" type="Timer" parent="."]
-wait_time = 15.0
+wait_time = 7.0
 autostart = true
 
 [node name="score_streak" type="Timer" parent="."]
