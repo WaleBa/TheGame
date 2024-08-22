@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7dwdfv0mso3n"
-path="res://.godot/imported/zombie-ball2.svg-d5288736b054a18d11b621dc77563cc5.ctex"
+uid="uid://jdu48ii2gw6f"
+path="res://.godot/imported/texture-block[8].svg-b22fb83062cc78b7646eb88a0e7fab49.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://zombie-ball2.svg"
-dest_files=["res://.godot/imported/zombie-ball2.svg-d5288736b054a18d11b621dc77563cc5.ctex"]
+source_file="res://texture-block[8].svg"
+dest_files=["res://.godot/imported/texture-block[8].svg-b22fb83062cc78b7646eb88a0e7fab49.ctex"]
 
 [params]
 

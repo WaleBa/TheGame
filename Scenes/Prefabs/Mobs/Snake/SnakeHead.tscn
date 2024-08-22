@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cp0p70jultqv3"]
 
 [ext_resource type="Script" path="res://Scripts/Prefabs/Mobs/Snake/SnakeHead.cs" id="1_uwfgi"]
-[ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_bu3h1"]
+[ext_resource type="Texture2D" uid="uid://cw3e02ao4bljo" path="res://texture-ball.svg" id="2_imfwp"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_twb3t"]
 radius = 65.0
@@ -9,13 +9,14 @@ radius = 65.0
 [node name="SnakeHead" type="Area2D"]
 script = ExtResource("1_uwfgi")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-self_modulate = Color(0.403922, 0.00392157, 0.803922, 1)
-texture = ExtResource("2_bu3h1")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_twb3t")
 
 [node name="regeneration" type="Timer" parent="."]
 wait_time = 5.0
 autostart = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.498039, 0, 1, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_imfwp")

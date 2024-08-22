@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dr3g7hrm54h5k"]
 
 [ext_resource type="Script" path="res://Scripts/Prefabs/Projectiles/GoodBullet.cs" id="1_adhqs"]
-[ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_e7o54"]
+[ext_resource type="Texture2D" uid="uid://cff05iq6mln3s" path="res://texture-star8.svg" id="2_hkymq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_bt25m"]
 radius = 65.0
@@ -13,4 +13,5 @@ script = ExtResource("1_adhqs")
 shape = SubResource("CircleShape2D_bt25m")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_e7o54")
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_hkymq")

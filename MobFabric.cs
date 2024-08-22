@@ -7,7 +7,8 @@ public partial class MobFabric : Node
     Queue<Zombie> _zombiePool = new();//at start spawn at least 2000 snakeCells
     Queue<SnakeHead> _snakeHeadPool = new();//template
     Queue<SnakeCell> _snakeCellPool = new();
-    public Zombie Zombie()
+    
+    public Zombie Zombie()//ref
     {
         Zombie zombie; 
 

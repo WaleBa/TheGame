@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://vpf46q8q87jm"]
 
 [ext_resource type="Script" path="res://Scripts/Prefabs/Mobs/Cristal/Cristal.cs" id="1_kwhtk"]
-[ext_resource type="Texture2D" uid="uid://wbw8xcxu2klc" path="res://icon.svg" id="2_etgr5"]
+[ext_resource type="Texture2D" uid="uid://d2b6bqpgmnmlh" path="res://texture-cristal[8].svg" id="2_yrvhe"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v3bmr"]
 radius = 65.0
@@ -9,9 +9,10 @@ radius = 65.0
 [node name="Cristal" type="Area2D"]
 script = ExtResource("1_kwhtk")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-self_modulate = Color(1, 0, 1, 1)
-texture = ExtResource("2_etgr5")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_v3bmr")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0, 1, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_yrvhe")

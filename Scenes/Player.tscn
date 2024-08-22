@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://d4mbdecvc8325"]
 
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_4rotu"]
-[ext_resource type="Texture2D" uid="uid://cmqr1l5rjgx2b" path="res://Kamiya.jpg" id="2_oyri1"]
+[ext_resource type="Texture2D" uid="uid://cw3e02ao4bljo" path="res://texture-ball.svg" id="2_cefq2"]
 [ext_resource type="PackedScene" uid="uid://b7stl8sjwcwn0" path="res://Scenes/Weapon.tscn" id="3_r5jvt"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fsqpp"]
@@ -14,9 +14,8 @@ bg_color = Color(0.0627451, 0.976471, 0, 1)
 script = ExtResource("1_4rotu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(6, 1.99999)
-scale = Vector2(0.147632, 0.103333)
-texture = ExtResource("2_oyri1")
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_cefq2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_fsqpp")

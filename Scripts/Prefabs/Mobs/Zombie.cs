@@ -33,8 +33,6 @@ public partial class Zombie : RigidBody2D
 
         _hp -= damage;
 
-        float ht =_hpPerTier[Tier - 1];
-        float h = _hp;
         float offset = 1 - ((float)_hp / (float)_hpPerTier[Tier -1]);
         _sprite.Modulate = _startColor.Lerp(_finalColor, offset);
 

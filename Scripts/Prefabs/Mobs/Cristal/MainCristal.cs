@@ -27,7 +27,7 @@ public partial class MainCristal : RigidBody2D
 	Node2D _target;
 
 	Vector2 _velocity = new Vector2();
-	
+	    Sprite2D _sprite;
 	public float Radius;
 	float _radius;
 
@@ -40,9 +40,17 @@ public partial class MainCristal : RigidBody2D
 	int _bulletsPerArmCount;
 	float _bulletOffsetFromEachOtherRotation;
 
+
+
+    Color _finalColor = new Color(1, 1, 1, 1);
+    Color _startColor = new Color(1, 0, 1, 1);
+
 	public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
         _hp -= damage;
+
+		float offset = 1 - ((float)_hp / (float)_hpPerTier[Tier -1]);
+        _sprite.Modulate = _startColor.Lerp(_finalColor, offset);
 
         if(_hp <= 0)
             CallDeferred("Die");
@@ -130,9 +138,9 @@ public partial class MainCristal : RigidBody2D
 	public override void _Ready()
 	{
 		AddToGroup("Mobs");
-
+Tier++;
 		 _radius = Radius; //all those should be calculated properly
-
+        _sprite = GetNode<Sprite2D>("Sprite2D");
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
 		_target = _mainScene.GetNode<CharacterBody2D>("Player");		
 		_ubgradeTimer = GetNode<Timer>("ubgrade");		
@@ -140,8 +148,8 @@ public partial class MainCristal : RigidBody2D
 		_cristalRotationMarker = GetNode<Marker2D>("cristal_rotation_marker");
 		_cristalCollisionBox = GetNode<CollisionShape2D>("CollisionShape2D");
 
-		GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(2+ 0.5f * (Tier - 2), 2 + 0.5f * (Tier - 2));// * (float)Tier;// /2?
-		GetNode<Area2D>("hit_box").GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(2+ 0.5f * (Tier - 2), 2 + 0.5f * (Tier - 2));// = new Vector2(1, 1) * (float)Tier;
+		GetNode<Sprite2D>("Sprite2D").Scale *=  2 + 0.5f * (Tier - 2);// * (float)Tier;// /2?
+		GetNode<Area2D>("hit_box").GetNode<CollisionShape2D>("CollisionShape2D").Scale *= 2+ 0.5f * (Tier - 2);// = new Vector2(1, 1) * (float)Tier;
 		//_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 4;
 		_cristalCollisionBox.Scale = new Vector2(1 + 0.5f * (Tier -1), 1 + 0.5f * (Tier - 1));
 

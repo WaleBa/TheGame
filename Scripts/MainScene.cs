@@ -57,30 +57,29 @@ public partial class MainScene : Node2D
         //return;
         while(_tieredMobsForNextWave.Count > 0)
         {
-                    SnakeHead snake = Fabricate.SnakeHead();
-                    snake.DirtySet(2, new Vector2(1000, 0));
-            return;
+                   // SnakeHead snake = Fabricate.SnakeHead();
+                   // snake.DirtySet(2, new Vector2(1000, 0));
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
             int rand = _random.Next(1, 6);
-            if(rand == 7)
+            if( rand == 3 | rand == 4 | rand == 1 | rand == 2)
             {
                    // zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
                     //scoring outisde of main scene!
-                    //Zombie z = Fabricate.Zombie();
-                  //  z.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
+                    Zombie z = Fabricate.Zombie();
+                    z.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
             }
-            else if(rand == 6 | rand == 5 | rand == 4 | rand == 1)
+            else if(rand == 6)
             {
-                   // SnakeHead snake = Fabricate.SnakeHead();
-                   // snake.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
+                    SnakeHead snake = Fabricate.SnakeHead();
+                    snake.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
                     //snake.Position = newMobPosition;
                     //snake.Tier = _tieredMobsForNextWave.Dequeue();
-                    snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier, snake.Position);
+                    //snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier, snake.Position);
 
             }
-            else if(rand == 7)
+            else if(rand == 5)
             {
                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
@@ -267,7 +266,7 @@ public partial class MainScene : Node2D
 
         _scoreStreakTimer.Timeout += () => { lastSS = 0; }; //StreakReset;
         //_scoreStreakMultiplyerTimer.Timeout += MultiplyerReset;//toolong
-        //_newWaveTimer.Timeout += NewWave;
+        _newWaveTimer.Timeout += NewWave;
         _tierUpgradeTimer.Timeout += () => _currentMobTier++;
         _extraMobTimer.Timeout += () => _tieredMobsForNextWave.Enqueue(_currentMobTier);
         
