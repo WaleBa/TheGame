@@ -62,7 +62,7 @@ public partial class MainScene : Node2D
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
-            int rand = _random.Next(1, 6);
+            int rand = _random.Next(1, 6);//removed switch/case statement due to sussy bug
             if( rand == 3 | rand == 4 | rand == 1 | rand == 2)
             {
                    // zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
