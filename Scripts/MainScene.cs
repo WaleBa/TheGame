@@ -62,15 +62,21 @@ public partial class MainScene : Node2D
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
-            int rand = _random.Next(1, 6);//removed switch/case statement due to sussy bug
-            if( rand == 3 | rand == 4 | rand == 1 | rand == 2)
+            int rand = _random.Next(1, 4);//removed switch/case statement due to sussy bug
+            if(rand == 2 | rand == 1| rand == 4 | rand == 3)
             {
                    // zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
                     //scoring outisde of main scene!
                     Zombie z = Fabricate.Zombie();
-                    z.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
+                    GD.Print($"z.Tier mainScen: {z.Tier}");
+                    z.Tier = _tieredMobsForNextWave.Dequeue();
+                    GD.Print($"z.Tier (2) mainScen: {z.Tier}");
+                    z.Position = newMobPosition;
+                    z.Activate();
+                                       //z.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
+           // z.GetNode<Sprite2D>("Sprite2D").Scale  = new Vector2(0.2f, 0.2f) * 3; 
             }
-            else if(rand == 6)
+            else if(rand == 0)
             {
                     SnakeHead snake = Fabricate.SnakeHead();
                     snake.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
@@ -79,7 +85,7 @@ public partial class MainScene : Node2D
                     //snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier, snake.Position);
 
             }
-            else if(rand == 5)
+            else if(rand == 0)
             {
                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 

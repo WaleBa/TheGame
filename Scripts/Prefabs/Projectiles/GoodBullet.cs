@@ -2,6 +2,8 @@ namespace GameE;
 
 public partial class GoodBullet : Area2D
 {   
+        public delegate void DeathEventHandler(Node2D me);//add mob type and tier
+	public event DeathEventHandler Death;
     public int Speed { get; set; }
 	public int Range { get; set; }
     public int Damage { get; set; }
@@ -12,38 +14,49 @@ public partial class GoodBullet : Area2D
     {
         if(body.IsInGroup("Mobs"))
         {
-            if(IsInstanceValid(body) == false)  
-                return;
-
             body.Call("Hit",Damage, 3, (body.Position - Position).Normalized());//recoil is only for zombies so they should calculate it 
 
-            if(IsInstanceValid(this))
-                QueueFree();
+            CallDeferred("Die");
         }
         else if(body.IsInGroup("Projectiles") && body is not GoodBullet)//just floating_evil_bullet
         {      
-            if(IsInstanceValid(this) == true)
-                QueueFree();
+            CallDeferred("Die");
         }
         else if(body.IsInGroup("HitBox"))
         {
             body.GetParent().Call("Hit", Damage, 3, (body.Position - Position).Normalized());
 
-            if(IsInstanceValid(this) == true)
-                QueueFree();
         }
+    }
+    void Die()
+    {
+        if(!IsInstanceValid(this))
+            return;
+
+        Death?.Invoke(this); 
+        ProcessMode =  ProcessModeEnum.Disabled;
+        Visible = false;     
     }
 
     public override void _Ready()
     {  
+        ProcessMode =  ProcessModeEnum.Disabled;
+        Visible = false; 
+        
         AddToGroup("Projectiles");
 
         Scale = new Vector2(0.5f, 0.5f);
 
-        _startingPosition = Position;
-
         AreaEntered += Contact;
         BodyEntered += Contact;
+    }
+    
+    public void Activate()//still are on main scene
+    {
+        ProcessMode =  ProcessModeEnum.Pausable;
+        Visible = true; 
+        
+        _startingPosition = Position;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -51,6 +64,6 @@ public partial class GoodBullet : Area2D
         Position += Transform.X * Speed * (float)delta;
 
         if(Position.DistanceTo(_startingPosition) > Range)
-            QueueFree();
+            Die();
     }
 }

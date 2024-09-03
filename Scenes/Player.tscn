@@ -23,7 +23,7 @@ shape = SubResource("CircleShape2D_fsqpp")
 [node name="Weapon" parent="." instance=ExtResource("3_r5jvt")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.5, 0.5)
+zoom = Vector2(0.2, 0.2)
 
 [node name="score" type="Label" parent="Camera2D"]
 offset_left = -540.0

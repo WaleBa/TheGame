@@ -15,7 +15,9 @@ enum MobType//check all scaling going in mobs
 
 public partial class Global : Node
 {
+    [Export]
     public const bool CONTROLLER = true;//use of #ifdef
+
 	public const int MAX_DISTANCE_FROM_CENTRE = 2500;
 
     static Global _instance { get; set;}

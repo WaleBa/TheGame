@@ -4,24 +4,44 @@ public partial class MobFabric : Node
 {//death event passes node2D or zombie?
     Node2D _mainScene;//pause mobs
 
-    Queue<Zombie> _zombiePool = new();//at start spawn at least 2000 snakeCells
+    Queue<Zombie> _zombiePool = new();
     Queue<SnakeHead> _snakeHeadPool = new();//template
     Queue<SnakeCell> _snakeCellPool = new();
-    
+    Queue<GoodBullet> _goodBulletPool = new();
+
+    public GoodBullet GoodBullet()
+    {
+        GoodBullet goodBullet;
+
+        if(_goodBulletPool.Count() <= 0)
+        {
+            goodBullet = Prefabs.GoodBullet.Instantiate<GoodBullet>();
+            goodBullet.Death += (Node2D mob) => _goodBulletPool.Enqueue((GoodBullet)mob);
+            _mainScene.AddChild(goodBullet);//when to call activate() even here?
+        }
+        else 
+        {
+            goodBullet = _goodBulletPool.Dequeue();
+        }
+        
+        return goodBullet;
+    }
+
     public Zombie Zombie()//ref
     {
-        Zombie zombie; 
+        Zombie zombie; //first spawn next move odwrot
 
         if(_zombiePool.Count() <= 0) 
         {
             zombie = Prefabs.Zombie.Instantiate<Zombie>();
-            
             zombie.Death += (Node2D mob) => _zombiePool.Enqueue((Zombie)mob);//pause mobs
             _mainScene.AddChild(zombie);
+            GD.Print($"created");
         }
         else
         {
             zombie = _zombiePool.Dequeue();
+            GD.Print("pooled");
         }        
 
         return zombie;
@@ -66,5 +86,6 @@ public partial class MobFabric : Node
     public override void _Ready()
 	{
         _mainScene = GetTree().Root.GetNode<Node2D>("MainScene"); //make mainscene global as player also
+        //load at compile time*
     }
 }

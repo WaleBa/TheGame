@@ -68,7 +68,7 @@ public partial class Player : CharacterBody2D
 		Velocity += GetMovementInput() * SPEED;
 		Velocity = Velocity.Lerp(Vector2.Zero, 0.1f);
 
-		if(Position.DistanceTo(new Vector2(0,0)) > Global.MAX_DISTANCE_FROM_CENTRE)
+		if(Position.DistanceTo(new Vector2(0,0)) > Global.MAX_DISTANCE_FROM_CENTRE * 3)
 			Position = (Position - new Vector2(0,0)).Normalized() * Global.MAX_DISTANCE_FROM_CENTRE;
 		
 		MoveAndSlide();

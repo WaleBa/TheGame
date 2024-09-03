@@ -7,7 +7,7 @@ public partial class Weapon : Node2D
 		Shootgun,
 		Automatic
 	}
-
+	MobFabric Fabricate;
 	Marker2D _weaponMarker;
 	Marker2D _bulletMarker;
 	//add comments
@@ -74,8 +74,8 @@ public partial class Weapon : Node2D
 			{
 				if(_shootgunCooldownTimer.IsStopped() == false)
 					return;
-				double angle = 0.4 / (_shootgunBulletCount + 1);
-        		for (int i = 1; i <= _shootgunBulletCount; i++)
+				double angle = 0.4 / (2 + 1);
+        		for (int i = 1; i <= 2; i++)
         		{
 					double rotation = GlobalRotation + (-0.2 + (i * angle));
 					SpawnBullet((float)rotation, _shootgunPower);
@@ -87,8 +87,12 @@ public partial class Weapon : Node2D
 			{
 				if(_automaticCooldownTimer.IsStopped() == false)
 					return;
-				SpawnBullet(Rotation, _automaticPower);
-				SetCooldowns(0.5f, 0.1f);			
+									double angle = 0.5 / (3 + 1);
+        		for (int i = 1; i <= 3; i++)
+        		{
+					double rotation = GlobalRotation + (-0.5 + (i * angle));
+				SpawnBullet((float)rotation, _automaticPower);        		}
+				SetCooldowns(0.5f, 0.01f);			
 				break;
 			}
 		}
@@ -96,15 +100,15 @@ public partial class Weapon : Node2D
 
 	void SpawnBullet(float rotation, int power)
 	{
-		GoodBullet bullet = Prefabs.GoodBullet.Instantiate<GoodBullet>();
+		GoodBullet bullet = Fabricate.GoodBullet();
 
 		bullet.Position = _bulletMarker.GlobalPosition;
         bullet.Rotation = rotation;
 		bullet.Damage = power; 
         bullet.Speed = 3000;
-        bullet.Range = 1500;//can be changable
-
-		_mainScene.AddChild(bullet);
+        bullet.Range =3000;// 1500;//can be changable
+		bullet.Activate();
+		//_mainScene.AddChild(bullet);
 	}
 
 	float GetRotation()
@@ -142,6 +146,7 @@ public partial class Weapon : Node2D
 	
 	public override void _Ready()
 	{
+		Fabricate = GetTree().Root.GetNode<MobFabric>("MobFabric");
 		_mainScene = GetTree().Root.GetNode<MainScene>("MainScene");
 		_bulletMarker = GetNode<Marker2D>("bullet_marker");
 		_shootgunCooldownTimer = GetNode<Timer>("shootgun_cooldown");

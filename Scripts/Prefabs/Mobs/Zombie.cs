@@ -28,11 +28,10 @@ public partial class Zombie : RigidBody2D
     
     public void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {
-        if(IsInstanceValid(this) == false)
+        if(!IsInstanceValid(this))
             return;
 
         _hp -= damage;
-
         float offset = 1 - ((float)_hp / (float)_hpPerTier[Tier -1]);
         _sprite.Modulate = _startColor.Lerp(_finalColor, offset);
 
@@ -44,26 +43,29 @@ public partial class Zombie : RigidBody2D
 
     void Die()//differednt name "death"?
     {
-        if(IsInstanceValid(this) == false)
-            return;
+        if(!IsInstanceValid(this))
+            return;//when?
         
-        if(Tier > 1)
+        if(Tier > 1 == true)
         {
+                            int t = Tier;
+        GD.Print($"tt : {t}");
+            GD.Print("start");
             for(int i = 0; i < 3;i++)
             {
-            //Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
-                
-                //zombie.Position = Position + _spreadDirection[i];
-                //zombie.Tier = Tier - 1;
-            
-                Zombie z = Fabricate.Zombie();
-                z.DirtySet(Tier - 1, Position + _spreadDirection[i]);
+                Zombie zombie = Fabricate.Zombie();
+                GD.Print($"exception: {Tier > 1} , tier: {Tier} , z.Tier: {zombie.Tier}, i: {i}");
+                zombie.Tier = t - 1;
+                                GD.Print($"z.Tier: {zombie.Tier}");
+                zombie.Position = Position + _spreadDirection[i];
+                zombie.Activate();
             }
+            GD.Print("end");
         }
         
+        Death?.Invoke(this);
         ProcessMode =  ProcessModeEnum.Disabled;
         Visible = false; 
-        Death?.Invoke(this);
     }
 
     Vector2 NewDirection()
@@ -83,45 +85,40 @@ public partial class Zombie : RigidBody2D
         return newDirection.Normalized();
     }
 
-    public void DirtySet(int tier, Vector2 position)
+    public void Activate()
     {
+        GD.Print($"act: {Tier}");
         ProcessMode =  ProcessModeEnum.Pausable;
         Visible = true; 
 
-        Tier = tier; 
-        Position = position;
-        Mass = Tier;//need mass:?
+        Mass = Tier;//need mass?
         _hp = _hpPerTier[Tier - 1];
-        _speed = 150;
 
         _sprite.Modulate = _startColor;
 
         _collisionBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; //snake collision box
         GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; 
         GetNode<Sprite2D>("Sprite2D").Scale  = new Vector2(0.2f, 0.2f) * Tier; 
-        }
+    }
 
     public override void _Ready()
-    {
-                Fabricate = GetTree().Root.GetNode<MobFabric>("MobFabric");
+    {//no tier usage here
+        ProcessMode =  ProcessModeEnum.Disabled;
+        Visible = false; 
+        
+        Fabricate = GetTree().Root.GetNode<MobFabric>("MobFabric");
+        
         AddToGroup("Mobs");
 
         _mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
         _target = _mainScene.GetNode<Player>("Player");
         _collisionBox = GetNode<Area2D>("collision_box");
         _sprite = GetNode<Sprite2D>("Sprite2D");
-/*
-        _sprite.Modulate = _startColor;
-        _collisionBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
-        GetNode<CollisionShape2D>("CollisionShape2D").Scale *= Tier;
-        GetNode<Sprite2D>("Sprite2D").Scale *= Tier;
-        
-        Mass = Tier;
-        _hp = _hpPerTier[Tier - 1];
+
         _speed = 150;
-*/
-        _collisionBox.BodyEntered += (Node2D body) =>//throws soft error
-        {//could init values in diff function
+
+        _collisionBox.BodyEntered += (Node2D body) =>
+        {
             if(body is Player player)
                 player.Hit(Tier * 5, false);
         };
