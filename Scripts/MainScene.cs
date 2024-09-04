@@ -63,30 +63,30 @@ int Level = 1;
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
             int rand = _random.Next(1, 6);//removed switch/case statement due to sussy bug
-            if(rand == 2 | rand == 1| rand == 4 | rand == 3)
+            if(rand == 6)
             {
                     //scoring outisde of main scene!
-                    Zombie z = Fabricate.Zombie();
+                    Zombie z = Prefabs.Zombie.Instantiate<Zombie>();
                     GD.Print($"z.Tier mainScen: {z.Tier}");
                     z.Tier = _tieredMobsForNextWave.Dequeue();
                     GD.Print($"z.Tier (2) mainScen: {z.Tier}");
                     z.Position = newMobPosition;
                    z.Death += (Node2D mob) => MobKill(MobType.Zombie, z.Tier, z.Position);
-                    z.Activate();
+                    AddChild(z);
                                        //z.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
            // z.GetNode<Sprite2D>("Sprite2D").Scale  = new Vector2(0.2f, 0.2f) * 3; 
             }
-            else if(rand == 0)
+            else if(rand == 5)
             {
-                    SnakeHead snake = Fabricate.SnakeHead();
-                    snake.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
-                    //snake.Position = newMobPosition;
-                    //snake.Tier = _tieredMobsForNextWave.Dequeue();
-                    //snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier, snake.Position);
-
+                    SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
+                    snake.Position = newMobPosition;
+                    snake.Tier = _tieredMobsForNextWave.Dequeue();
+                    snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier, snake.Position);
+AddChild(snake);
             }
-            else if(rand == 0)
+            else if(rand == 2 | rand == 1| rand == 4 | rand == 3)
             {
+                GD.Print("cristalfff");
                     MainCristal cristal = Prefabs.MainCristal.Instantiate<MainCristal>();
 
                     cristal.Tier = _tieredMobsForNextWave.Dequeue();

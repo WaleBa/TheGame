@@ -14,7 +14,7 @@ public partial class Weapon : Node2D
 	Marker2D _bulletMarker;
 	//add comments
 	MainScene _mainScene;
-float cooldown;//try make this a property getter
+float cooldown = 0.25f;//try make this a property getter
 	Timer _shootgunCooldownTimer;
 	Timer _automaticCooldownTimer;//cooldown only for shotgun?
 	
@@ -32,24 +32,17 @@ int arm = 1;
 		GD.Print("lvlup");
 		Level++;
 
-	if(nextArm = false)
-	{
 		cooldown = 0.25f;//small values encourage aiming and make early stages cool
 		for(int i = 0; i < Level; i++)
 		{
 			cooldown *= 0.5f;
 		}
 	}
-	else
-	{
-		arm++;
-	}
-	nextArm = !nextArm;
 		//_automaticCooldownTimer.WaitTime = _automaticCooldownTimer.WaitTime - 0.025f;
 		//_shootgunBulletCount += 2;
 		//_shootgunPower += 10;
 		//_automaticPower += 5;
-	}//
+//
 
 	void PreparingForShoot()
 	{

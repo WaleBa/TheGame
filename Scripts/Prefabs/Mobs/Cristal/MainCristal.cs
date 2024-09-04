@@ -137,8 +137,9 @@ public partial class MainCristal : RigidBody2D
 
 	public override void _Ready()
 	{
+		GD.Print("ready");
 		AddToGroup("Mobs");
-Tier++;
+		
 		 _radius = Radius; //all those should be calculated properly
         _sprite = GetNode<Sprite2D>("Sprite2D");
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
@@ -166,6 +167,10 @@ Tier++;
 		_bulletOffsetFromEachOtherRotation = 0.05f;
 		_armCount = Tier + 5;
 		_bulletsPerArmCount =  (int)((_radius - MCrad - 2 * Crad + 65 ) / 97.5f);//= 9 + Tier * 2;
+		GetNode<Sprite2D>("Sprite2D").Scale *=  2 + 0.5f * (Tier - 2);// * (float)Tier;// /2?
+		GetNode<Area2D>("hit_box").GetNode<CollisionShape2D>("CollisionShape2D").Scale *= 2+ 0.5f * (Tier - 2);// = new Vector2(1, 1) * (float)Tier;
+		//_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 4;
+		_cristalCollisionBox.Scale = new Vector2(1 + 0.5f * (Tier -1), 1 + 0.5f * (Tier - 1));
 
 		SpawnFloatingBullets();
 

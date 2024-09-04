@@ -9,7 +9,7 @@ public partial class SnakeCell : Area2D
     public Node2D Target { get; set; }
     public int HP { get; set; }
     public int Speed { get; set; }
-    int _startHP;
+     int _startHP;
     public float DistanceBetweenCells;//not constant -> if larger can't shoot easly
     	    Sprite2D _sprite;
         Color _finalColor = new Color(0.5f, 0, 0.25f, 1);
@@ -30,7 +30,7 @@ public partial class SnakeCell : Area2D
         if(IsInstanceValid(this) == false)
             return;
                     Death?.Invoke(this); 
-        ((SnakeCell)Target).Death -= Die;
+       // ((SnakeCell)Target).Death -= Die;
         ProcessMode =  ProcessModeEnum.Disabled;
         Visible = false;     
     }
@@ -53,6 +53,8 @@ public partial class SnakeCell : Area2D
                 _sprite = GetNode<Sprite2D>("Sprite2D");
         AddToGroup("Mobs");
 //start hp dirty
+        _startHP = HP;
+                ((SnakeCell)Target).Death += Die;
         BodyEntered += (Node2D body) =>
         {
             if(body is Player player)

@@ -53,12 +53,10 @@ public partial class Zombie : RigidBody2D
             GD.Print("start");
             for(int i = 0; i < 3;i++)
             {
-                Zombie zombie = Fabricate.Zombie();
-                GD.Print($"exception: {Tier > 1} , tier: {Tier} , z.Tier: {zombie.Tier}, i: {i}");
-                zombie.Tier = t - 1;
-                                GD.Print($"z.Tier: {zombie.Tier}");
+                Zombie zombie = Prefabs.Zombie.Instantiate<Zombie>();
+                zombie.Tier = Tier - 1;
                 zombie.Position = Position + _spreadDirection[i];
-                zombie.Activate();
+                _mainScene.AddChild(zombie);
             }
             GD.Print("end");
         }
@@ -103,8 +101,6 @@ public partial class Zombie : RigidBody2D
 
     public override void _Ready()
     {//no tier usage here
-        ProcessMode =  ProcessModeEnum.Disabled;
-        Visible = false; 
         
         Fabricate = GetTree().Root.GetNode<MobFabric>("MobFabric");
         
@@ -116,7 +112,13 @@ public partial class Zombie : RigidBody2D
         _sprite = GetNode<Sprite2D>("Sprite2D");
 
         _speed = 300;
+                Mass = Tier;//need mass?
+        _hp = _hpPerTier[Tier - 1];
+        _sprite.Modulate = _startColor;
 
+        _collisionBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; //snake collision box
+        GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; 
+        GetNode<Sprite2D>("Sprite2D").Scale  = new Vector2(0.2f, 0.2f) * Tier; 
         _collisionBox.BodyEntered += (Node2D body) =>
         {
             if(body is Player player)

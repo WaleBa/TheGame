@@ -62,11 +62,14 @@ public partial class SnakeHead : SnakeCell
         if(IsInstanceValid(this) == false && _hidingSpot != null)//last cell hp helps in player escaping
             return;
 
-        SnakeCell snakeCell = Fabricate.SnakeCell();
-        snakeCell.DirtySet(_body.Last(), _body.Last().Position, (_maxBodySizePerTier[Tier -1] - (_body.Count - 1)) * 10);//-1 -> head
+        SnakeCell snakeCell = Prefabs.SnakeCell.Instantiate<SnakeCell>();
+        snakeCell.Target = _body.Last();
+        snakeCell.Position = _body.Last().Position;
+        snakeCell.HP = (_maxBodySizePerTier[Tier -1] - (_body.Count - 1)) * 10;//-1 -> head
 
         snakeCell.Death += ManageCut;
         _body.Add(snakeCell);
+        _mainScene.AddChild(snakeCell);
 		//_mainScene.MoveChild(_mainScene, 0); // ?
     }
     
@@ -155,8 +158,9 @@ Fabricate = GetTree().Root.GetNode<MobFabric>("MobFabric");
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
         Target = _mainScene.GetNode<Player>("Player");
         _regenerationTimer = GetNode<Timer>("regeneration");
-        //_body.Add(this);
-
+        _body.Add(this);
+        _regenerationTimer.Start();
+        
         _regenerationTimer.Timeout += () => 
         {            
             if(_body.Count >= _maxBodySizePerTier[Tier -1])
@@ -166,8 +170,7 @@ Fabricate = GetTree().Root.GetNode<MobFabric>("MobFabric");
             Scaling();
             SetRadious();
         };
-        
-        //HP =_hpPerTier[Tier -1];
+        HP =_hpPerTier[Tier -1];
 
         CallDeferred("CreateBody");
 
