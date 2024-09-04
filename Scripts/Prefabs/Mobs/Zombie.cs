@@ -19,7 +19,7 @@ public partial class Zombie : RigidBody2D
     Node2D _target;
     Sprite2D _sprite;
     int _hp; 
-    int _speed = 150;
+    int _speed = 600;
 
     MobFabric Fabricate;
 
@@ -115,7 +115,7 @@ public partial class Zombie : RigidBody2D
         _collisionBox = GetNode<Area2D>("collision_box");
         _sprite = GetNode<Sprite2D>("Sprite2D");
 
-        _speed = 150;
+        _speed = 300;
 
         _collisionBox.BodyEntered += (Node2D body) =>
         {

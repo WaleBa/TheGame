@@ -22,8 +22,8 @@ public partial class MainScene : Node2D
 
     Player _player;//get rid of saying +timer
 
-    int bariera = 10;
-
+    int bariera = 5;
+int Level = 1;
     ulong lazyticks = 0;
     Timer _newWaveTimer;
     Timer _tierUpgradeTimer;
@@ -62,16 +62,16 @@ public partial class MainScene : Node2D
             Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE, 0)
                                                                 .Rotated(_random.Next(1, 5));//not perfect
             
-            int rand = _random.Next(1, 4);//removed switch/case statement due to sussy bug
+            int rand = _random.Next(1, 6);//removed switch/case statement due to sussy bug
             if(rand == 2 | rand == 1| rand == 4 | rand == 3)
             {
-                   // zombie.Death += (Node2D mob) => MobKill(MobType.Zombie, zombie.Tier, zombie.Position);
                     //scoring outisde of main scene!
                     Zombie z = Fabricate.Zombie();
                     GD.Print($"z.Tier mainScen: {z.Tier}");
                     z.Tier = _tieredMobsForNextWave.Dequeue();
                     GD.Print($"z.Tier (2) mainScen: {z.Tier}");
                     z.Position = newMobPosition;
+                   z.Death += (Node2D mob) => MobKill(MobType.Zombie, z.Tier, z.Position);
                     z.Activate();
                                        //z.DirtySet(_tieredMobsForNextWave.Dequeue(), newMobPosition);
            // z.GetNode<Sprite2D>("Sprite2D").Scale  = new Vector2(0.2f, 0.2f) * 3; 
@@ -108,12 +108,13 @@ public partial class MainScene : Node2D
         Scoring(mobType, mobTier, pos);
         _currentMob = mobType;
 
-        _mobKills++;
+        _mobKills += mobTier;
         if((_mobKills - _lastMobKills) >= bariera)//should not be always 10
         {
+            Level++;
             _lastMobKills += bariera;//looks goofy
             _player.LevelUp();
-            bariera *= 2;
+            bariera = (int)Math.Pow(10, Level) / 2;//10 ^ Level;
         }
     }
 
