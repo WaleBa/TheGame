@@ -21,7 +21,7 @@ public partial class MainCristal : RigidBody2D
 	Marker2D _cristalRotationMarker;
 
 	Timer _ubgradeTimer;
-
+Area2D _hitBox;
 	Node2D _mainScene;
 	
 	Node2D _target;
@@ -136,23 +136,25 @@ public partial class MainCristal : RigidBody2D
     }
 
 	public override void _Ready()
-	{
-		GD.Print("ready");
-		AddToGroup("Mobs");
-		
-		 _radius = Radius; //all those should be calculated properly
+	{              
+		 GD.Print("ready");
+               AddToGroup("Mobs");
+               
         _sprite = GetNode<Sprite2D>("Sprite2D");
+
+		_radius = Radius = 1250 * (1 + 0.5f * (Tier - 1)); //all those should be calculated properly
+
 		_mainScene = GetTree().Root.GetNode<Node2D>("MainScene");
 		_target = _mainScene.GetNode<CharacterBody2D>("Player");		
 		_ubgradeTimer = GetNode<Timer>("ubgrade");		
 		_bulletRotationMarker = GetNode<Marker2D>("bullet_rotation_marker");
 		_cristalRotationMarker = GetNode<Marker2D>("cristal_rotation_marker");
 		_cristalCollisionBox = GetNode<CollisionShape2D>("CollisionShape2D");
-
-		GetNode<Sprite2D>("Sprite2D").Scale *=  2 + 0.5f * (Tier - 2);// * (float)Tier;// /2?
-		GetNode<Area2D>("hit_box").GetNode<CollisionShape2D>("CollisionShape2D").Scale *= 2+ 0.5f * (Tier - 2);// = new Vector2(1, 1) * (float)Tier;
+		_hitBox = GetNode<Area2D>("hit_box");
+		_sprite.Scale *=  2 + 0.5f * (Tier - 1);// * (float)Tier;// /2?
+		_cristalCollisionBox.Scale *= 1 + 0.5f * (Tier -1);// = new Vector2(1, 1) * (float)Tier;
 		//_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 4;
-		_cristalCollisionBox.Scale = new Vector2(1 + 0.5f * (Tier -1), 1 + 0.5f * (Tier - 1));
+		_hitBox.Scale *= 2 + 0.5f * (Tier -1);
 
 		_ubgradeTimer.Timeout += SpawnCristal;
 		
@@ -167,10 +169,6 @@ public partial class MainCristal : RigidBody2D
 		_bulletOffsetFromEachOtherRotation = 0.05f;
 		_armCount = Tier + 5;
 		_bulletsPerArmCount =  (int)((_radius - MCrad - 2 * Crad + 65 ) / 97.5f);//= 9 + Tier * 2;
-		GetNode<Sprite2D>("Sprite2D").Scale *=  2 + 0.5f * (Tier - 2);// * (float)Tier;// /2?
-		GetNode<Area2D>("hit_box").GetNode<CollisionShape2D>("CollisionShape2D").Scale *= 2+ 0.5f * (Tier - 2);// = new Vector2(1, 1) * (float)Tier;
-		//_cristalCollisionBox.Scale = new Vector2(1,1) * (float)Tier * 4;
-		_cristalCollisionBox.Scale = new Vector2(1 + 0.5f * (Tier -1), 1 + 0.5f * (Tier - 1));
 
 		SpawnFloatingBullets();
 

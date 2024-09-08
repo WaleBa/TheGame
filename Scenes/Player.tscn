@@ -40,12 +40,14 @@ offset_left = -107.0
 offset_top = -202.0
 offset_right = 125.0
 offset_bottom = -114.0
+theme_override_font_sizes/font_size = 50
 
 [node name="score_streak_multiplyer" type="Label" parent="Camera2D"]
 offset_left = 60.0
 offset_top = -168.0
 offset_right = 185.0
 offset_bottom = -130.0
+theme_override_font_sizes/font_size = 50
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
 offset_left = -124.0

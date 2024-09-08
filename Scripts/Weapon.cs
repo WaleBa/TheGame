@@ -17,7 +17,7 @@ public partial class Weapon : Node2D
 float cooldown = 0.25f;//try make this a property getter
 	Timer _shootgunCooldownTimer;
 	Timer _automaticCooldownTimer;//cooldown only for shotgun?
-	
+	float bps = 9;
 	public int Level = 1;
 	bool nextArm = false;
 	byte _timeTicks = 0; //check if even need this field //byte?
@@ -31,12 +31,13 @@ int arm = 1;
 	{
 		GD.Print("lvlup");
 		Level++;
-
+arm++;
 		cooldown = 0.25f;//small values encourage aiming and make early stages cool
 		for(int i = 0; i < Level; i++)
 		{
-			cooldown *= 0.5f;
+			cooldown *= 0.75f;
 		}
+		bps = bps * (arm - 1)  * 3 / arm;
 	}
 		//_automaticCooldownTimer.WaitTime = _automaticCooldownTimer.WaitTime - 0.025f;
 		//_shootgunBulletCount += 2;
@@ -105,7 +106,7 @@ int arm = 1;
 					double rotation = GlobalRotation + (-0.1 * arm + (i * angle));
 				SpawnBullet((float)rotation, _automaticPower);// * Level);        		
 				 }
-				SetCooldowns(0.5f, cooldown);//0.05f);			
+				SetCooldowns(0.5f, 1 / bps);//cooldown);//0.05f);			
 				break;
 			}
 		}
@@ -169,6 +170,8 @@ int arm = 1;
 
 	public override void _PhysicsProcess(double delta)
 	{
+		if(Input.IsActionJustReleased("lvlup"))
+			LevelUp();
 		Rotation = GetRotation(); //player(outside source) could decide on where to shoot
 
 		//ZIndex = Rotation < new Vector2(1,0).Angle() ? -1 : 0;

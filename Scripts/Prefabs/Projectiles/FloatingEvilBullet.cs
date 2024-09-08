@@ -17,8 +17,8 @@ public partial class FloatingEvilBullet : Area2D
         {
             CallDeferred("Vanish");
         }
-        else if(body is GoodBullet)
-            CallDeferred("Vanish");
+        //else if(body is GoodBullet)
+        //    CallDeferred("Vanish");
     }
     
     void Vanish()

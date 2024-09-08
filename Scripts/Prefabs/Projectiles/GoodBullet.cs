@@ -14,13 +14,13 @@ public partial class GoodBullet : Area2D
     {
         if(body.IsInGroup("Mobs"))
         {
-            body.Call("Hit",Damage, 3, (body.Position - Position).Normalized());//recoil is only for zombies so they should calculate it 
+            body.Call("Hit",1, 3, (body.Position - Position).Normalized());//recoil is only for zombies so they should calculate it 
 
             CallDeferred("Die");
         }
         else if(body.IsInGroup("Projectiles") && body is not GoodBullet)//just floating_evil_bullet
         {      
-            CallDeferred("Die");
+           // CallDeferred("Die");
         }
         else if(body.IsInGroup("HitBox"))
         {

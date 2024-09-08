@@ -7,7 +7,7 @@ public partial class Zombie : RigidBody2D
 
     public int Tier { get; set; }
 
-    static int[] _hpPerTier = { 50, 100, 150, 200, 250, 300, 350, 400, 450, 500 };
+    static int[] _hpPerTier = { 9, 27, 150, 200, 250, 300, 350, 400, 450, 500 };
 
     static Vector2[] _spreadDirection = {
                                 new Vector2(0,1),
@@ -113,7 +113,7 @@ public partial class Zombie : RigidBody2D
 
         _speed = 300;
                 Mass = Tier;//need mass?
-        _hp = _hpPerTier[Tier - 1];
+        _hp = 9 * Tier;//_hpPerTier[Tier - 1] / 2;
         _sprite.Modulate = _startColor;
 
         _collisionBox.GetNode<CollisionShape2D>("CollisionShape2D").Scale  = new Vector2(1,1) * Tier; //snake collision box

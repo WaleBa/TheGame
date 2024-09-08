@@ -10,7 +10,6 @@ public partial class Player : CharacterBody2D
 	Weapon _weapon;
 	Timer timer;
 	bool floa = false;
-
 	public void LevelUp() => _weapon.LevelUp(); //need?
 
 	public void Hit(int damage, bool flo)

@@ -82,7 +82,7 @@ public partial class SnakeHead : SnakeCell
         {
             cell.DistanceBetweenCells =  3 * A;//97;//4 * _body.Count;
             cell.Scale = new Vector2(1 + 0.3f * (Tier - 1), 1 + 0.3f * (Tier - 1));
-            cell.Speed = 500;//do we need A?
+            cell.Speed = 700;//do we need A?
         }
     }
 
@@ -97,7 +97,7 @@ public partial class SnakeHead : SnakeCell
         SetRadious();
     }
 // : 4 most classic one
-    void SetRadious() => _radius = _maxBodySizePerTier[Tier] * DistanceBetweenCells / Mathf.Pi / 2; //-  (A_SCALE + A_SCALE * 0.3f * (Tier - 1)) / 2;// /2 pi r // * 0.75f / 2
+    void SetRadious() => _radius = _maxBodySizePerTier[Tier] * DistanceBetweenCells / Mathf.Pi;// /2 //-  (A_SCALE + A_SCALE * 0.3f * (Tier - 1)) / 2;// /2 pi r // * 0.75f / 2
     
     float GetRotation(float delta)
     {
