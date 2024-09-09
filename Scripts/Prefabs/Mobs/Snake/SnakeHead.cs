@@ -4,8 +4,8 @@ public partial class SnakeHead : SnakeCell
 {
     public int Tier { get; set; }
     
-    static int[] _hpPerTier = { 75, 150, 300, 700, 13425, 40725, 122700, 368700, 1106775, 3321075 };
-    static int[] _maxBodySizePerTier = { 10, 30, 90, 270, 810, 2430, 7290, 21870, 65610, 196830 };
+    static float[] _hpPerTier = { 13, 40.5f, 91.5f, 700, 13425, 40725, 122700, 368700, 1106775, 3321075 };
+    static int[] _maxBodySizePerTier = { 30, 60, 200, 270, 810, 2430, 7290, 21870, 65610, 196830 };
     
     const float A_SCALE = 130;
 
@@ -24,13 +24,13 @@ public partial class SnakeHead : SnakeCell
 	
     public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {   
-        //Escape();
+        Escape();
         
         HP -= damage;
         float offset = 1 - ((float)HP / (float)_hpPerTier[Tier -1]);
         _sprite.Modulate = _startColor.Lerp(_finalColor, offset);
         if(HP <= 0)
-            CallDeferred("Die", this);
+            CallDeferred("Die", this, 600);
     }
 
     async void Escape()
@@ -65,7 +65,7 @@ public partial class SnakeHead : SnakeCell
         SnakeCell snakeCell = Prefabs.SnakeCell.Instantiate<SnakeCell>();
         snakeCell.Target = _body.Last();
         snakeCell.Position = _body.Last().Position;
-        snakeCell.HP = (_maxBodySizePerTier[Tier -1] - (_body.Count - 1)) * 10;//-1 -> head
+        snakeCell.HP = (_maxBodySizePerTier[Tier -1] - (_body.Count - 1));//-1 -> head
 
         snakeCell.Death += ManageCut;
         _body.Add(snakeCell);
@@ -86,7 +86,7 @@ public partial class SnakeHead : SnakeCell
         }
     }
 
-    void ManageCut(Node2D cell)//should trigger escaping?
+    void ManageCut(Node2D cell, int score)//should trigger escaping?
     {
         int index = _body.IndexOf((SnakeCell)cell);
         
@@ -116,7 +116,7 @@ public partial class SnakeHead : SnakeCell
         return currentVector.Angle() + (currentVector.AngleTo(targetVector) * (float)delta);
     }
 
-    protected override void Die(Node2D me)
+    protected override void Die(Node2D me, int score)
     {
         if(IsInstanceValid(this) == false)
             return;

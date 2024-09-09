@@ -7,7 +7,7 @@ public partial class Cristal : Area2D
 
     public int Tier { get; set; }
 
-	protected static int[] _hpPerTier = { 150, 750, 2700, 8700, 26850, 81450, 245400, 737400, 2213550, 6642150 };
+	protected static int[] _hpPerTier = { 27, 81, 243,  8700, 26850, 81450, 245400, 737400, 2213550, 6642150 };
 
     protected int _hp;
 	    Sprite2D _sprite;
@@ -37,6 +37,7 @@ public partial class Cristal : Area2D
 
 	public override void _Ready()
 	{
+		Tier++;
 		AddToGroup("Mobs");
         _sprite = GetNode<Sprite2D>("Sprite2D");
 		_parentCristal = GetParent().GetParent<RigidBody2D>();//already tier -1
@@ -56,6 +57,6 @@ public partial class Cristal : Area2D
 	public override void _PhysicsProcess(double delta)
 	{
 		GlobalRotation = 0;
-		ZIndex = GlobalPosition.Y < _parentCristal.GlobalPosition.Y ? -1 : 0;
+		//ZIndex = GlobalPosition.Y < _parentCristal.GlobalPosition.Y ? -1 : 0;
 	}
 }

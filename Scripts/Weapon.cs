@@ -106,7 +106,7 @@ arm++;
 					double rotation = GlobalRotation + (-0.1 * arm + (i * angle));
 				SpawnBullet((float)rotation, _automaticPower);// * Level);        		
 				 }
-				SetCooldowns(0.5f, 1 / bps);//cooldown);//0.05f);			
+				SetCooldowns(0.5f, 1 / bps * 1.5f);//cooldown);//0.05f);			
 				break;
 			}
 		}

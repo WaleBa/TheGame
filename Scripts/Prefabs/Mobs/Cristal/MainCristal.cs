@@ -7,7 +7,7 @@ public partial class MainCristal : RigidBody2D
 
     public int Tier { get; set; }
 
-	protected static int[] _hpPerTier = { 150, 750, 2700, 8700, 26850, 81450, 245400, 737400, 2213550, 6642150 };
+	protected static int[] _hpPerTier = { 27, 81, 243, 8700, 26850, 81450, 245400, 737400, 2213550, 6642150 };
 
     protected int _hp;
 
@@ -79,7 +79,12 @@ Area2D _hitBox;
 		{
 			if(IsInstanceValid(this) == false)
 				return;
-
+					         Node2D sl = Prefabs.ScoreLabel.Instantiate<Node2D>();
+        sl.GetNode<Label>("Label").Text = 300.ToString();
+                    //_mainScene.Score += (ulong)(score + 10);
+                    //_scoreLabel.Text = _mainScene.Score.ToString(); 
+                    sl.Position = cristal.Position;
+                    GetTree().Root.GetNode<Node2D>("MainScene").AddChild(sl);
 			_nextCristalPosition.Enqueue(cristal.Position);
 			_cristals.Remove(cristal);
 
@@ -92,9 +97,9 @@ Area2D _hitBox;
 			cristal.Position = _nextCristalPosition.Dequeue();
 		else
 		{
-			float angle = 2 * Mathf.Pi / _cristals.Count;
+			float angle = 2 * Mathf.Pi / (_cristals.Count + 3);
 			
-			for(int i = 0; i < _cristals.Count; i++)
+			for(int i = 0; i < _cristals.Count + 3; i++)
 				_cristals[i].Position = new Vector2(_cristalOffsetFromCentre, 0).Rotated(angle * i);
 		}
 
@@ -119,7 +124,15 @@ Area2D _hitBox;
 				bullet.Position = new Vector2(
 								_bulletOffsetFromCentre + _bulletOffsetFromEachOther * (i + 1), 0)
 								.Rotated(-(angle * k + _bulletOffsetFromEachOtherRotation  * i));//shouldn't propably be again offset from eachother
-				
+				bullet.Death += (Node2D bull) =>
+				{
+					         Node2D sl = Prefabs.ScoreLabel.Instantiate<Node2D>();
+sl.GetNode<Label>("Label").Text = 50.ToString();
+                    //_mainScene.Score += (ulong)(score + 10);
+                    //_scoreLabel.Text = _mainScene.Score.ToString(); 
+                    sl.Position = bull.Position;
+                    GetTree().Root.GetNode<Node2D>("MainScene").AddChild(sl);
+				};
 				_bulletRotationMarker.AddChild(bullet);
 			}
 		}
@@ -139,7 +152,7 @@ Area2D _hitBox;
 	{              
 		 GD.Print("ready");
                AddToGroup("Mobs");
-               
+               Tier++;
         _sprite = GetNode<Sprite2D>("Sprite2D");
 
 		_radius = Radius = 1250 * (1 + 0.5f * (Tier - 1)); //all those should be calculated properly
@@ -163,8 +176,8 @@ Area2D _hitBox;
 		float MCrad = 65 * (2 + 0.5f * (Tier -2));
 		float Crad = 65 * (1 + 0.5f * (Tier - 1));
 		//_radius = 200 * Tier;//all those should be calculated properly
-		_cristalOffsetFromCentre = MCrad + Crad;//= 80 * Tier;
-		_bulletOffsetFromCentre = MCrad + Crad * 2;// + 32.5f;//130 * Tier;//too long names
+		_cristalOffsetFromCentre = (MCrad + Crad) * 1.5f;//= 80 * Tier;
+		_bulletOffsetFromCentre = MCrad + Crad * 2 * 2;// + 32.5f;//130 * Tier;//too long names
 		_bulletOffsetFromEachOther = 96.5f;
 		_bulletOffsetFromEachOtherRotation = 0.05f;
 		_armCount = Tier + 5;

@@ -2,14 +2,14 @@ namespace GameE;
 
 public partial class SnakeCell : Area2D
 {
-	public delegate void DeathEventHandler(Node2D me);
+	public delegate void DeathEventHandler(Node2D me, int score);
 	public event DeathEventHandler Death;
     //public DeathEventHandler handler = Die();///check
 
     public Node2D Target { get; set; }
-    public int HP { get; set; }
+    public float HP { get; set; }
     public int Speed { get; set; }
-     int _startHP;
+     float _startHP;
     public float DistanceBetweenCells;//not constant -> if larger can't shoot easly
     	    Sprite2D _sprite;
         Color _finalColor = new Color(0.5f, 0, 0.25f, 1);
@@ -20,19 +20,26 @@ public partial class SnakeCell : Area2D
         float offset = 1 - ((float)HP / (float)_startHP);
         _sprite.Modulate = _startColor.Lerp(_finalColor, offset);
         if(HP <= 0)
-            CallDeferred("Die", this);
+            CallDeferred("Die", this, 10);
     }
 
-    protected void RaiseDeathEvent() => Death?.Invoke(this);
+    protected void RaiseDeathEvent() => Death?.Invoke(this, 0);
 
-    protected virtual void Die(Node2D me)
+    protected virtual async void Die(Node2D me, int score)
     {
+        await Task.Delay(30);
+       //  Node2D sl = Prefabs.ScoreLabel.Instantiate<Node2D>();
+       // sl.GetNode<Label>("Label").Text = (score + 10).ToString();
+                    //_mainScene.Score += (ulong)(score + 10);
+                    //_scoreLabel.Text = _mainScene.Score.ToString(); 
+            ///        sl.Position = Position;
+             //       GetTree().Root.GetNode<Node2D>("MainScene").AddChild(sl);
         if(IsInstanceValid(this) == false)
             return;
-                    Death?.Invoke(this); 
+                    Death?.Invoke(this, score + 10); 
        // ((SnakeCell)Target).Death -= Die;
         ProcessMode =  ProcessModeEnum.Disabled;
-        Visible = false;     
+        Visible = false; 
     }
 
     public void DirtySet(Node2D target, Vector2 position, int hp)

@@ -25,7 +25,7 @@ public partial class GoodBullet : Area2D
         else if(body.IsInGroup("HitBox"))
         {
             body.GetParent().Call("Hit", Damage, 3, (body.Position - Position).Normalized());
-
+            CallDeferred("Die");
         }
     }
     void Die()

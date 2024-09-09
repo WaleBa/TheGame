@@ -30,10 +30,10 @@ public partial class MainScene : Node2D
     int maxSnakeCount = 1; 
 
     int currentZombieCount = 0;
-    int maxZombieCount = 4;
+    int maxZombieCount = 6;
 
     int currentCristalCount = 0;
-    int maxCristalCount = 2;
+    int maxCristalCount = 1;
 
     int bariera = 5;
 int Level = 1;
@@ -106,12 +106,11 @@ int Level = 1;
                     SnakeHead snake = Prefabs.SnakeHead.Instantiate<SnakeHead>();
                     snake.Position = newMobPosition;
                     snake.Tier = rand;
-                    snake.Death += (Node2D mob) => MobKill(MobType.SnakeHead, snake.Tier, snake.Position);
+                    snake.Death += (Node2D mob, int score) => MobKill(MobType.SnakeHead, snake.Tier, snake.Position);
 AddChild(snake);
             }
             else if(currentCristalCount < maxCristalCount)//rand == 6
             {
-                break;
                 //if(currentCristalCount >= maxCristalCount)
                   //  break;
                     currentCristalCount++;
@@ -224,6 +223,7 @@ break;
 
     void ScoreNew(MobType mobType, int mobTier, Vector2 pos)
     {
+        return;
                 Node2D sl = Prefabs.ScoreLabel.Instantiate<Node2D>();
         if(mobType != _currentMob)
         {
@@ -263,8 +263,8 @@ break;
                     _scoreLabel.Text = _score.ToString(); 
                     break;
                 case MobType.MainCristal:
-                    sl.GetNode<Label>("Label").Text = (_mainCristalScorePerTier[mobTier - 1] * (1 + lastSS)).ToString();
-                   _score += (ulong)(_mainCristalScorePerTier[mobTier -1] * (1 + lastSS));
+                    sl.GetNode<Label>("Label").Text = (_mainCristalScorePerTier[mobTier - 1] * (1 + lastSS) * 10).ToString();
+                   _score += (ulong)(_mainCristalScorePerTier[mobTier -1] * (1 + lastSS) * 10);
                     _scoreLabel.Text = _score.ToString(); 
                     break;
             }
@@ -325,7 +325,7 @@ break;
     }
     public override void _Draw()
     {
-        DrawCircle(new Vector2(0,0), 2500 * _currentMobTier, new Color(0.361f, 0.361f, 0.353f));
+        DrawCircle(new Vector2(0,0), 2500 * 1.5f, new Color(0.361f, 0.361f, 0.353f));
     }
     public override void _PhysicsProcess(double delta)
     {
@@ -337,7 +337,7 @@ break;
 maxSnakeCount *= 2;
 maxZombieCount *= 2;
             _currentMobTier++;
-            QueueRedraw();
+            //QueueRedraw();
 
             GD.Print($"tierup: {lazyticks / 60}s");
         }

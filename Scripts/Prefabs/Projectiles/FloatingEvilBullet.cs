@@ -2,6 +2,8 @@
 namespace GameE;
 public partial class FloatingEvilBullet : Area2D
 {
+        public delegate void DeathEventHandler(Node2D me);//add mob type and tier
+	public event DeathEventHandler Death;
     public int SpawnTimerOffset;
     
     Player Target;
@@ -22,7 +24,7 @@ public partial class FloatingEvilBullet : Area2D
     }
     
     void Vanish()
-    {
+    {//have !visible one call methiod type
         _collisionShape.Disabled = true;
         _sprite.Visible = false;
         _vanishTimer.Start();

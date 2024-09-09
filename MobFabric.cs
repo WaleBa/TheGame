@@ -54,7 +54,7 @@ public partial class MobFabric : Node
         if(_snakeHeadPool.Count() <= 0)
         {
             snakeHead = Prefabs.SnakeHead.Instantiate<SnakeHead>();
-            snakeHead.Death += (Node2D mob) => _snakeHeadPool.Enqueue((SnakeHead)mob);
+          //  snakeHead.Death += (Node2D mob) => _snakeHeadPool.Enqueue((SnakeHead)mob);
             _mainScene.AddChild(snakeHead);
         }
         else
@@ -72,7 +72,7 @@ public partial class MobFabric : Node
         if(_snakeCellPool.Count() <= 0)
         {
             snakeCell = Prefabs.SnakeCell.Instantiate<SnakeCell>();
-            snakeCell.Death += (Node2D mob) => _snakeCellPool.Enqueue((SnakeCell)mob);
+          //  snakeCell.Death += (Node2D mob) => _snakeCellPool.Enqueue((SnakeCell)mob);
             _mainScene.AddChild(snakeCell);
         }
         else
