@@ -28,8 +28,6 @@ shape = SubResource("CircleShape2D_v3bmr")
 visibility_layer = 2
 
 [node name="ubgrade" type="Timer" parent="."]
-wait_time = 2.5
-one_shot = true
 autostart = true
 
 [node name="hit_box" type="Area2D" parent="." groups=["HitBox"]]

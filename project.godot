@@ -23,7 +23,8 @@ MobFabric="*res://MobFabric.tscn"
 
 [display]
 
-window/size/initial_position_type=3
+window/size/mode=3
+window/size/initial_position_type=0
 
 [dotnet]
 
@@ -129,5 +130,4 @@ tierup={
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

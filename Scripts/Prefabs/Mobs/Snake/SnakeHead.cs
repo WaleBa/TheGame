@@ -24,7 +24,7 @@ public partial class SnakeHead : SnakeCell
 	
     public override void Hit(int damage, int recoilPower, Vector2 recoilVectorGiven)
     {   
-        Escape();
+       // Escape();
         
         HP -= damage;
         float offset = 1 - ((float)HP / (float)_hpPerTier[Tier -1]);

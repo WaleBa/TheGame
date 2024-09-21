@@ -74,7 +74,7 @@ int Level = 1;
                 break;
                    // SnakeHead snake = Fabricate.SnakeHead();
                    // snake.DirtySet(2, new Vector2(1000, 0));
-            Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE * _currentMobTier, 0)
+            Vector2 newMobPosition = _player.Position + new Vector2(Global.MAX_DISTANCE_FROM_CENTRE * _currentMobTier * 1.5f, 0)
                                                                 .Rotated(_random.Next(0, 5));//not perfect
             
             int rand = _random.Next(1, _currentMobTier);//removed switch/case statement due to sussy bug
@@ -122,7 +122,7 @@ AddChild(snake);
                     cristal.Tier = rand;
                     cristal.Radius = 1250 * (1 + 0.5f * (cristal.Tier - 1));
 
-                    cristal.Position = new Vector2(Global.MAX_DISTANCE_FROM_CENTRE + cristal.Radius, 0)
+                    cristal.Position = new Vector2(Global.MAX_DISTANCE_FROM_CENTRE * _currentMobTier + cristal.Radius, 0)
                                                                 .Rotated(_random.Next(1, 5)); //cristal.Position = newMobPosition
                     cristal.Death += (Node2D mob) => MobKill(MobType.MainCristal, cristal.Tier, cristal.Position);
                     
@@ -146,7 +146,7 @@ break;
       break;      
         }
         _tieredMobsForNextWave.Enqueue(mobTier);
-        _scoreStreakMultiplyerLabel.Text = _mobKills.ToString();
+       // _scoreStreakMultiplyerLabel.Text = _mobKills.ToString();
         Scoring(mobType, mobTier, pos);
         _currentMob = mobType;
         _mobKills += mobTier;
@@ -330,7 +330,7 @@ break;
     public override void _PhysicsProcess(double delta)
     {
         lazyticks++;
-        _scoreStreakLabel.Text = (lazyticks / 60).ToString();
+        //_scoreStreakLabel.Text = (lazyticks / 60).ToString();
         if(Input.IsActionJustReleased("tierup"))
         {
             maxCristalCount *= 2;

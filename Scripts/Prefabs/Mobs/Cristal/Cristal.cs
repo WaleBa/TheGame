@@ -7,7 +7,7 @@ public partial class Cristal : Area2D
 
     public int Tier { get; set; }
 
-	protected static int[] _hpPerTier = { 27, 81, 243,  8700, 26850, 81450, 245400, 737400, 2213550, 6642150 };
+	protected static int[] _hpPerTier = { 27, 81, 243, 8700, 26850, 81450, 245400, 737400, 2213550, 6642150 };
 
     protected int _hp;
 	    Sprite2D _sprite;
@@ -45,7 +45,7 @@ public partial class Cristal : Area2D
 		GetNode<Sprite2D>("Sprite2D").Scale *= 1 + 0.5f * (Tier -1); //= new Vector2(1,1) * (float)Tier /2;
 		GetNode<CollisionShape2D>("CollisionShape2D").Scale = new Vector2(1 + 0.5f * (Tier - 1), 1 + 0.5f * (Tier -1));//= new Vector2(1,1) * (float)Tier/2;
 
-		_hp = _hpPerTier[Tier - 1];
+		_hp = (int)(_hpPerTier[Tier - 1] / 3);
 
 		BodyEntered += (Node2D body) =>
         {

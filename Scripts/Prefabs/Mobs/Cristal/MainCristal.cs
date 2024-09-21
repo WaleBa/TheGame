@@ -68,9 +68,10 @@ Area2D _hitBox;
 	
 	void SpawnCristal()
 	{
-		if(IsInstanceValid(this) == false || _cristals.Count >= (Tier + 3) || Tier == 1)
+		if(IsInstanceValid(this) == false || _cristals.Count >= Tier + 3)
 			return;
 
+GD.Print("cristal sptawsnw");
 		Cristal cristal = Prefabs.Cristal.Instantiate<Cristal>();
 
 		cristal.Tier = Tier - 1;
@@ -79,12 +80,12 @@ Area2D _hitBox;
 		{
 			if(IsInstanceValid(this) == false)
 				return;
-					         Node2D sl = Prefabs.ScoreLabel.Instantiate<Node2D>();
-        sl.GetNode<Label>("Label").Text = 300.ToString();
+					       //  Node2D sl = Prefabs.ScoreLabel.Instantiate<Node2D>();
+       // sl.GetNode<Label>("Label").Text = 300.ToString();
                     //_mainScene.Score += (ulong)(score + 10);
                     //_scoreLabel.Text = _mainScene.Score.ToString(); 
-                    sl.Position = cristal.Position;
-                    GetTree().Root.GetNode<Node2D>("MainScene").AddChild(sl);
+                   // sl.Position = cristal.Position;
+                  //  GetTree().Root.GetNode<Node2D>("MainScene").AddChild(sl);
 			_nextCristalPosition.Enqueue(cristal.Position);
 			_cristals.Remove(cristal);
 
@@ -97,9 +98,9 @@ Area2D _hitBox;
 			cristal.Position = _nextCristalPosition.Dequeue();
 		else
 		{
-			float angle = 2 * Mathf.Pi / (_cristals.Count + 3);
+			float angle = 2 * Mathf.Pi / _cristals.Count;
 			
-			for(int i = 0; i < _cristals.Count + 3; i++)
+			for(int i = 0; i < _cristals.Count; i++)
 				_cristals[i].Position = new Vector2(_cristalOffsetFromCentre, 0).Rotated(angle * i);
 		}
 
